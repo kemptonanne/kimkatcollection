@@ -7,8 +7,6 @@ import { SIGNUP_FORM_URL } from "@/lib/format";
 const NAV = [
   { to: "/", label: "Shop" },
   { to: "/check-my-bag", label: "View Bag" },
-  { to: "/cart", label: "Cart" },
-  { to: "/admin", label: "Admin" },
 ] as const;
 
 export function SiteHeader() {
@@ -55,6 +53,17 @@ export function SiteHeader() {
       {open && (
         <nav className="border-t border-border/70 bg-cream px-4 pb-4 pt-2">
           <ul className="flex flex-col">
+            <li>
+              <a
+                href={SIGNUP_FORM_URL}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => setOpen(false)}
+                className="tap-target flex items-center rounded-2xl px-3 text-base font-semibold text-ink transition-colors hover:bg-blush"
+              >
+                New Customer Sign-Up
+              </a>
+            </li>
             {NAV.map((item) => (
               <li key={item.to}>
                 <Link
@@ -67,17 +76,6 @@ export function SiteHeader() {
                 </Link>
               </li>
             ))}
-            <li>
-              <a
-                href={SIGNUP_FORM_URL}
-                target="_blank"
-                rel="noreferrer"
-                onClick={() => setOpen(false)}
-                className="tap-target flex items-center rounded-2xl px-3 text-base font-semibold text-ink transition-colors hover:bg-blush"
-              >
-                New Customer Sign-Up
-              </a>
-            </li>
           </ul>
         </nav>
       )}
