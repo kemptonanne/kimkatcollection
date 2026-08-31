@@ -50,6 +50,10 @@ function AdminPage() {
             if (result.ok) {
               setPassword("");
               await queryClient.invalidateQueries({ queryKey: ["admin"] });
+              const fresh = await session.refetch();
+              if (!fresh.data?.unlocked) {
+                toast.error("Couldn't keep you signed in. Try opening the preview in a new tab.");
+              }
             } else {
               toast.error("Incorrect password");
             }
