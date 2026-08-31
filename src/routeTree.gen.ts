@@ -14,6 +14,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as CheckMyBagRouteImport } from './routes/check-my-bag'
 import { Route as CheckoutRouteImport } from './routes/checkout'
+import { Route as ViewBagRouteImport } from './routes/view-bag'
 import { Route as ProductIdRouteImport } from './routes/product.$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -41,6 +42,11 @@ const CheckoutRoute = CheckoutRouteImport.update({
   path: '/checkout',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ViewBagRoute = ViewBagRouteImport.update({
+  id: '/view-bag',
+  path: '/view-bag',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProductIdRoute = ProductIdRouteImport.update({
   id: '/product/$id',
   path: '/product/$id',
@@ -53,6 +59,7 @@ export interface FileRoutesByFullPath {
   '/cart': typeof CartRoute
   '/check-my-bag': typeof CheckMyBagRoute
   '/checkout': typeof CheckoutRoute
+  '/view-bag': typeof ViewBagRoute
   '/product/$id': typeof ProductIdRoute
 }
 export interface FileRoutesByTo {
@@ -61,6 +68,7 @@ export interface FileRoutesByTo {
   '/cart': typeof CartRoute
   '/check-my-bag': typeof CheckMyBagRoute
   '/checkout': typeof CheckoutRoute
+  '/view-bag': typeof ViewBagRoute
   '/product/$id': typeof ProductIdRoute
 }
 export interface FileRoutesById {
@@ -70,14 +78,28 @@ export interface FileRoutesById {
   '/cart': typeof CartRoute
   '/check-my-bag': typeof CheckMyBagRoute
   '/checkout': typeof CheckoutRoute
+  '/view-bag': typeof ViewBagRoute
   '/product/$id': typeof ProductIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/admin' | '/cart' | '/check-my-bag' | '/checkout' | '/product/$id'
+    | '/'
+    | '/admin'
+    | '/cart'
+    | '/check-my-bag'
+    | '/checkout'
+    | '/view-bag'
+    | '/product/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/cart' | '/check-my-bag' | '/checkout' | '/product/$id'
+  to:
+    | '/'
+    | '/admin'
+    | '/cart'
+    | '/check-my-bag'
+    | '/checkout'
+    | '/view-bag'
+    | '/product/$id'
   id:
     | '__root__'
     | '/'
@@ -85,6 +107,7 @@ export interface FileRouteTypes {
     | '/cart'
     | '/check-my-bag'
     | '/checkout'
+    | '/view-bag'
     | '/product/$id'
   fileRoutesById: FileRoutesById
 }
@@ -94,6 +117,7 @@ export interface RootRouteChildren {
   CartRoute: typeof CartRoute
   CheckMyBagRoute: typeof CheckMyBagRoute
   CheckoutRoute: typeof CheckoutRoute
+  ViewBagRoute: typeof ViewBagRoute
   ProductIdRoute: typeof ProductIdRoute
 }
 
@@ -134,6 +158,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CheckoutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/view-bag': {
+      id: '/view-bag'
+      path: '/view-bag'
+      fullPath: '/view-bag'
+      preLoaderRoute: typeof ViewBagRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/product/$id': {
       id: '/product/$id'
       path: '/product/$id'
@@ -150,6 +181,7 @@ const rootRouteChildren: RootRouteChildren = {
   CartRoute: CartRoute,
   CheckMyBagRoute: CheckMyBagRoute,
   CheckoutRoute: CheckoutRoute,
+  ViewBagRoute: ViewBagRoute,
   ProductIdRoute: ProductIdRoute,
 }
 export const routeTree = rootRouteImport
