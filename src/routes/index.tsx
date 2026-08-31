@@ -72,9 +72,13 @@ function Shop() {
         </div>
 
         {products.length === 0 ? (
-          <p className="mt-6 rounded-3xl bg-surface px-5 py-8 text-center text-sm text-inksoft">
+          <div className="mt-6 rounded-3xl bg-surface px-5 py-8 text-center text-sm text-inksoft">
+            <div className="mb-3 flex items-center justify-center gap-2 text-brand/30">
+              <Heart className="size-6" fill="currentColor" />
+              <Cherry className="size-7" />
+            </div>
             Nothing listed right now — check back after the next live.
-          </p>
+          </div>
         ) : (
           <ul className="mt-4 grid grid-cols-2 gap-3">
             {products.map((product, i) => (
@@ -113,15 +117,17 @@ function Shop() {
       <section className="mt-10 px-4">
         <Link
           to="/check-my-bag"
-          className="flex items-center justify-between rounded-4xl bg-sky px-6 py-6 transition-transform active:scale-[0.99]"
+          className="relative flex items-center justify-between overflow-hidden rounded-4xl bg-sky px-6 py-6 transition-transform active:scale-[0.99]"
         >
-          <span>
+          <Heart className="absolute -right-2 top-2 size-16 text-brand/10" fill="currentColor" />
+          <Cherry className="absolute -left-3 -bottom-3 size-16 text-brand/10" />
+          <span className="relative">
             <span className="block font-display text-xl">Check my bag</span>
             <span className="mt-1 block text-sm text-inksoft">
               See your items, balance and due date.
             </span>
           </span>
-          <span className="text-2xl text-brand">→</span>
+          <span className="relative text-2xl text-brand">→</span>
         </Link>
       </section>
 
