@@ -50,16 +50,26 @@ let cachedToken: { token: string; expiresAt: number } | null = null;
 let cachedKey: CryptoKey | null = null;
 
 function serviceAccount(): ServiceAccount {
-  const raw = env("GOOGLE_SHEETS_SERVICE_ACCOUNT");
+  // Fallback: two separate secrets instead of the full JSON blob.
+  const email = process.env["GOOGLE_SHEETS_CLIENT_EMAIL"];
+  const key = process.env["GOOGLE_SHEETS_PRIVATE_KEY"];
+  if (email && key) {
+    return { client_email: email, private_key: key.replace(/\\n/g, "\n") };
+  }
+
+  const raw = env("GOOGLE_SHEETS_SERVICE_ACCOUNT").trim();
   let parsed: Partial<ServiceAccount>;
   try {
     parsed = JSON.parse(raw) as Partial<ServiceAccount>;
   } catch {
-    throw new Error("GOOGLE_SHEETS_SERVICE_ACCOUNT is not valid JSON. Paste the full service account key file contents.");
+    throw new Error(
+      `GOOGLE_SHEETS_SERVICE_ACCOUNT is not valid JSON (got ${raw.length} characters). Paste the full service account key file contents.`,
+    );
   }
   if (!parsed.client_email || !parsed.private_key) {
     throw new Error("GOOGLE_SHEETS_SERVICE_ACCOUNT is missing client_email or private_key.");
   }
+
   return { client_email: parsed.client_email, private_key: parsed.private_key };
 }
 
