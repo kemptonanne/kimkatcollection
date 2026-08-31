@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Trash2 } from "lucide-react";
+import { Cherry, Heart, Trash2 } from "lucide-react";
 import { cartTotal, removeFromCart, setQuantity, useCart } from "@/lib/cart";
 import { money } from "@/lib/format";
 
@@ -20,15 +20,17 @@ function CartPage() {
   const total = cartTotal(items);
 
   return (
-    <div className="px-4 pb-28 pt-6">
+    <div className="bg-pattern px-4 pb-28 pt-6">
       <h1 className="font-display text-2xl">Your cart</h1>
 
       {items.length === 0 ? (
-        <div className="mt-8 rounded-3xl bg-surface px-5 py-10 text-center">
-          <p className="text-sm text-inksoft">Your cart is empty.</p>
+        <div className="relative mt-8 overflow-hidden rounded-3xl bg-surface px-5 py-10 text-center">
+          <Cherry className="absolute -right-3 -top-3 size-20 text-brand/10" />
+          <Heart className="absolute -left-3 -bottom-3 size-20 text-brand/10" fill="currentColor" />
+          <p className="relative text-sm text-inksoft">Your cart is empty.</p>
           <Link
             to="/"
-            className="tap-target mt-4 inline-flex items-center justify-center rounded-full bg-brand px-6 text-sm font-bold text-brand-foreground"
+            className="relative tap-target mt-4 inline-flex items-center justify-center rounded-full bg-brand px-6 text-sm font-bold text-brand-foreground"
           >
             Start shopping
           </Link>

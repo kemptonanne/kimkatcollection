@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
+import { Cherry, Heart } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { cartTotal, clearCart, useCart } from "@/lib/cart";
@@ -39,13 +40,15 @@ function Checkout() {
 
   if (orderId) {
     return (
-      <div className="px-4 py-16 text-center">
-        <div className="mx-auto max-w-sm rounded-4xl bg-mint px-6 py-10">
-          <h1 className="font-display text-2xl">Order received</h1>
-          <p className="mt-3 text-sm text-inksoft">
+      <div className="bg-pattern px-4 py-16 text-center">
+        <div className="relative mx-auto max-w-sm overflow-hidden rounded-4xl bg-mint px-6 py-10">
+          <Heart className="absolute -right-4 -top-4 size-24 text-brand/10" fill="currentColor" />
+          <Cherry className="absolute -left-4 -bottom-4 size-24 text-brand/10" />
+          <h1 className="relative font-display text-2xl">Order received</h1>
+          <p className="relative mt-3 text-sm text-inksoft">
             Send your payment with the button below and Kim will confirm your order.
           </p>
-          <p className="mt-3 text-xs text-inksoft">
+          <p className="relative mt-3 text-xs text-inksoft">
             Reference: {orderId.slice(0, 8).toUpperCase()}
           </p>
         </div>
@@ -73,11 +76,15 @@ function Checkout() {
 
   if (items.length === 0) {
     return (
-      <div className="px-4 py-16 text-center">
-        <p className="text-sm text-inksoft">There&apos;s nothing to check out yet.</p>
-        <Link to="/" className="tap-target mt-4 inline-flex items-center text-sm font-bold text-brand">
-          Start shopping
-        </Link>
+      <div className="bg-pattern px-4 py-16 text-center">
+        <div className="relative mx-auto max-w-sm overflow-hidden rounded-3xl bg-surface px-5 py-8">
+          <Heart className="absolute -right-3 -top-3 size-20 text-brand/10" fill="currentColor" />
+          <Cherry className="absolute -left-3 -bottom-3 size-20 text-brand/10" />
+          <p className="relative text-sm text-inksoft">There&apos;s nothing to check out yet.</p>
+          <Link to="/" className="relative tap-target mt-4 inline-flex items-center text-sm font-bold text-brand">
+            Start shopping
+          </Link>
+        </div>
       </div>
     );
   }
@@ -110,7 +117,7 @@ function Checkout() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="px-4 pb-10 pt-6">
+    <form onSubmit={onSubmit} className="bg-pattern px-4 pb-10 pt-6">
       <h1 className="font-display text-2xl">Checkout</h1>
       <p className="mt-2 text-sm text-inksoft">
         Payment is sent manually after you place the order. No card details are collected here.

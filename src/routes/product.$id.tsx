@@ -47,7 +47,7 @@ function ProductDetail() {
   const soldOut = product.quantity <= 0;
 
   return (
-    <div className="pb-28">
+    <div className="bg-pattern pb-28">
       <div className="aspect-square bg-blush">
         {product.image_urls[0] ? (
           <img
