@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { Sparkles } from "lucide-react";
+import { Cherry, Heart } from "lucide-react";
 import { listProducts } from "@/lib/shop.functions";
 import { money } from "@/lib/format";
 import { PaymentLinks } from "@/components/site-footer";
