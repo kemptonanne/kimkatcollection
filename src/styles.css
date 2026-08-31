@@ -151,3 +151,10 @@
   background-color: var(--color-card);
   box-shadow: 0 0 0 1px oklch(0.37 0.08 15 / 6%);
 }
+
+@utility bg-pattern {
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNDAiIGhlaWdodD0iMTQwIiB2aWV3Qm94PSIwIDAgMTQwIDE0MCI+CiAgPGcgZmlsbD0ib2tsY2goMC41OCAwLjE5IDE4IC8gMC4wNykiPgogICAgPHBhdGggZD0iTTI4IDUyIEMyOCA0MCA0MCAzMCA1MiA0MCBDNjQgMzAgNzYgNDAgNzYgNTIgQzc2IDY4IDUyIDg4IDUyIDg4IEM1MiA4OCAyOCA2OCAyOCA1MiBaIi8+CiAgICA8Y2lyY2xlIGN4PSIxMDIiIGN5PSI0MiIgcj0iOSIvPgogICAgPGNpcmNsZSBjeD0iMTE2IiBjeT0iNDgiIHI9IjkiLz4KICAgIDxwYXRoIGQ9Ik0xMDkgMzQgUTEwOSAyNCAxMTcgMTgiIHN0cm9rZT0ib2tsY2goMC41OCAwLjE5IDE4IC8gMC4wNykiIHN0cm9rZS13aWR0aD0iMi41IiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICAgIDxwYXRoIGQ9Ik0xMDIgOTAgQzEwMiA4NCAxMDcgODAgMTEyIDg0IEMxMTcgODAgMTIyIDg0IDEyMiA5MCBDMTIyIDk4IDExMiAxMDYgMTEyIDEwNiBDMTEyIDEwNiAxMDIgOTggMTAyIDkwIFoiIG9wYWNpdHk9IjAuNyIvPgogIDwvZz4KPC9zdmc+");
+  background-size: 140px 140px;
+  background-position: center top;
+  background-repeat: repeat;
+}
