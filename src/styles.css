@@ -157,4 +157,5 @@
   background-size: 140px 140px;
   background-position: center top;
   background-repeat: repeat;
+  min-height: 100svh;
 }
