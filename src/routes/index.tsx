@@ -41,25 +41,26 @@ function Shop() {
   const { data: products } = useSuspenseQuery(productsQuery);
 
   return (
-    <div className="pb-4">
+    <div className="bg-pattern pb-4">
       <section className="px-4 pt-6">
-        <div className="relative overflow-hidden rounded-4xl bg-blush px-6 py-8 text-center">
-          <Heart className="absolute -left-2 top-6 size-10 rotate-[-14deg] text-brand/15" fill="currentColor" />
-          <Cherry className="absolute -right-1 top-14 size-10 rotate-12 text-brand/15" />
-          <Heart className="absolute bottom-4 right-10 size-6 rotate-6 text-brand/10" fill="currentColor" />
-          <span className="inline-flex items-center gap-1 rounded-full bg-surface/70 px-3 py-1 text-xs font-bold uppercase tracking-widest text-brand">
-            <Cherry className="size-3" /> New drops weekly
+        <div className="relative overflow-hidden rounded-4xl bg-blush px-6 py-10 text-center">
+          <Heart className="absolute -left-3 top-4 size-16 rotate-[-14deg] text-brand/20" fill="currentColor" />
+          <Cherry className="absolute -right-2 top-10 size-16 rotate-12 text-brand/20" />
+          <Heart className="absolute bottom-2 right-16 size-10 rotate-6 text-brand/15" fill="currentColor" />
+          <Cherry className="absolute bottom-6 left-8 size-10 -rotate-12 text-brand/15" />
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-surface/80 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-brand">
+            <Cherry className="size-4" /> New drops weekly
           </span>
-          <h1 className="mt-4 font-display text-3xl leading-tight">
-            Little treasures, picked with love
+          <h1 className="mt-5 font-display text-3xl leading-tight">
+            Little treasures, picked with <span className="text-brand">love</span>
           </h1>
           <p className="mt-3 text-sm text-inksoft">
             Jewelry and collectibles from the live sales — grab them here between shows.
           </p>
-          <div className="mt-4 flex items-center justify-center gap-2 text-brand/60">
-            <Heart className="size-3" fill="currentColor" />
-            <Cherry className="size-4" />
-            <Heart className="size-3" fill="currentColor" />
+          <div className="mt-5 flex items-center justify-center gap-2 text-brand/70">
+            <Heart className="size-4" fill="currentColor" />
+            <Cherry className="size-5" />
+            <Heart className="size-4" fill="currentColor" />
           </div>
         </div>
       </section>
