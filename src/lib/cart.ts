@@ -40,11 +40,13 @@ function subscribe(listener: () => void) {
   return () => listeners.delete(listener);
 }
 
+const EMPTY: CartLine[] = [];
+
 export function useCart(): CartLine[] {
   return useSyncExternalStore(
     subscribe,
     () => lines,
-    () => [],
+    () => EMPTY,
   );
 }
 
