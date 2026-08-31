@@ -1,6 +1,6 @@
 /**
  * Server-only Google Sheets access for the live-sale bag tracker.
- * Read/write goes through the Lovable connector gateway.
+ * Auth: Google service account (JWT -> OAuth access token), no connector needed.
  *
  * Bags tab columns:  A Bag # | B TikTok Handle | C Customer Name | D Bag Total
  *                    E Payments Received | F Remaining Balance | G Due Date | H Status
@@ -9,7 +9,9 @@
  * Bag Items tab:     A Bag # | B Item Description | C Price | D Date Added
  */
 
-const GATEWAY = "https://connector-gateway.lovable.dev/google_sheets/v4";
+const API = "https://sheets.googleapis.com/v4";
+const TOKEN_URL = "https://oauth2.googleapis.com/token";
+const SCOPE = "https://www.googleapis.com/auth/spreadsheets";
 
 const BAGS_TAB = "Bags";
 const ITEMS_TAB = "Bag Items";
@@ -36,16 +38,100 @@ export type BagItemRow = {
 
 function env(name: string): string {
   const value = process.env[name];
-  if (!value) throw new Error(`Missing ${name}. The Google Sheets connection is not configured.`);
+  if (!value) throw new Error(`Missing ${name}. The Google Sheets service account is not configured.`);
   return value;
 }
 
+// ---------- Service account auth (edge-safe, Web Crypto only) ----------
+
+type ServiceAccount = { client_email: string; private_key: string };
+
+let cachedToken: { token: string; expiresAt: number } | null = null;
+let cachedKey: CryptoKey | null = null;
+
+function serviceAccount(): ServiceAccount {
+  const raw = env("GOOGLE_SHEETS_SERVICE_ACCOUNT");
+  let parsed: Partial<ServiceAccount>;
+  try {
+    parsed = JSON.parse(raw) as Partial<ServiceAccount>;
+  } catch {
+    throw new Error("GOOGLE_SHEETS_SERVICE_ACCOUNT is not valid JSON. Paste the full service account key file contents.");
+  }
+  if (!parsed.client_email || !parsed.private_key) {
+    throw new Error("GOOGLE_SHEETS_SERVICE_ACCOUNT is missing client_email or private_key.");
+  }
+  return { client_email: parsed.client_email, private_key: parsed.private_key };
+}
+
+function base64Url(data: string | ArrayBuffer): string {
+  const bytes =
+    typeof data === "string" ? new TextEncoder().encode(data) : new Uint8Array(data);
+  let binary = "";
+  for (const b of bytes) binary += String.fromCharCode(b);
+  return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+async function importPrivateKey(pem: string): Promise<CryptoKey> {
+  if (cachedKey) return cachedKey;
+  const body = pem
+    .replace(/-----BEGIN PRIVATE KEY-----/, "")
+    .replace(/-----END PRIVATE KEY-----/, "")
+    .replace(/\s+/g, "");
+  const binary = atob(body);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  cachedKey = await crypto.subtle.importKey(
+    "pkcs8",
+    bytes.buffer,
+    { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  return cachedKey;
+}
+
+async function accessToken(): Promise<string> {
+  const now = Math.floor(Date.now() / 1000);
+  if (cachedToken && cachedToken.expiresAt > now + 60) return cachedToken.token;
+
+  const sa = serviceAccount();
+  const header = base64Url(JSON.stringify({ alg: "RS256", typ: "JWT" }));
+  const claims = base64Url(
+    JSON.stringify({ iss: sa.client_email, scope: SCOPE, aud: TOKEN_URL, iat: now, exp: now + 3600 }),
+  );
+  const unsigned = `${header}.${claims}`;
+  const key = await importPrivateKey(sa.private_key);
+  const signature = await crypto.subtle.sign(
+    "RSASSA-PKCS1-v1_5",
+    key,
+    new TextEncoder().encode(unsigned),
+  );
+  const jwt = `${unsigned}.${base64Url(signature)}`;
+
+  const response = await fetch(TOKEN_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: `grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=${jwt}`,
+  });
+  if (!response.ok) {
+    const body = await response.text();
+    console.error(`Google token exchange failed [${response.status}]: ${body}`);
+    throw new Error(`Google token exchange failed [${response.status}]: ${body}`);
+  }
+  const data = (await response.json()) as { access_token?: string; expires_in?: number };
+  if (!data.access_token) throw new Error("Google token exchange returned no access token.");
+  cachedToken = { token: data.access_token, expiresAt: now + (data.expires_in ?? 3600) };
+  return cachedToken.token;
+}
+
+// ---------- Sheets API ----------
+
 async function sheetsFetch(path: string, init?: RequestInit): Promise<unknown> {
-  const response = await fetch(`${GATEWAY}${path}`, {
+  const token = await accessToken();
+  const response = await fetch(`${API}${path}`, {
     ...init,
     headers: {
-      Authorization: `Bearer ${env("LOVABLE_API_KEY")}`,
-      "X-Connection-Api-Key": env("GOOGLE_SHEETS_API_KEY"),
+      Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
       ...(init?.headers ?? {}),
     },
