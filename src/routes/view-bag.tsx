@@ -6,7 +6,7 @@ import { lookupBag } from "@/lib/bags.functions";
 import { money, parseMoney } from "@/lib/format";
 import { PaymentLinks } from "@/components/site-footer";
 
-export const Route = createFileRoute("/check-my-bag")({
+export const Route = createFileRoute("/view-bag")({
   head: () => ({
     meta: [
       { title: "Check my bag — Kim Kat Collection" },
