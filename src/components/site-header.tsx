@@ -30,7 +30,9 @@ export function SiteHeader() {
 
 
         <Link to="/" className="flex flex-col items-center leading-none" onClick={() => setOpen(false)}>
-          <span className="font-display text-lg font-semibold text-brand">Kim Kat</span>
+          <span className="flex items-center gap-1 font-display text-lg font-semibold text-brand">
+            <Heart className="size-4" fill="currentColor" /> Kim Kat
+          </span>
           <span className="text-[0.65rem] uppercase tracking-[0.28em] text-muted-foreground">
             Collection
           </span>
