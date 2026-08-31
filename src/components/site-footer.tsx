@@ -1,3 +1,4 @@
+import { Cherry, Heart } from "lucide-react";
 import { PAYMENT_LINKS, SIGNUP_FORM_URL } from "@/lib/format";
 
 const toneClass: Record<string, string> = {
@@ -32,7 +33,9 @@ export function PaymentLinks({ title = "Pay your balance" }: { title?: string })
 export function SiteFooter() {
   return (
     <footer className="mt-12 border-t border-border/70 bg-blush/50 px-4 py-8 text-center">
-      <p className="font-display text-lg font-semibold text-brand">Kim Kat Collection</p>
+      <p className="flex items-center justify-center gap-1.5 font-display text-lg font-semibold text-brand">
+        <Heart className="size-4" fill="currentColor" /> Kim Kat Collection <Cherry className="size-4" />
+      </p>
       <p className="mx-auto mt-2 max-w-xs text-sm text-inksoft">
         Jewelry &amp; collectibles, live on TikTok. Bags close on their due date.
       </p>

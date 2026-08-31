@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { Sparkles } from "lucide-react";
+import { Cherry, Heart } from "lucide-react";
 import { listProducts } from "@/lib/shop.functions";
 import { money } from "@/lib/format";
 import { PaymentLinks } from "@/components/site-footer";
@@ -43,9 +43,12 @@ function Shop() {
   return (
     <div className="pb-4">
       <section className="px-4 pt-6">
-        <div className="rounded-4xl bg-blush px-6 py-8 text-center">
+        <div className="relative overflow-hidden rounded-4xl bg-blush px-6 py-8 text-center">
+          <Heart className="absolute -left-2 top-6 size-10 rotate-[-14deg] text-brand/15" fill="currentColor" />
+          <Cherry className="absolute -right-1 top-14 size-10 rotate-12 text-brand/15" />
+          <Heart className="absolute bottom-4 right-10 size-6 rotate-6 text-brand/10" fill="currentColor" />
           <span className="inline-flex items-center gap-1 rounded-full bg-surface/70 px-3 py-1 text-xs font-bold uppercase tracking-widest text-brand">
-            <Sparkles className="size-3" /> New drops weekly
+            <Cherry className="size-3" /> New drops weekly
           </span>
           <h1 className="mt-4 font-display text-3xl leading-tight">
             Little treasures, picked with love
@@ -53,6 +56,11 @@ function Shop() {
           <p className="mt-3 text-sm text-inksoft">
             Jewelry and collectibles from the live sales — grab them here between shows.
           </p>
+          <div className="mt-4 flex items-center justify-center gap-2 text-brand/60">
+            <Heart className="size-3" fill="currentColor" />
+            <Cherry className="size-4" />
+            <Heart className="size-3" fill="currentColor" />
+          </div>
         </div>
       </section>
 
