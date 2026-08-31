@@ -7,14 +7,9 @@ export const lookupBag = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => lookupSchema.parse(input))
   .handler(async ({ data }) => {
     const { readBags, readBagItems } = await import("./sheets.server");
-    const needle = data.query.trim().replace(/^@/, "").toLowerCase();
+    const needle = data.query.trim().replace(/^#/, "").toLowerCase();
     const bags = await readBags();
-    const bag = bags.find(
-      (b) =>
-        b.bagNumber.toLowerCase() === needle ||
-        b.tiktokHandle.replace(/^@/, "").toLowerCase() === needle ||
-        b.customerName.toLowerCase() === needle,
-    );
+    const bag = bags.find((b) => b.bagNumber.toLowerCase() === needle);
     if (!bag) return { found: false as const };
     const items = await readBagItems(bag.bagNumber);
     return { found: true as const, bag, items };
