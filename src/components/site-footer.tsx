@@ -37,7 +37,7 @@ export function SiteFooter() {
         <Heart className="size-4" fill="currentColor" /> Kim Kat Collection <Cherry className="size-4" />
       </p>
       <p className="mx-auto mt-2 max-w-xs text-sm text-inksoft">
-        Jewelry &amp; collectibles, live on TikTok. Bags close on their due date.
+        Jewelry &amp; collectibles, live on TikTok.
       </p>
       <a
         href={SIGNUP_FORM_URL}
