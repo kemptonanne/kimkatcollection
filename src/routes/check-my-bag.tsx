@@ -56,7 +56,7 @@ function CheckMyBag() {
 
   return (
     <div className="bg-pattern px-4 pb-12 pt-6">
-      <h1 className="font-display text-2xl">Check my bag</h1>
+      <h1 className="font-display text-2xl">View my bag</h1>
       <p className="mt-2 text-sm text-inksoft">
         Enter your bag number to see what&apos;s inside, what you&apos;ve paid, and when it&apos;s
         due.
