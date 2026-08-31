@@ -116,7 +116,7 @@ function Shop() {
 
       <section className="mt-10 px-4">
         <Link
-          to="/check-my-bag"
+          to="/view-bag"
           className="relative flex items-center justify-between overflow-hidden rounded-4xl bg-sky px-6 py-6 transition-transform active:scale-[0.99]"
         >
           <Heart className="absolute -right-2 top-2 size-16 text-brand/10" fill="currentColor" />
