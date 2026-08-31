@@ -75,7 +75,7 @@ export function SiteHeader() {
                 onClick={() => setOpen(false)}
                 className="tap-target flex items-center rounded-2xl px-3 text-base font-semibold text-ink transition-colors hover:bg-blush"
               >
-                Customer signup form
+                New Customer Sign-Up
               </a>
             </li>
           </ul>
