@@ -13,7 +13,7 @@ export const Route = createFileRoute("/check-my-bag")({
       {
         name: "description",
         content:
-          "Look up your Kim Kat Collection live-sale bag by bag number or TikTok handle to see items, balance and due date.",
+          "Look up your Kim Kat Collection live-sale bag by bag number to see items, balance and due date.",
       },
       { property: "og:title", content: "Check my bag — Kim Kat Collection" },
       {
@@ -58,8 +58,8 @@ function CheckMyBag() {
     <div className="bg-pattern px-4 pb-12 pt-6">
       <h1 className="font-display text-2xl">Check my bag</h1>
       <p className="mt-2 text-sm text-inksoft">
-        Enter your bag number or TikTok handle to see what&apos;s inside, what you&apos;ve paid, and
-        when it&apos;s due.
+        Enter your bag number to see what&apos;s inside, what you&apos;ve paid, and when it&apos;s
+        due.
       </p>
       <div className="mt-3 flex items-center gap-2 text-brand/40">
         <Heart className="size-4" fill="currentColor" />
@@ -69,11 +69,12 @@ function CheckMyBag() {
 
       <form onSubmit={onSubmit} className="mt-6 grid gap-3">
         <label className="grid gap-1.5">
-          <span className="text-sm font-bold">Bag number or @handle</span>
+          <span className="text-sm font-bold">Bag number</span>
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="e.g. 1 or @kimkat"
+            inputMode="numeric"
+            placeholder="e.g. 1"
             className="tap-target rounded-2xl border border-input bg-surface px-4 text-base"
           />
         </label>
@@ -121,8 +122,8 @@ function CheckMyBag() {
 
             {!bag ? (
               <p className="mt-3 text-sm text-inksoft">
-                We couldn&apos;t find a bag for “{query}”. Double-check the number or handle, or
-                message Kim on TikTok.
+                We couldn&apos;t find bag “{query}”. Double-check the number, or message Kim on
+                TikTok.
               </p>
             ) : (
               <>
