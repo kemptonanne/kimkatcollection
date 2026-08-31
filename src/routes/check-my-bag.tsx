@@ -22,7 +22,7 @@ export const Route = createFileRoute("/check-my-bag")({
       },
     ],
   }),
-  component: CheckMyBag;
+  component: CheckMyBag,
 });
 
 type Result = Awaited<ReturnType<typeof lookupBag>>;
