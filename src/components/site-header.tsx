@@ -25,9 +25,9 @@ export function SiteHeader() {
           onClick={() => setOpen((v) => !v)}
           className="tap-target -ml-2 flex items-center justify-center rounded-2xl text-ink transition-colors hover:bg-blush"
         >
-          {open ? <Menu className="hidden" /> : null}
           {open ? <X className="size-6" /> : <Menu className="size-6" />}
         </button>
+
 
         <Link to="/" className="flex flex-col items-center leading-none" onClick={() => setOpen(false)}>
           <span className="font-display text-lg font-semibold text-brand">Kim Kat</span>
