@@ -5,8 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Kim Kat Collection design system — "Pastel Candy Charm".
- * Mobile-first, soft pastel surfaces, deep plum ink, berry brand accent.
+ * Kim Kat Collection design system — "Hearts & Cherries".
+ * Mobile-first, airy light pink surfaces, deep cherry ink, cherry-red brand accent.
  * All colors are oklch tokens. Never hardcode colors in components.
  */
 
@@ -74,16 +74,17 @@
 :root {
   --radius: 1rem;
 
-  --cream: oklch(0.9804 0.0127 63.93);
-  --blush: oklch(0.9533 0.0252 359.14);
-  --lilac: oklch(0.9417 0.0287 308.12);
-  --mint: oklch(0.9585 0.0214 158.59);
-  --sky: oklch(0.9548 0.0217 256.73);
-  --butter: oklch(0.9661 0.04 88.2);
-  --ink: oklch(0.3552 0.0447 304.34);
-  --inksoft: oklch(0.5595 0.0424 307.62);
-  --brand: oklch(0.5873 0.1328 348.17);
-  --brand-foreground: oklch(0.9804 0.0127 63.93);
+  /* Hearts & cherries: everything tinted pink/red, kept light and airy */
+  --cream: oklch(0.982 0.008 355); /* barely-pink white background */
+  --blush: oklch(0.955 0.03 355); /* light pink */
+  --lilac: oklch(0.94 0.04 10); /* light cherry blossom */
+  --mint: oklch(0.962 0.022 20); /* pale rose petal */
+  --sky: oklch(0.95 0.032 348); /* soft candy pink */
+  --butter: oklch(0.965 0.028 30); /* light peach-pink */
+  --ink: oklch(0.37 0.08 15); /* deep cherry ink */
+  --inksoft: oklch(0.55 0.06 15); /* muted cherry */
+  --brand: oklch(0.58 0.19 18); /* cherry red */
+  --brand-foreground: oklch(0.982 0.008 355);
   --surface: oklch(1 0 0);
 
   --background: var(--cream);
@@ -98,15 +99,15 @@
   --secondary-foreground: var(--ink);
   --muted: var(--blush);
   --muted-foreground: var(--inksoft);
-  --accent: oklch(0.7907 0.1394 69.2);
+  --accent: oklch(0.86 0.09 355); /* soft heart pink */
   --accent-foreground: var(--ink);
   --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.99 0.01 60);
-  --border: oklch(0.3552 0.0447 304.34 / 12%);
-  --input: oklch(0.3552 0.0447 304.34 / 16%);
+  --destructive-foreground: oklch(0.99 0.01 355);
+  --border: oklch(0.37 0.08 15 / 12%);
+  --input: oklch(0.37 0.08 15 / 16%);
   --ring: var(--brand);
 
-  --shadow-soft: 0 6px 20px -12px oklch(0.3552 0.0447 304.34 / 40%);
+  --shadow-soft: 0 6px 20px -12px oklch(0.37 0.08 15 / 40%);
 }
 
 .dark {
@@ -148,5 +149,5 @@
 @utility pastel-card {
   border-radius: var(--radius-3xl);
   background-color: var(--color-card);
-  box-shadow: 0 0 0 1px oklch(0.3552 0.0447 304.34 / 6%);
+  box-shadow: 0 0 0 1px oklch(0.37 0.08 15 / 6%);
 }
