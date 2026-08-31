@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import { X } from "lucide-react";
+import { Cherry, Heart, X } from "lucide-react";
 import { lookupBag } from "@/lib/bags.functions";
 import { money, parseMoney } from "@/lib/format";
 import { PaymentLinks } from "@/components/site-footer";
@@ -55,12 +55,17 @@ function CheckMyBag() {
   const items = result?.found ? result.items : [];
 
   return (
-    <div className="px-4 pb-12 pt-6">
+    <div className="bg-pattern px-4 pb-12 pt-6">
       <h1 className="font-display text-2xl">Check my bag</h1>
       <p className="mt-2 text-sm text-inksoft">
         Enter your bag number or TikTok handle to see what&apos;s inside, what you&apos;ve paid, and
         when it&apos;s due.
       </p>
+      <div className="mt-3 flex items-center gap-2 text-brand/40">
+        <Heart className="size-4" fill="currentColor" />
+        <Cherry className="size-5" />
+        <Heart className="size-4" fill="currentColor" />
+      </div>
 
       <form onSubmit={onSubmit} className="mt-6 grid gap-3">
         <label className="grid gap-1.5">

@@ -41,25 +41,26 @@ function Shop() {
   const { data: products } = useSuspenseQuery(productsQuery);
 
   return (
-    <div className="pb-4">
+    <div className="bg-pattern pb-4">
       <section className="px-4 pt-6">
-        <div className="relative overflow-hidden rounded-4xl bg-blush px-6 py-8 text-center">
-          <Heart className="absolute -left-2 top-6 size-10 rotate-[-14deg] text-brand/15" fill="currentColor" />
-          <Cherry className="absolute -right-1 top-14 size-10 rotate-12 text-brand/15" />
-          <Heart className="absolute bottom-4 right-10 size-6 rotate-6 text-brand/10" fill="currentColor" />
-          <span className="inline-flex items-center gap-1 rounded-full bg-surface/70 px-3 py-1 text-xs font-bold uppercase tracking-widest text-brand">
-            <Cherry className="size-3" /> New drops weekly
+        <div className="relative overflow-hidden rounded-4xl bg-blush px-6 py-10 text-center">
+          <Heart className="absolute -left-3 top-4 size-16 rotate-[-14deg] text-brand/20" fill="currentColor" />
+          <Cherry className="absolute -right-2 top-10 size-16 rotate-12 text-brand/20" />
+          <Heart className="absolute bottom-2 right-16 size-10 rotate-6 text-brand/15" fill="currentColor" />
+          <Cherry className="absolute bottom-6 left-8 size-10 -rotate-12 text-brand/15" />
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-surface/80 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-brand">
+            <Cherry className="size-4" /> New drops weekly
           </span>
-          <h1 className="mt-4 font-display text-3xl leading-tight">
-            Little treasures, picked with love
+          <h1 className="mt-5 font-display text-3xl leading-tight">
+            Little treasures, picked with <span className="text-brand">love</span>
           </h1>
           <p className="mt-3 text-sm text-inksoft">
             Jewelry and collectibles from the live sales — grab them here between shows.
           </p>
-          <div className="mt-4 flex items-center justify-center gap-2 text-brand/60">
-            <Heart className="size-3" fill="currentColor" />
-            <Cherry className="size-4" />
-            <Heart className="size-3" fill="currentColor" />
+          <div className="mt-5 flex items-center justify-center gap-2 text-brand/70">
+            <Heart className="size-4" fill="currentColor" />
+            <Cherry className="size-5" />
+            <Heart className="size-4" fill="currentColor" />
           </div>
         </div>
       </section>
@@ -71,9 +72,13 @@ function Shop() {
         </div>
 
         {products.length === 0 ? (
-          <p className="mt-6 rounded-3xl bg-surface px-5 py-8 text-center text-sm text-inksoft">
+          <div className="mt-6 rounded-3xl bg-surface px-5 py-8 text-center text-sm text-inksoft">
+            <div className="mb-3 flex items-center justify-center gap-2 text-brand/30">
+              <Heart className="size-6" fill="currentColor" />
+              <Cherry className="size-7" />
+            </div>
             Nothing listed right now — check back after the next live.
-          </p>
+          </div>
         ) : (
           <ul className="mt-4 grid grid-cols-2 gap-3">
             {products.map((product, i) => (
@@ -112,15 +117,17 @@ function Shop() {
       <section className="mt-10 px-4">
         <Link
           to="/check-my-bag"
-          className="flex items-center justify-between rounded-4xl bg-sky px-6 py-6 transition-transform active:scale-[0.99]"
+          className="relative flex items-center justify-between overflow-hidden rounded-4xl bg-sky px-6 py-6 transition-transform active:scale-[0.99]"
         >
-          <span>
+          <Heart className="absolute -right-2 top-2 size-16 text-brand/10" fill="currentColor" />
+          <Cherry className="absolute -left-3 -bottom-3 size-16 text-brand/10" />
+          <span className="relative">
             <span className="block font-display text-xl">Check my bag</span>
             <span className="mt-1 block text-sm text-inksoft">
               See your items, balance and due date.
             </span>
           </span>
-          <span className="text-2xl text-brand">→</span>
+          <span className="relative text-2xl text-brand">→</span>
         </Link>
       </section>
 
