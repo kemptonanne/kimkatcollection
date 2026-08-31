@@ -6,7 +6,7 @@ import { SIGNUP_FORM_URL } from "@/lib/format";
 
 const NAV = [
   { to: "/", label: "Shop" },
-  { to: "/check-my-bag", label: "Check my bag" },
+  { to: "/check-my-bag", label: "View Bag" },
   { to: "/cart", label: "Cart" },
   { to: "/admin", label: "Admin" },
 ] as const;
