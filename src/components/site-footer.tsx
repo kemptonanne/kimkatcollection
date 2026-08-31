@@ -1,3 +1,4 @@
+import { Cherry, Heart } from "lucide-react";
 import { PAYMENT_LINKS, SIGNUP_FORM_URL } from "@/lib/format";
 
 const toneClass: Record<string, string> = {
