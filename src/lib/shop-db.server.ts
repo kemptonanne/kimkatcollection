@@ -14,7 +14,47 @@
 
 import { createClient } from "@supabase/supabase-js";
 
-type LooseClient = ReturnType<typeof createClient>;
+// Minimal schema for the shop's own Supabase project. Table shapes here mirror
+// the user's existing products/orders tables.
+type ProductRow = {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  image_urls: string[];
+  quantity: number;
+  created_at: string;
+};
+type ProductInsert = Omit<ProductRow, "id" | "created_at"> & { id?: string; created_at?: string };
+type ProductUpdate = Partial<ProductInsert>;
+
+type OrderRow = {
+  id: string;
+  items: unknown;
+  total: number;
+  status: string;
+  buyer_name: string | null;
+  buyer_contact: string | null;
+  payment_method: string | null;
+  created_at: string;
+};
+type OrderInsert = Omit<OrderRow, "id" | "created_at"> & { id?: string; created_at?: string };
+type OrderUpdate = Partial<OrderInsert>;
+
+type ShopDatabase = {
+  public: {
+    Tables: {
+      products: { Row: ProductRow; Insert: ProductInsert; Update: ProductUpdate; Relationships: [] };
+      orders: { Row: OrderRow; Insert: OrderInsert; Update: OrderUpdate; Relationships: [] };
+    };
+    Views: Record<string, never>;
+    Functions: Record<string, never>;
+    Enums: Record<string, never>;
+    CompositeTypes: Record<string, never>;
+  };
+};
+
+type LooseClient = ReturnType<typeof createClient<ShopDatabase>>;
 
 function requireEnv(name: string): string {
   const value = process.env[name];
