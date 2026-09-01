@@ -7,10 +7,10 @@ Venmo/Cash App/PayPal links, and look up their live-sale "bag" by number.
 ## How it's built
 
 - **Framework:** TanStack Start (React 19, Vite) with file-based routing in `src/routes/`
-- **Products & orders:** Lovable Cloud database — the managed backend included
-  with this project (no separate database account to set up or manage) — with
-  row-level security
-- **Product photos:** private storage bucket in the same Lovable Cloud backend
+- **Products & orders:** the owner's own Supabase project (free tier), with
+  row-level security — keeps working independently of Lovable Cloud
+- **Product photos:** private `product-photos` storage bucket in that same
+  Supabase project
 - **Cart:** browser `localStorage` (no account needed)
 - **Live-sale bags:** a Google Apps Script Web App API that reads/writes the
   owner's Google Sheet (Bags + Bag Items tabs). The Customers tab is never read.
@@ -44,9 +44,9 @@ Venmo/Cash App/PayPal links, and look up their live-sale "bag" by number.
 - `BAG_API_TOKEN` — shared secret required by that API
 - `ADMIN_PASSWORD` — unlocks `/admin`
 - `SESSION_SECRET` — signs the admin session cookie
-
-The database/storage connection keys are managed automatically by Lovable and
-never need to be set by hand.
+- `SHOP_SUPABASE_URL` / `SHOP_SUPABASE_ANON_KEY` / `SHOP_SUPABASE_SERVICE_ROLE_KEY`
+  — connect the shop to the owner's own Supabase project (products, orders,
+  product photos)
 
 ## Spreadsheet rules
 
