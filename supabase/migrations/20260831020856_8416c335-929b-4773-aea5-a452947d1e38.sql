@@ -1,5 +1,0 @@
-INSERT INTO public.products (title, description, price, image_urls, quantity) VALUES
-('Petal Heart Charm', '14k gold fill heart pendant on a dainty chain. Lightweight, tarnish-resistant, and perfect for everyday layering. Comes gift-wrapped in a little velvet pouch.', 24.00, ARRAY['/images/petal-heart-charm.jpg'], 8),
-('Starlight Studs', 'Mint enamel star studs with hypoallergenic posts. A soft pop of colour that goes with absolutely everything.', 18.00, ARRAY['/images/starlight-studs.jpg'], 12),
-('Butterfly Keychain', 'Lilac resin butterfly keychain with a brushed silver ring. Limited drop, only 40 made.', 12.00, ARRAY['/images/butterfly-keychain.jpg'], 15),
-('Pearl Pop Bracelet', 'Freshwater pearls strung on a stretch cord with a gold accent bead. Slips on easily, sits beautifully on the wrist.', 29.00, ARRAY['/images/pearl-pop-bracelet.jpg'], 6);
