@@ -77,7 +77,7 @@ function Shop() {
               <Heart className="size-6" fill="currentColor" />
               <Cherry className="size-7" />
             </div>
-            Nothing listed right now — check back after the next live.
+            Nothing listed right now — check back soon.
           </div>
         ) : (
           <ul className="mt-4 grid grid-cols-2 gap-3">
