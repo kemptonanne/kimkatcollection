@@ -1,20 +1,19 @@
 /**
- * Server-only Google Sheets access for the live-sale bag tracker.
- * Auth: Google service account (JWT -> OAuth access token), no connector needed.
+ * Server-only access to the live-sale bag tracker via a Google Apps Script
+ * Web App API (fetch-based, no Lovable connector, no Supabase).
  *
- * Bags tab columns:  A Bag # | B TikTok Handle | C Customer Name | D Bag Total
- *                    E Payments Received | F Remaining Balance | G Due Date | H Status
- * Only E, G and H are ever written to — the rest are sheet formulas.
+ * Env vars:
+ *   BAG_API_URL   — the Apps Script /exec URL
+ *   BAG_API_TOKEN — shared secret token required by every endpoint
  *
- * Bag Items tab:     A Bag # | B Item Description | C Price | D Date Added
+ * Endpoints used:
+ *   GET  ?action=getBags&token=…
+ *   GET  ?action=getBagItems&bagNumber=…&token=…
+ *   POST { action: "updateBag", token, bagNumber, paymentsReceived?, dueDate?, status? }
+ *   POST { action: "addItem", token, bagNumber, description, price }
+ *   POST { action: "deleteItem", token, bagNumber, description, price, dateAdded }
+ * All POSTs use Content-Type: text/plain (Apps Script can't handle CORS preflight).
  */
-
-const API = "https://sheets.googleapis.com/v4";
-const TOKEN_URL = "https://oauth2.googleapis.com/token";
-const SCOPE = "https://www.googleapis.com/auth/spreadsheets";
-
-const BAGS_TAB = "Bags";
-const ITEMS_TAB = "Bag Items";
 
 export type BagRow = {
   rowNumber: number;
@@ -36,185 +35,122 @@ export type BagItemRow = {
   dateAdded: string;
 };
 
-function env(name: string): string {
-  const value = process.env[name];
-  if (!value) throw new Error(`Missing ${name}. The Google Sheets service account is not configured.`);
+function apiUrl(): string {
+  const value = process.env["BAG_API_URL"];
+  if (!value) throw new Error("Missing BAG_API_URL. The bag API is not configured.");
   return value;
 }
 
-// ---------- Service account auth (edge-safe, Web Crypto only) ----------
-
-type ServiceAccount = { client_email: string; private_key: string };
-
-let cachedToken: { token: string; expiresAt: number } | null = null;
-let cachedKey: CryptoKey | null = null;
-
-function serviceAccount(): ServiceAccount {
-  // Fallback: two separate secrets instead of the full JSON blob.
-  const email = process.env["GOOGLE_SHEETS_CLIENT_EMAIL"];
-  const key = process.env["GOOGLE_SHEETS_PRIVATE_KEY"];
-  if (email && key) {
-    return { client_email: email, private_key: key.replace(/\\n/g, "\n") };
-  }
-
-  const raw = env("GOOGLE_SHEETS_SERVICE_ACCOUNT").trim();
-  let parsed: Partial<ServiceAccount>;
-  try {
-    parsed = JSON.parse(raw) as Partial<ServiceAccount>;
-  } catch {
-    throw new Error(
-      `GOOGLE_SHEETS_SERVICE_ACCOUNT is not valid JSON (got ${raw.length} characters). Paste the full service account key file contents.`,
-    );
-  }
-  if (!parsed.client_email || !parsed.private_key) {
-    throw new Error("GOOGLE_SHEETS_SERVICE_ACCOUNT is missing client_email or private_key.");
-  }
-
-  return { client_email: parsed.client_email, private_key: parsed.private_key };
+function apiToken(): string {
+  const value = process.env["BAG_API_TOKEN"];
+  if (!value) throw new Error("Missing BAG_API_TOKEN. The bag API is not configured.");
+  return value;
 }
 
-function base64Url(data: string | ArrayBuffer): string {
-  const bytes =
-    typeof data === "string" ? new TextEncoder().encode(data) : new Uint8Array(data);
-  let binary = "";
-  for (const b of bytes) binary += String.fromCharCode(b);
-  return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+function asText(value: unknown): string {
+  return (value ?? "").toString().trim();
 }
 
-async function importPrivateKey(pem: string): Promise<CryptoKey> {
-  if (cachedKey) return cachedKey;
-  const body = pem
-    .replace(/-----BEGIN PRIVATE KEY-----/, "")
-    .replace(/-----END PRIVATE KEY-----/, "")
-    .replace(/\s+/g, "");
-  const binary = atob(body);
-  const bytes = new Uint8Array(binary.length);
-  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-  cachedKey = await crypto.subtle.importKey(
-    "pkcs8",
-    bytes.buffer,
-    { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" },
-    false,
-    ["sign"],
-  );
-  return cachedKey;
+async function apiGet<T>(params: Record<string, string>): Promise<T> {
+  const url = new URL(apiUrl());
+  url.searchParams.set("token", apiToken());
+  for (const [key, value] of Object.entries(params)) url.searchParams.set(key, value);
+
+  const response = await fetch(url.toString(), { redirect: "follow" });
+  if (!response.ok) {
+    const body = await response.text();
+    console.error(`Bag API request failed [${response.status}]: ${body}`);
+    throw new Error(`Bag API request failed [${response.status}]`);
+  }
+  const data = (await response.json()) as { ok?: boolean; error?: string } & T;
+  if (data.ok === false) {
+    console.error(`Bag API returned an error: ${data.error ?? "unknown"}`);
+    throw new Error(`Bag API error: ${data.error ?? "unknown"}`);
+  }
+  return data;
 }
 
-async function accessToken(): Promise<string> {
-  const now = Math.floor(Date.now() / 1000);
-  if (cachedToken && cachedToken.expiresAt > now + 60) return cachedToken.token;
-
-  const sa = serviceAccount();
-  const header = base64Url(JSON.stringify({ alg: "RS256", typ: "JWT" }));
-  const claims = base64Url(
-    JSON.stringify({ iss: sa.client_email, scope: SCOPE, aud: TOKEN_URL, iat: now, exp: now + 3600 }),
-  );
-  const unsigned = `${header}.${claims}`;
-  const key = await importPrivateKey(sa.private_key);
-  const signature = await crypto.subtle.sign(
-    "RSASSA-PKCS1-v1_5",
-    key,
-    new TextEncoder().encode(unsigned),
-  );
-  const jwt = `${unsigned}.${base64Url(signature)}`;
-
-  const response = await fetch(TOKEN_URL, {
+async function apiPost(payload: Record<string, unknown>): Promise<void> {
+  const response = await fetch(apiUrl(), {
     method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: `grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=${jwt}`,
+    redirect: "follow",
+    // text/plain avoids a CORS preflight, which Apps Script does not support.
+    headers: { "Content-Type": "text/plain" },
+    body: JSON.stringify({ ...payload, token: apiToken() }),
   });
   if (!response.ok) {
     const body = await response.text();
-    console.error(`Google token exchange failed [${response.status}]: ${body}`);
-    throw new Error(`Google token exchange failed [${response.status}]: ${body}`);
+    console.error(`Bag API write failed [${response.status}]: ${body}`);
+    throw new Error(`Bag API write failed [${response.status}]`);
   }
-  const data = (await response.json()) as { access_token?: string; expires_in?: number };
-  if (!data.access_token) throw new Error("Google token exchange returned no access token.");
-  cachedToken = { token: data.access_token, expiresAt: now + (data.expires_in ?? 3600) };
-  return cachedToken.token;
-}
-
-// ---------- Sheets API ----------
-
-async function sheetsFetch(path: string, init?: RequestInit): Promise<unknown> {
-  const token = await accessToken();
-  const response = await fetch(`${API}${path}`, {
-    ...init,
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-      ...(init?.headers ?? {}),
-    },
-  });
-
-  if (!response.ok) {
-    const body = await response.text();
-    console.error(`Google Sheets request failed [${response.status}]: ${body}`);
-    throw new Error(`Google Sheets request failed [${response.status}]: ${body}`);
+  const data = (await response.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
+  if (data && data.ok === false) {
+    console.error(`Bag API write returned an error: ${data.error ?? "unknown"}`);
+    throw new Error(`Bag API error: ${data.error ?? "unknown"}`);
   }
-
-  return response.json();
 }
 
-function sheetId(): string {
-  return env("BAGS_SHEET_ID");
-}
-
-function cell(row: string[] | undefined, index: number): string {
-  return (row?.[index] ?? "").toString().trim();
-}
+// ---------- Bags ----------
 
 export async function readBags(): Promise<BagRow[]> {
-  const data = (await sheetsFetch(`/spreadsheets/${sheetId()}/values/${BAGS_TAB}!A2:H1000`)) as {
-    values?: string[][];
-  };
-  return (data.values ?? [])
-    .map((row, i) => ({
-      rowNumber: i + 2,
-      bagNumber: cell(row, 0),
-      tiktokHandle: cell(row, 1),
-      customerName: cell(row, 2),
-      bagTotal: cell(row, 3),
-      paymentsReceived: cell(row, 4),
-      remainingBalance: cell(row, 5),
-      dueDate: cell(row, 6),
-      status: cell(row, 7),
+  const data = await apiGet<{ bags?: Record<string, unknown>[] }>({ action: "getBags" });
+  return (data.bags ?? [])
+    .map((bag, i) => ({
+      rowNumber: i + 2, // synthetic row number (matches sheet position); kept for UI keys
+      bagNumber: asText(bag["bagNumber"]),
+      tiktokHandle: asText(bag["tiktokHandle"]),
+      customerName: asText(bag["customerName"]),
+      bagTotal: asText(bag["bagTotal"]),
+      paymentsReceived: asText(bag["paymentsReceived"]),
+      remainingBalance: asText(bag["remainingBalance"]),
+      dueDate: asText(bag["dueDate"]),
+      status: asText(bag["status"]),
     }))
     .filter((bag) => bag.bagNumber !== "");
 }
 
-export async function readBagItems(bagNumber?: string): Promise<BagItemRow[]> {
-  const data = (await sheetsFetch(`/spreadsheets/${sheetId()}/values/${ITEMS_TAB}!A2:D2000`)) as {
-    values?: string[][];
-  };
-  const rows = (data.values ?? [])
-    .map((row, i) => ({
-      rowNumber: i + 2,
-      bagNumber: cell(row, 0),
-      description: cell(row, 1),
-      price: cell(row, 2),
-      dateAdded: cell(row, 3),
-    }))
-    .filter((item) => item.bagNumber !== "" || item.description !== "");
+// ---------- Bag items ----------
 
-  return bagNumber ? rows.filter((item) => item.bagNumber === bagNumber) : rows;
+export async function readBagItems(bagNumber?: string): Promise<BagItemRow[]> {
+  if (bagNumber) return itemsForBag(bagNumber);
+
+  // No bag filter: the API is per-bag, so fetch every bag's items.
+  const bags = await readBags();
+  const groups = await Promise.all(bags.map((bag) => itemsForBag(bag.bagNumber)));
+  let row = 2;
+  return groups.flat().map((item) => ({ ...item, rowNumber: row++ }));
 }
 
-/** Writes only the three editable Bags columns for one row. */
+async function itemsForBag(bagNumber: string): Promise<BagItemRow[]> {
+  const data = await apiGet<{ items?: Record<string, unknown>[] }>({
+    action: "getBagItems",
+    bagNumber,
+  });
+  return (data.items ?? [])
+    .map((item, i) => ({
+      rowNumber: i + 2,
+      bagNumber: asText(item["bagNumber"]) || bagNumber,
+      description: asText(item["description"]),
+      price: asText(item["price"]),
+      dateAdded: asText(item["dateAdded"]),
+    }))
+    .filter((item) => item.description !== "");
+}
+
+// ---------- Writes ----------
+
+/** Writes only the three editable Bags fields for one bag. */
 export async function writeBagEditableFields(
   rowNumber: number,
   fields: { paymentsReceived: string; dueDate: string; status: string },
 ): Promise<void> {
-  await sheetsFetch(`/spreadsheets/${sheetId()}/values:batchUpdate`, {
-    method: "POST",
-    body: JSON.stringify({
-      valueInputOption: "USER_ENTERED",
-      data: [
-        { range: `${BAGS_TAB}!E${rowNumber}`, values: [[fields.paymentsReceived]] },
-        { range: `${BAGS_TAB}!G${rowNumber}`, values: [[fields.dueDate]] },
-        { range: `${BAGS_TAB}!H${rowNumber}`, values: [[fields.status]] },
-      ],
-    }),
+  const bag = await bagByRowNumber(rowNumber);
+  await apiPost({
+    action: "updateBag",
+    bagNumber: bag.bagNumber,
+    paymentsReceived: fields.paymentsReceived,
+    dueDate: fields.dueDate,
+    status: fields.status,
   });
 }
 
@@ -224,60 +160,58 @@ export async function appendBagItem(item: {
   price: string;
   dateAdded: string;
 }): Promise<void> {
-  await sheetsFetch(
-    `/spreadsheets/${sheetId()}/values/${ITEMS_TAB}!A:D:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`,
-    {
-      method: "POST",
-      body: JSON.stringify({
-        values: [[item.bagNumber, item.description, item.price, item.dateAdded]],
-      }),
-    },
-  );
+  await apiPost({
+    action: "addItem",
+    bagNumber: item.bagNumber,
+    description: item.description,
+    price: item.price,
+  });
 }
 
 export async function writeBagItem(
   rowNumber: number,
   item: { bagNumber: string; description: string; price: string; dateAdded: string },
 ): Promise<void> {
-  await sheetsFetch(
-    `/spreadsheets/${sheetId()}/values/${ITEMS_TAB}!A${rowNumber}:D${rowNumber}?valueInputOption=USER_ENTERED`,
-    {
-      method: "PUT",
-      body: JSON.stringify({
-        values: [[item.bagNumber, item.description, item.price, item.dateAdded]],
-      }),
-    },
-  );
-}
-
-async function tabGid(title: string): Promise<number> {
-  const data = (await sheetsFetch(
-    `/spreadsheets/${sheetId()}?fields=sheets(properties(sheetId,title))`,
-  )) as { sheets?: { properties?: { sheetId?: number; title?: string } }[] };
-  const match = data.sheets?.find((s) => s.properties?.title === title);
-  if (!match?.properties || typeof match.properties.sheetId !== "number") {
-    throw new Error(`Sheet tab "${title}" was not found in the spreadsheet.`);
-  }
-  return match.properties.sheetId;
+  // The API has no "edit item" endpoint, so replace the row: delete then re-add.
+  const existing = await itemByRowNumber(rowNumber);
+  await apiPost({
+    action: "deleteItem",
+    bagNumber: existing.bagNumber,
+    description: existing.description,
+    price: existing.price,
+    dateAdded: existing.dateAdded,
+  });
+  await apiPost({
+    action: "addItem",
+    bagNumber: item.bagNumber,
+    description: item.description,
+    price: item.price,
+  });
 }
 
 export async function deleteBagItemRow(rowNumber: number): Promise<void> {
-  const gid = await tabGid(ITEMS_TAB);
-  await sheetsFetch(`/spreadsheets/${sheetId()}:batchUpdate`, {
-    method: "POST",
-    body: JSON.stringify({
-      requests: [
-        {
-          deleteDimension: {
-            range: {
-              sheetId: gid,
-              dimension: "ROWS",
-              startIndex: rowNumber - 1,
-              endIndex: rowNumber,
-            },
-          },
-        },
-      ],
-    }),
+  const item = await itemByRowNumber(rowNumber);
+  await apiPost({
+    action: "deleteItem",
+    bagNumber: item.bagNumber,
+    description: item.description,
+    price: item.price,
+    dateAdded: item.dateAdded,
   });
+}
+
+// ---------- Row-number lookups (rowNumber is synthetic, assigned by read order) ----------
+
+async function bagByRowNumber(rowNumber: number): Promise<BagRow> {
+  const bags = await readBags();
+  const bag = bags.find((b) => b.rowNumber === rowNumber);
+  if (!bag) throw new Error(`No bag found for row ${rowNumber}. Refresh and try again.`);
+  return bag;
+}
+
+async function itemByRowNumber(rowNumber: number): Promise<BagItemRow> {
+  const items = await readBagItems();
+  const item = items.find((i) => i.rowNumber === rowNumber);
+  if (!item) throw new Error(`No item found for row ${rowNumber}. Refresh and try again.`);
+  return item;
 }
