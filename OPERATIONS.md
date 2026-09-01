@@ -4,9 +4,9 @@ Day-to-day guide for running the shop. No code changes needed for any of this.
 
 ## Where the data lives
 
-- **Products, orders, and product photos** live in the site's built-in cloud
-  backend, managed through Lovable. There's nothing to set up or pay for
-  separately beyond your normal Lovable plan.
+- **Products, orders, and product photos** live in your own Supabase project
+  (free tier), so the shop keeps working even if Lovable Cloud credits run out.
+  You can view them anytime in your Supabase dashboard → Table Editor.
 - **Live-sale bags** live only in your Google Sheet (details below).
 
 ## Products
