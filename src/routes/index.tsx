@@ -124,7 +124,7 @@ function Shop() {
           <span className="relative">
             <span className="block font-display text-xl">Check my bag</span>
             <span className="mt-1 block text-sm text-inksoft">
-              See your items, balance and due date.
+              See your items, balance, and due date.
             </span>
           </span>
           <span className="relative text-2xl text-brand">→</span>
