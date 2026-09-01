@@ -28,9 +28,11 @@ type ProductRow = {
 type ProductInsert = Omit<ProductRow, "id" | "created_at"> & { id?: string; created_at?: string };
 type ProductUpdate = Partial<ProductInsert>;
 
+type Json = string | number | boolean | null | { [key: string]: Json } | Json[];
+
 type OrderRow = {
   id: string;
-  items: unknown;
+  items: Json;
   total: number;
   status: string;
   buyer_name: string | null;
