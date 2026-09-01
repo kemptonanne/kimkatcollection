@@ -31,9 +31,9 @@ export const getProduct = createServerFn({ method: "GET" })
 export const submitOrder = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => submitOrderSchema.parse(input))
   .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { shopAdmin } = await import("./shop-db.server");
     const total = data.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const { data: order, error } = await supabaseAdmin
+    const { data: order, error } = await shopAdmin()
       .from("orders")
       .insert({
         items: data.items,
