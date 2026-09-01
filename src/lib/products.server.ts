@@ -1,5 +1,4 @@
-import { createClient } from "@supabase/supabase-js";
-import type { Database } from "@/integrations/supabase/types";
+import { shopAdmin, shopPublic } from "./shop-db.server";
 
 const SIGNED_URL_TTL = 60 * 60 * 24 * 365 * 5; // 5 years
 const BUCKET = "product-photos";
@@ -15,20 +14,7 @@ export type Product = {
 };
 
 export function publicClient() {
-  const key = process.env["SUPABASE_PUBLISHABLE_KEY"]!;
-  return createClient<Database>(process.env["SUPABASE_URL"]!, key, {
-    auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
-    global: {
-      fetch: (input, init) => {
-        const headers = new Headers(init?.headers);
-        if (key.startsWith("sb_") && headers.get("Authorization") === `Bearer ${key}`) {
-          headers.delete("Authorization");
-        }
-        headers.set("apikey", key);
-        return fetch(input, { ...init, headers });
-      },
-    },
-  });
+  return shopPublic();
 }
 
 type Row = {
@@ -74,7 +60,7 @@ export async function getProductFromDb(id: string): Promise<Product | null> {
 
 /** Uploads a base64 data URL to storage and returns a long-lived signed URL. */
 export async function uploadProductPhoto(dataUrl: string, fileName: string): Promise<string> {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const supabaseAdmin = shopAdmin();
   const match = /^data:([^;]+);base64,(.+)$/.exec(dataUrl);
   if (!match) throw new Error("Unsupported image format.");
   const contentType = match[1]!;

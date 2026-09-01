@@ -43,7 +43,8 @@ export const adminSaveProduct = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { requireAdmin } = await import("./admin-session.server");
     await requireAdmin();
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { shopAdmin } = await import("./shop-db.server");
+    const supabaseAdmin = shopAdmin();
     const payload = {
       title: data.title,
       description: data.description,
@@ -64,7 +65,8 @@ export const adminDeleteProduct = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { requireAdmin } = await import("./admin-session.server");
     await requireAdmin();
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { shopAdmin } = await import("./shop-db.server");
+    const supabaseAdmin = shopAdmin();
     const { error } = await supabaseAdmin.from("products").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true as const };
@@ -84,7 +86,8 @@ export const adminUploadPhoto = createServerFn({ method: "POST" })
 export const adminListOrders = createServerFn({ method: "GET" }).handler(async () => {
   const { requireAdmin } = await import("./admin-session.server");
   await requireAdmin();
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { shopAdmin } = await import("./shop-db.server");
+    const supabaseAdmin = shopAdmin();
   const { data, error } = await supabaseAdmin
     .from("orders")
     .select("id, items, total, status, buyer_name, buyer_contact, payment_method, created_at")
@@ -101,7 +104,8 @@ export const adminUpdateOrderStatus = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { requireAdmin } = await import("./admin-session.server");
     await requireAdmin();
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { shopAdmin } = await import("./shop-db.server");
+    const supabaseAdmin = shopAdmin();
     const { error } = await supabaseAdmin
       .from("orders")
       .update({ status: data.status })
