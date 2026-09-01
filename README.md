@@ -1,19 +1,14 @@
 # Kim Kat Collection
 
-A mobile-first storefront for jewelry and collectibles sold through TikTok live
-sales. Customers browse products, check out manually via Venmo/Cash App/PayPal
-links, and look up their live-sale "bag" by number at `/view-bag`.
+A mobile-first storefront for jewelry and collectibles sold through TikTok live sales. Customers browse products, check out manually via Venmo/Cash App/PayPal links, and look up their live-sale bag by number at `/view-bag`.
 
 ## How it's built
 
 - **Framework:** TanStack Start (React 19, Vite) with file-based routing in `src/routes/`
-- **Products & orders:** the owner's own Supabase project (free tier), with
-  row-level security — keeps working independently of Lovable Cloud
-- **Product photos:** private `product-photos` storage bucket in that same
-  Supabase project
+- **Products & orders:** the owner's own Supabase project, with row-level security
+- **Product photos:** private `product-photos` storage bucket in that same Supabase project
 - **Cart:** browser `localStorage` (no account needed)
-- **Live-sale bags:** a Google Apps Script Web App API that reads/writes the
-  owner's Google Sheet (Bags + Bag Items tabs). The Customers tab is never read.
+- **Live-sale bags:** a Google Apps Script Web App API that reads/writes the owner's Google Sheet (Bags + Bag Items tabs). The Customers tab is never read.
 - **Admin:** password gate at `/admin` (session cookie, no user accounts)
 
 ## Key routes
@@ -38,15 +33,15 @@ links, and look up their live-sale "bag" by number at `/view-bag`.
 | `src/lib/admin.functions.ts` | Admin login/session and admin-only operations |
 | `src/lib/cart.ts` | localStorage cart helpers |
 
-## Environment secrets (set in Lovable, never in code)
+## Environment secrets
+
+Set these in Lovable (never commit them to code):
 
 - `BAG_API_URL` — the Apps Script `/exec` URL for the bag spreadsheet API
 - `BAG_API_TOKEN` — shared secret required by that API
 - `ADMIN_PASSWORD` — unlocks `/admin`
 - `SESSION_SECRET` — signs the admin session cookie
-- `SHOP_SUPABASE_URL` / `SHOP_SUPABASE_ANON_KEY` / `SHOP_SUPABASE_SERVICE_ROLE_KEY`
-  — connect the shop to the owner's own Supabase project (products, orders,
-  product photos)
+- `SHOP_SUPABASE_URL` / `SHOP_SUPABASE_ANON_KEY` / `SHOP_SUPABASE_SERVICE_ROLE_KEY` — connect the shop to the owner's own Supabase project (products, orders, product photos)
 
 ## Spreadsheet rules
 
@@ -61,5 +56,4 @@ npm install
 npm run dev
 ```
 
-See `OPERATIONS.md` for how to run the shop day-to-day (products, bags,
-payments, admin).
+See `OPERATIONS.md` for how to run the shop day-to-day (products, bags, payments, admin).
