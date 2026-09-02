@@ -25,7 +25,7 @@ customer pays you directly via your payment links). Review them at
 
 ## Live-sale bags
 
-Bag data lives in the connected Google Sheet (**Bags** and **Bag Items** tabs).
+Bag data lives in the connected Google Sheet (**Bags** and **Claims** tabs).
 The site reads it live — edits in the sheet show up on `/view-bag` and in the
 admin within moments.
 

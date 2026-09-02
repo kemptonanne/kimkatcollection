@@ -8,7 +8,7 @@ A mobile-first storefront for jewelry and collectibles sold through TikTok live 
 - **Products & orders:** the owner's own Supabase project, with row-level security
 - **Product photos:** private `product-photos` storage bucket in that same Supabase project
 - **Cart:** browser `localStorage` (no account needed)
-- **Live-sale bags:** a Google Apps Script Web App API that reads/writes the owner's Google Sheet (Bags + Bag Items tabs). The Customers tab is never read.
+- **Live-sale bags:** a Google Apps Script Web App API that reads/writes the owner's Google Sheet (Bags + Claims tabs). The Customers tab is never read.
 - **Admin:** password gate at `/admin` (session cookie, no user accounts)
 
 ## Key routes
