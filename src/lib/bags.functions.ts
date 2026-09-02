@@ -48,9 +48,10 @@ export const adminUpdateBag = createServerFn({ method: "POST" })
 
 const itemSchema = z.object({
   bagNumber: z.string().min(1).max(40),
-  description: z.string().min(1).max(300),
+  companyName: z.string().max(120),
+  item: z.string().min(1).max(300),
   price: z.string().max(40),
-  dateAdded: z.string().max(40),
+  qty: z.string().max(10),
 });
 
 export const adminAddBagItem = createServerFn({ method: "POST" })
