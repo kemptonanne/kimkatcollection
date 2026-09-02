@@ -7,12 +7,17 @@
  *   BAG_API_TOKEN — shared secret token required by every endpoint
  *
  * Endpoints used:
+ *   GET  ?action=getBag&bagNumber=…&token=…      (fast path: bag + its claims in one call)
+ *   GET  ?action=getAllItems&token=…             (fast path: whole Claims tab in one call)
  *   GET  ?action=getBags&token=…
  *   GET  ?action=getBagItems&bagNumber=…&token=…
  *   POST { action: "updateBag", token, bagNumber, paymentsReceived?, dueDate?, status? }
  *   POST { action: "addItem", token, bagNumber, companyName, item, price, qty }
  *   POST { action: "deleteItem", token, bagNumber, companyName, item, price, qty, dateClaimed }
  * All POSTs use Content-Type: text/plain (Apps Script can't handle CORS preflight).
+ *
+ * The getBag / getAllItems actions only exist in the newer Apps Script version;
+ * both calls fall back to the older multi-request path automatically.
  */
 
 export type BagRow = {
@@ -54,26 +59,70 @@ function asText(value: unknown): string {
   return (value ?? "").toString().trim();
 }
 
+// ---------- Short-lived read cache ----------
+// Apps Script responses take ~1-3s, so repeat reads within a few seconds are
+// served from memory. Any write clears the cache immediately.
+
+const CACHE_TTL_MS = 30_000;
+const cache = new Map<string, { at: number; promise: Promise<unknown> }>();
+
+function cachedRead<T>(key: string, load: () => Promise<T>): Promise<T> {
+  const hit = cache.get(key);
+  if (hit && Date.now() - hit.at < CACHE_TTL_MS) return hit.promise as Promise<T>;
+  const promise = load().catch((error) => {
+    cache.delete(key);
+    throw error;
+  });
+  cache.set(key, { at: Date.now(), promise });
+  return promise;
+}
+
+function clearBagCache(): void {
+  cache.clear();
+}
+
+// ---------- Transport ----------
+
+class BagApiError extends Error {
+  constructor(
+    message: string,
+    readonly detail: string,
+  ) {
+    super(message);
+  }
+}
+
 async function apiGet<T>(params: Record<string, string>): Promise<T> {
   const url = new URL(apiUrl());
   url.searchParams.set("token", apiToken());
   for (const [key, value] of Object.entries(params)) url.searchParams.set(key, value);
 
+  const started = Date.now();
   const response = await fetch(url.toString(), { redirect: "follow" });
+  const elapsed = Date.now() - started;
+  console.info(`[bag-api] GET ${params["action"] ?? "?"} → ${response.status} in ${elapsed}ms`);
+
   if (!response.ok) {
     const body = await response.text();
     console.error(`Bag API request failed [${response.status}]: ${body}`);
-    throw new Error(`Bag API request failed [${response.status}]`);
+    throw new BagApiError(`Bag API request failed [${response.status}]`, body);
   }
   const data = (await response.json()) as { ok?: boolean; error?: string } & T;
   if (data.ok === false) {
     console.error(`Bag API returned an error: ${data.error ?? "unknown"}`);
-    throw new Error(`Bag API error: ${data.error ?? "unknown"}`);
+    throw new BagApiError(`Bag API error: ${data.error ?? "unknown"}`, data.error ?? "");
   }
   return data;
 }
 
+/** True when the script rejected the action because it's an older deployment. */
+function isUnknownAction(error: unknown): boolean {
+  const detail = error instanceof BagApiError ? `${error.message} ${error.detail}` : "";
+  return /unknown action|invalid action|unsupported action/i.test(detail);
+}
+
 async function apiPost(payload: Record<string, unknown>): Promise<void> {
+  const started = Date.now();
   const response = await fetch(apiUrl(), {
     method: "POST",
     redirect: "follow",
@@ -81,6 +130,9 @@ async function apiPost(payload: Record<string, unknown>): Promise<void> {
     headers: { "Content-Type": "text/plain" },
     body: JSON.stringify({ ...payload, token: apiToken() }),
   });
+  console.info(
+    `[bag-api] POST ${String(payload["action"] ?? "?")} → ${response.status} in ${Date.now() - started}ms`,
+  );
   if (!response.ok) {
     const body = await response.text();
     console.error(`Bag API write failed [${response.status}]: ${body}`);
@@ -91,25 +143,88 @@ async function apiPost(payload: Record<string, unknown>): Promise<void> {
     console.error(`Bag API write returned an error: ${data.error ?? "unknown"}`);
     throw new Error(`Bag API error: ${data.error ?? "unknown"}`);
   }
+  clearBagCache();
+}
+
+// ---------- Mapping ----------
+
+function toBagRow(bag: Record<string, unknown>, rowNumber: number): BagRow {
+  return {
+    rowNumber,
+    bagNumber: asText(bag["bagNumber"]),
+    tiktokHandle: asText(bag["tiktokHandle"]),
+    customerName: asText(bag["customerName"]),
+    bagTotal: asText(bag["bagTotal"]),
+    paymentsReceived: asText(bag["paymentsReceived"]),
+    balanceDue: asText(bag["balanceDue"]),
+    dueDate: asText(bag["dueDate"]),
+    status: asText(bag["status"]),
+  };
+}
+
+function toItemRow(
+  item: Record<string, unknown>,
+  rowNumber: number,
+  fallbackBagNumber = "",
+): BagItemRow {
+  return {
+    rowNumber,
+    bagNumber: asText(item["bagNumber"]) || fallbackBagNumber,
+    companyName: asText(item["companyName"]),
+    item: asText(item["item"]),
+    price: asText(item["price"]),
+    qty: asText(item["qty"]) || "1",
+    total: asText(item["total"]),
+    dateClaimed: asText(item["dateClaimed"]),
+  };
 }
 
 // ---------- Bags ----------
 
 export async function readBags(): Promise<BagRow[]> {
-  const data = await apiGet<{ bags?: Record<string, unknown>[] }>({ action: "getBags" });
-  return (data.bags ?? [])
-    .map((bag, i) => ({
-      rowNumber: i + 2, // synthetic row number (matches sheet position); kept for UI keys
-      bagNumber: asText(bag["bagNumber"]),
-      tiktokHandle: asText(bag["tiktokHandle"]),
-      customerName: asText(bag["customerName"]),
-      bagTotal: asText(bag["bagTotal"]),
-      paymentsReceived: asText(bag["paymentsReceived"]),
-      balanceDue: asText(bag["balanceDue"]),
-      dueDate: asText(bag["dueDate"]),
-      status: asText(bag["status"]),
-    }))
-    .filter((bag) => bag.bagNumber !== "");
+  return cachedRead("bags", async () => {
+    const data = await apiGet<{ bags?: Record<string, unknown>[] }>({ action: "getBags" });
+    return (data.bags ?? [])
+      .map((bag, i) => toBagRow(bag, i + 2)) // synthetic row number; kept for UI keys
+      .filter((bag) => bag.bagNumber !== "");
+  });
+}
+
+/**
+ * Single-call lookup of one bag plus its claims. Falls back to the two-call
+ * path when the deployed Apps Script doesn't know the `getBag` action.
+ */
+export async function readBagWithItems(
+  bagNumber: string,
+): Promise<{ bag: BagRow; items: BagItemRow[] } | null> {
+  const needle = bagNumber.trim().toLowerCase();
+  return cachedRead(`bag:${needle}`, async () => {
+    try {
+      const data = await apiGet<{
+        bag?: Record<string, unknown> | null;
+        items?: Record<string, unknown>[];
+      }>({ action: "getBag", bagNumber });
+      if (data.bag) {
+        const bagNum = asText(data.bag["bagNumber"]) || bagNumber;
+        return {
+          // rowNumber is only a UI key on the public page; no extra request for it.
+          bag: toBagRow(data.bag, 2),
+          items: (data.items ?? [])
+            .map((item, i) => toItemRow(item, i + 2, bagNum))
+            .filter((item) => item.item !== ""),
+        };
+      }
+      if ("bag" in data) return null; // script answered: no such bag
+    } catch (error) {
+      if (!isUnknownAction(error)) throw error;
+    }
+
+    // Fallback: older deployment — list bags, then that bag's items.
+    const bags = await readBags();
+    const bag = bags.find((b) => b.bagNumber.toLowerCase() === needle);
+    if (!bag) return null;
+    return { bag, items: await itemsForBag(bag.bagNumber) };
+  });
 }
 
 // ---------- Bag items (Claims tab) ----------
@@ -117,30 +232,37 @@ export async function readBags(): Promise<BagRow[]> {
 export async function readBagItems(bagNumber?: string): Promise<BagItemRow[]> {
   if (bagNumber) return itemsForBag(bagNumber);
 
-  // No bag filter: the API is per-bag, so fetch every bag's items.
-  const bags = await readBags();
-  const groups = await Promise.all(bags.map((bag) => itemsForBag(bag.bagNumber)));
-  let row = 2;
-  return groups.flat().map((item) => ({ ...item, rowNumber: row++ }));
+  return cachedRead("items:all", async () => {
+    // Fast path: whole Claims tab in one request.
+    try {
+      const data = await apiGet<{ items?: Record<string, unknown>[] }>({ action: "getAllItems" });
+      if (data.items) {
+        return data.items
+          .map((item, i) => toItemRow(item, i + 2))
+          .filter((item) => item.item !== "");
+      }
+    } catch (error) {
+      if (!isUnknownAction(error)) throw error;
+    }
+
+    // Fallback: older deployment — the API is per-bag, so fetch every bag's items.
+    const bags = await readBags();
+    const groups = await Promise.all(bags.map((bag) => itemsForBag(bag.bagNumber)));
+    let row = 2;
+    return groups.flat().map((item) => ({ ...item, rowNumber: row++ }));
+  });
 }
 
 async function itemsForBag(bagNumber: string): Promise<BagItemRow[]> {
-  const data = await apiGet<{ items?: Record<string, unknown>[] }>({
-    action: "getBagItems",
-    bagNumber,
+  return cachedRead(`items:${bagNumber.toLowerCase()}`, async () => {
+    const data = await apiGet<{ items?: Record<string, unknown>[] }>({
+      action: "getBagItems",
+      bagNumber,
+    });
+    return (data.items ?? [])
+      .map((item, i) => toItemRow(item, i + 2, bagNumber))
+      .filter((item) => item.item !== "");
   });
-  return (data.items ?? [])
-    .map((item, i) => ({
-      rowNumber: i + 2,
-      bagNumber: asText(item["bagNumber"]) || bagNumber,
-      companyName: asText(item["companyName"]),
-      item: asText(item["item"]),
-      price: asText(item["price"]),
-      qty: asText(item["qty"]) || "1",
-      total: asText(item["total"]),
-      dateClaimed: asText(item["dateClaimed"]),
-    }))
-    .filter((item) => item.item !== "");
 }
 
 // ---------- Writes ----------

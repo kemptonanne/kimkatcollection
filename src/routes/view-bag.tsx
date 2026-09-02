@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Cherry, Heart, X } from "lucide-react";
 import { lookupBag } from "@/lib/bags.functions";
 import { money, parseMoney } from "@/lib/format";
@@ -35,16 +35,25 @@ function CheckMyBag() {
   const [result, setResult] = useState<Result | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
 
+  // Remember the last bag number so repeat visitors don't retype it.
+  useEffect(() => {
+    const saved = window.localStorage.getItem("kkc:last-bag");
+    if (saved) setQuery(saved);
+  }, []);
+
   async function onSubmit(event: React.FormEvent) {
     event.preventDefault();
     if (!query.trim()) return;
     setLoading(true);
     setError(null);
+    setResult(null);
+    setSheetOpen(true);
     try {
       const data = await lookup({ data: { query: query.trim() } });
       setResult(data);
-      setSheetOpen(true);
+      window.localStorage.setItem("kkc:last-bag", query.trim());
     } catch {
+      setSheetOpen(false);
       setError("We couldn't reach the bag list right now. Please try again in a moment.");
     } finally {
       setLoading(false);
@@ -93,7 +102,7 @@ function CheckMyBag() {
         <PaymentLinks title="Pay on your bag" />
       </div>
 
-      {sheetOpen && result && (
+      {sheetOpen && (
         <div
           className="fixed inset-0 z-50 flex items-end bg-ink/40"
           role="dialog"
@@ -108,7 +117,7 @@ function CheckMyBag() {
             <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-border" />
             <div className="flex items-start justify-between gap-3">
               <h2 className="font-display text-xl">
-                {bag ? `Bag #${bag.bagNumber}` : "No bag found"}
+                {loading ? "Finding your bag…" : bag ? `Bag #${bag.bagNumber}` : "No bag found"}
               </h2>
               <button
                 type="button"
@@ -120,7 +129,18 @@ function CheckMyBag() {
               </button>
             </div>
 
-            {!bag ? (
+            {loading ? (
+              <div className="mt-4 grid gap-3" aria-live="polite">
+                <div className="h-4 w-40 animate-pulse rounded-full bg-blush" />
+                <div className="grid grid-cols-2 gap-3">
+                  {[0, 1, 2, 3].map((i) => (
+                    <div key={i} className="h-16 animate-pulse rounded-3xl bg-blush" />
+                  ))}
+                </div>
+                <div className="h-12 animate-pulse rounded-2xl bg-surface" />
+                <div className="h-12 animate-pulse rounded-2xl bg-surface" />
+              </div>
+            ) : !bag ? (
               <p className="mt-3 text-sm text-inksoft">
                 We couldn&apos;t find bag “{query}”. Double-check the number, or message Kim on
                 TikTok.
