@@ -24,7 +24,7 @@ export function BagManager() {
   const [edits, setEdits] = useState<
     Record<number, { paymentsReceived: string; dueDate: string; status: string }>
   >({});
-  const [newItem, setNewItem] = useState({ description: "", price: "" });
+  const [newItem, setNewItem] = useState({ companyName: "", item: "", price: "", qty: "1" });
 
   const bags = useQuery({ queryKey: ["admin", "bags"], queryFn: () => list() });
   const refresh = () => queryClient.invalidateQueries({ queryKey: ["admin", "bags"] });
@@ -44,13 +44,16 @@ export function BagManager() {
   });
 
   const createItem = useMutation({
-    mutationFn: (vars: { bagNumber: string; description: string; price: string }) =>
-      addItem({
-        data: { ...vars, dateAdded: new Date().toLocaleDateString("en-US") },
-      }),
+    mutationFn: (vars: {
+      bagNumber: string;
+      companyName: string;
+      item: string;
+      price: string;
+      qty: string;
+    }) => addItem({ data: vars }),
     onSuccess: () => {
       toast.success("Item added");
-      setNewItem({ description: "", price: "" });
+      setNewItem({ companyName: "", item: "", price: "", qty: "1" });
       refresh();
     },
     onError: () => toast.error("Could not add that item."),
@@ -60,9 +63,10 @@ export function BagManager() {
     mutationFn: (vars: {
       rowNumber: number;
       bagNumber: string;
-      description: string;
+      companyName: string;
+      item: string;
       price: string;
-      dateAdded: string;
+      qty: string;
     }) => updateItem({ data: vars }),
     onSuccess: () => {
       toast.success("Item updated");
@@ -117,7 +121,7 @@ export function BagManager() {
               </span>
               <span className="shrink-0 text-right">
                 <span className="block text-sm font-bold">
-                  {money(parseMoney(bag.remainingBalance))}
+                  {money(parseMoney(bag.balanceDue))}
                 </span>
                 <span className="block text-xs text-inksoft">{bag.status || "—"}</span>
               </span>
@@ -132,7 +136,7 @@ export function BagManager() {
                   </div>
                   <div className="rounded-2xl bg-mint px-3 py-2">
                     <dt className="text-xs text-inksoft">Remaining</dt>
-                    <dd className="font-bold">{money(parseMoney(bag.remainingBalance))}</dd>
+                    <dd className="font-bold">{money(parseMoney(bag.balanceDue))}</dd>
                   </div>
                 </dl>
 
