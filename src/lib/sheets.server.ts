@@ -205,11 +205,10 @@ export async function readBagWithItems(
         items?: Record<string, unknown>[];
       }>({ action: "getBag", bagNumber });
       if (data.bag) {
-        const bags = await readBags().catch(() => [] as BagRow[]);
         const bagNum = asText(data.bag["bagNumber"]) || bagNumber;
-        const rowNumber = bags.find((b) => b.bagNumber === bagNum)?.rowNumber ?? 2;
         return {
-          bag: toBagRow(data.bag, rowNumber),
+          // rowNumber is only a UI key on the public page; no extra request for it.
+          bag: toBagRow(data.bag, 2),
           items: (data.items ?? [])
             .map((item, i) => toItemRow(item, i + 2, bagNum))
             .filter((item) => item.item !== ""),
