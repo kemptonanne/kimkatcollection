@@ -26,7 +26,8 @@ A mobile-first storefront for jewelry and collectibles sold through TikTok live 
 
 | File | What it does |
 | --- | --- |
-| `src/lib/sheets.server.ts` | All reads/writes to the bag spreadsheet via the Apps Script API |
+| `src/lib/sheets.server.ts` | All reads/writes to the bag spreadsheet via the Apps Script API (30s read cache) |
+| `apps-script/BagTrackerAPI.gs` | Copy of the Apps Script to paste into the sheet's script editor |
 | `src/lib/bags.functions.ts` | Server functions for bag lookup and admin bag edits |
 | `src/lib/products.server.ts` | Product/order database access |
 | `src/lib/shop.functions.ts` | Server functions for products and checkout orders |
