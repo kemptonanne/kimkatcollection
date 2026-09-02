@@ -6,13 +6,11 @@ const lookupSchema = z.object({ query: z.string().min(1).max(60) });
 export const lookupBag = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => lookupSchema.parse(input))
   .handler(async ({ data }) => {
-    const { readBags, readBagItems } = await import("./sheets.server");
-    const needle = data.query.trim().replace(/^#/, "").toLowerCase();
-    const bags = await readBags();
-    const bag = bags.find((b) => b.bagNumber.toLowerCase() === needle);
-    if (!bag) return { found: false as const };
-    const items = await readBagItems(bag.bagNumber);
-    return { found: true as const, bag, items };
+    const { readBagWithItems } = await import("./sheets.server");
+    const needle = data.query.trim().replace(/^#/, "");
+    const found = await readBagWithItems(needle);
+    if (!found) return { found: false as const };
+    return { found: true as const, bag: found.bag, items: found.items };
   });
 
 export const adminListBags = createServerFn({ method: "GET" }).handler(async () => {
