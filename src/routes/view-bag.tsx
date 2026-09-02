@@ -144,7 +144,7 @@ function CheckMyBag() {
                     <dt className="text-xs font-bold uppercase tracking-wide text-inksoft">
                       Remaining
                     </dt>
-                    <dd className="font-display text-lg">{money(parseMoney(bag.remainingBalance))}</dd>
+                    <dd className="font-display text-lg">{money(parseMoney(bag.balanceDue))}</dd>
                   </div>
                   <div className="rounded-3xl bg-sky px-4 py-3">
                     <dt className="text-xs font-bold uppercase tracking-wide text-inksoft">Due</dt>
@@ -164,12 +164,19 @@ function CheckMyBag() {
                       className="flex items-center justify-between gap-3 rounded-2xl bg-surface px-4 py-3 text-sm"
                     >
                       <span className="min-w-0">
-                        <span className="block font-semibold">{item.description}</span>
-                        {item.dateAdded && (
-                          <span className="text-xs text-inksoft">{item.dateAdded}</span>
+                        <span className="block font-semibold">
+                          {item.item}
+                          {item.qty && item.qty !== "1" && (
+                            <span className="font-normal text-inksoft"> ×{item.qty}</span>
+                          )}
+                        </span>
+                        {item.dateClaimed && (
+                          <span className="text-xs text-inksoft">{item.dateClaimed}</span>
                         )}
                       </span>
-                      <span className="shrink-0 font-bold">{money(parseMoney(item.price))}</span>
+                      <span className="shrink-0 font-bold">
+                        {money(parseMoney(item.total || item.price))}
+                      </span>
                     </li>
                   ))}
                   {items.length === 0 && (
