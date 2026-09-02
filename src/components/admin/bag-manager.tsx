@@ -205,16 +205,23 @@ export function BagManager() {
                   <ul className="mt-2 grid gap-2">
                     {items.map((item) => (
                       <li key={item.rowNumber} className="grid gap-2 rounded-2xl bg-cream p-3">
+                        {item.companyName && (
+                          <span className="text-xs font-semibold text-inksoft">
+                            {item.companyName}
+                          </span>
+                        )}
                         <input
-                          defaultValue={item.description}
+                          defaultValue={item.item}
+                          aria-label="Item description"
                           onBlur={(e) =>
-                            e.target.value !== item.description &&
+                            e.target.value !== item.item &&
                             editItem.mutate({
                               rowNumber: item.rowNumber,
                               bagNumber: item.bagNumber,
-                              description: e.target.value,
+                              companyName: item.companyName,
+                              item: e.target.value,
                               price: item.price,
-                              dateAdded: item.dateAdded,
+                              qty: item.qty,
                             })
                           }
                           className="tap-target rounded-xl border border-input bg-surface px-3 text-sm"
@@ -223,17 +230,36 @@ export function BagManager() {
                           <input
                             defaultValue={item.price}
                             inputMode="decimal"
+                            aria-label="Item price"
                             onBlur={(e) =>
                               e.target.value !== item.price &&
                               editItem.mutate({
                                 rowNumber: item.rowNumber,
                                 bagNumber: item.bagNumber,
-                                description: item.description,
+                                companyName: item.companyName,
+                                item: item.item,
                                 price: e.target.value,
-                                dateAdded: item.dateAdded,
+                                qty: item.qty,
                               })
                             }
                             className="tap-target w-28 rounded-xl border border-input bg-surface px-3 text-sm"
+                          />
+                          <input
+                            defaultValue={item.qty}
+                            inputMode="numeric"
+                            aria-label="Item quantity"
+                            onBlur={(e) =>
+                              e.target.value !== item.qty &&
+                              editItem.mutate({
+                                rowNumber: item.rowNumber,
+                                bagNumber: item.bagNumber,
+                                companyName: item.companyName,
+                                item: item.item,
+                                price: item.price,
+                                qty: e.target.value,
+                              })
+                            }
+                            className="tap-target w-16 rounded-xl border border-input bg-surface px-3 text-sm"
                           />
                           <button
                             type="button"
@@ -250,9 +276,15 @@ export function BagManager() {
 
                   <div className="mt-3 grid gap-2 rounded-2xl bg-lilac p-3">
                     <input
+                      placeholder="Company name"
+                      value={newItem.companyName}
+                      onChange={(e) => setNewItem({ ...newItem, companyName: e.target.value })}
+                      className="tap-target rounded-xl border border-input bg-surface px-3 text-sm"
+                    />
+                    <input
                       placeholder="New item description"
-                      value={newItem.description}
-                      onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
+                      value={newItem.item}
+                      onChange={(e) => setNewItem({ ...newItem, item: e.target.value })}
                       className="tap-target rounded-xl border border-input bg-surface px-3 text-sm"
                     />
                     <div className="flex gap-2">
@@ -261,11 +293,18 @@ export function BagManager() {
                         inputMode="decimal"
                         value={newItem.price}
                         onChange={(e) => setNewItem({ ...newItem, price: e.target.value })}
-                        className="tap-target w-28 rounded-xl border border-input bg-surface px-3 text-sm"
+                        className="tap-target w-24 rounded-xl border border-input bg-surface px-3 text-sm"
+                      />
+                      <input
+                        placeholder="Qty"
+                        inputMode="numeric"
+                        value={newItem.qty}
+                        onChange={(e) => setNewItem({ ...newItem, qty: e.target.value })}
+                        className="tap-target w-16 rounded-xl border border-input bg-surface px-3 text-sm"
                       />
                       <button
                         type="button"
-                        disabled={!newItem.description || createItem.isPending}
+                        disabled={!newItem.item || createItem.isPending}
                         onClick={() =>
                           createItem.mutate({ bagNumber: bag.bagNumber, ...newItem })
                         }
