@@ -10,8 +10,8 @@
  *   GET  ?action=getBags&token=…
  *   GET  ?action=getBagItems&bagNumber=…&token=…
  *   POST { action: "updateBag", token, bagNumber, paymentsReceived?, dueDate?, status? }
- *   POST { action: "addItem", token, bagNumber, description, price }
- *   POST { action: "deleteItem", token, bagNumber, description, price, dateAdded }
+ *   POST { action: "addItem", token, bagNumber, companyName, item, price, qty }
+ *   POST { action: "deleteItem", token, bagNumber, companyName, item, price, qty, dateClaimed }
  * All POSTs use Content-Type: text/plain (Apps Script can't handle CORS preflight).
  */
 
@@ -22,7 +22,7 @@ export type BagRow = {
   customerName: string;
   bagTotal: string;
   paymentsReceived: string;
-  remainingBalance: string;
+  balanceDue: string;
   dueDate: string;
   status: string;
 };
@@ -30,9 +30,12 @@ export type BagRow = {
 export type BagItemRow = {
   rowNumber: number;
   bagNumber: string;
-  description: string;
+  companyName: string;
+  item: string;
   price: string;
-  dateAdded: string;
+  qty: string;
+  total: string;
+  dateClaimed: string;
 };
 
 function apiUrl(): string {
@@ -102,14 +105,14 @@ export async function readBags(): Promise<BagRow[]> {
       customerName: asText(bag["customerName"]),
       bagTotal: asText(bag["bagTotal"]),
       paymentsReceived: asText(bag["paymentsReceived"]),
-      remainingBalance: asText(bag["remainingBalance"]),
+      balanceDue: asText(bag["balanceDue"]),
       dueDate: asText(bag["dueDate"]),
       status: asText(bag["status"]),
     }))
     .filter((bag) => bag.bagNumber !== "");
 }
 
-// ---------- Bag items ----------
+// ---------- Bag items (Claims tab) ----------
 
 export async function readBagItems(bagNumber?: string): Promise<BagItemRow[]> {
   if (bagNumber) return itemsForBag(bagNumber);
@@ -130,11 +133,14 @@ async function itemsForBag(bagNumber: string): Promise<BagItemRow[]> {
     .map((item, i) => ({
       rowNumber: i + 2,
       bagNumber: asText(item["bagNumber"]) || bagNumber,
-      description: asText(item["description"]),
+      companyName: asText(item["companyName"]),
+      item: asText(item["item"]),
       price: asText(item["price"]),
-      dateAdded: asText(item["dateAdded"]),
+      qty: asText(item["qty"]) || "1",
+      total: asText(item["total"]),
+      dateClaimed: asText(item["dateClaimed"]),
     }))
-    .filter((item) => item.description !== "");
+    .filter((item) => item.item !== "");
 }
 
 // ---------- Writes ----------
@@ -156,47 +162,45 @@ export async function writeBagEditableFields(
 
 export async function appendBagItem(item: {
   bagNumber: string;
-  description: string;
+  companyName: string;
+  item: string;
   price: string;
-  dateAdded: string;
+  qty: string;
 }): Promise<void> {
   await apiPost({
     action: "addItem",
     bagNumber: item.bagNumber,
-    description: item.description,
+    companyName: item.companyName,
+    item: item.item,
     price: item.price,
+    qty: item.qty,
   });
 }
 
 export async function writeBagItem(
   rowNumber: number,
-  item: { bagNumber: string; description: string; price: string; dateAdded: string },
+  item: { bagNumber: string; companyName: string; item: string; price: string; qty: string },
 ): Promise<void> {
   // The API has no "edit item" endpoint, so replace the row: delete then re-add.
   const existing = await itemByRowNumber(rowNumber);
-  await apiPost({
-    action: "deleteItem",
-    bagNumber: existing.bagNumber,
-    description: existing.description,
-    price: existing.price,
-    dateAdded: existing.dateAdded,
-  });
-  await apiPost({
-    action: "addItem",
-    bagNumber: item.bagNumber,
-    description: item.description,
-    price: item.price,
-  });
+  await deleteItemPost(existing);
+  await appendBagItem(item);
 }
 
 export async function deleteBagItemRow(rowNumber: number): Promise<void> {
   const item = await itemByRowNumber(rowNumber);
+  await deleteItemPost(item);
+}
+
+async function deleteItemPost(item: BagItemRow): Promise<void> {
   await apiPost({
     action: "deleteItem",
     bagNumber: item.bagNumber,
-    description: item.description,
+    companyName: item.companyName,
+    item: item.item,
     price: item.price,
-    dateAdded: item.dateAdded,
+    qty: item.qty,
+    dateClaimed: item.dateClaimed,
   });
 }
 

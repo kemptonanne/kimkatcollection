@@ -24,7 +24,7 @@ export function BagManager() {
   const [edits, setEdits] = useState<
     Record<number, { paymentsReceived: string; dueDate: string; status: string }>
   >({});
-  const [newItem, setNewItem] = useState({ description: "", price: "" });
+  const [newItem, setNewItem] = useState({ companyName: "", item: "", price: "", qty: "1" });
 
   const bags = useQuery({ queryKey: ["admin", "bags"], queryFn: () => list() });
   const refresh = () => queryClient.invalidateQueries({ queryKey: ["admin", "bags"] });
@@ -44,13 +44,16 @@ export function BagManager() {
   });
 
   const createItem = useMutation({
-    mutationFn: (vars: { bagNumber: string; description: string; price: string }) =>
-      addItem({
-        data: { ...vars, dateAdded: new Date().toLocaleDateString("en-US") },
-      }),
+    mutationFn: (vars: {
+      bagNumber: string;
+      companyName: string;
+      item: string;
+      price: string;
+      qty: string;
+    }) => addItem({ data: vars }),
     onSuccess: () => {
       toast.success("Item added");
-      setNewItem({ description: "", price: "" });
+      setNewItem({ companyName: "", item: "", price: "", qty: "1" });
       refresh();
     },
     onError: () => toast.error("Could not add that item."),
@@ -60,9 +63,10 @@ export function BagManager() {
     mutationFn: (vars: {
       rowNumber: number;
       bagNumber: string;
-      description: string;
+      companyName: string;
+      item: string;
       price: string;
-      dateAdded: string;
+      qty: string;
     }) => updateItem({ data: vars }),
     onSuccess: () => {
       toast.success("Item updated");
@@ -117,7 +121,7 @@ export function BagManager() {
               </span>
               <span className="shrink-0 text-right">
                 <span className="block text-sm font-bold">
-                  {money(parseMoney(bag.remainingBalance))}
+                  {money(parseMoney(bag.balanceDue))}
                 </span>
                 <span className="block text-xs text-inksoft">{bag.status || "—"}</span>
               </span>
@@ -132,7 +136,7 @@ export function BagManager() {
                   </div>
                   <div className="rounded-2xl bg-mint px-3 py-2">
                     <dt className="text-xs text-inksoft">Remaining</dt>
-                    <dd className="font-bold">{money(parseMoney(bag.remainingBalance))}</dd>
+                    <dd className="font-bold">{money(parseMoney(bag.balanceDue))}</dd>
                   </div>
                 </dl>
 
@@ -201,16 +205,23 @@ export function BagManager() {
                   <ul className="mt-2 grid gap-2">
                     {items.map((item) => (
                       <li key={item.rowNumber} className="grid gap-2 rounded-2xl bg-cream p-3">
+                        {item.companyName && (
+                          <span className="text-xs font-semibold text-inksoft">
+                            {item.companyName}
+                          </span>
+                        )}
                         <input
-                          defaultValue={item.description}
+                          defaultValue={item.item}
+                          aria-label="Item description"
                           onBlur={(e) =>
-                            e.target.value !== item.description &&
+                            e.target.value !== item.item &&
                             editItem.mutate({
                               rowNumber: item.rowNumber,
                               bagNumber: item.bagNumber,
-                              description: e.target.value,
+                              companyName: item.companyName,
+                              item: e.target.value,
                               price: item.price,
-                              dateAdded: item.dateAdded,
+                              qty: item.qty,
                             })
                           }
                           className="tap-target rounded-xl border border-input bg-surface px-3 text-sm"
@@ -219,17 +230,36 @@ export function BagManager() {
                           <input
                             defaultValue={item.price}
                             inputMode="decimal"
+                            aria-label="Item price"
                             onBlur={(e) =>
                               e.target.value !== item.price &&
                               editItem.mutate({
                                 rowNumber: item.rowNumber,
                                 bagNumber: item.bagNumber,
-                                description: item.description,
+                                companyName: item.companyName,
+                                item: item.item,
                                 price: e.target.value,
-                                dateAdded: item.dateAdded,
+                                qty: item.qty,
                               })
                             }
                             className="tap-target w-28 rounded-xl border border-input bg-surface px-3 text-sm"
+                          />
+                          <input
+                            defaultValue={item.qty}
+                            inputMode="numeric"
+                            aria-label="Item quantity"
+                            onBlur={(e) =>
+                              e.target.value !== item.qty &&
+                              editItem.mutate({
+                                rowNumber: item.rowNumber,
+                                bagNumber: item.bagNumber,
+                                companyName: item.companyName,
+                                item: item.item,
+                                price: item.price,
+                                qty: e.target.value,
+                              })
+                            }
+                            className="tap-target w-16 rounded-xl border border-input bg-surface px-3 text-sm"
                           />
                           <button
                             type="button"
@@ -246,9 +276,15 @@ export function BagManager() {
 
                   <div className="mt-3 grid gap-2 rounded-2xl bg-lilac p-3">
                     <input
+                      placeholder="Company name"
+                      value={newItem.companyName}
+                      onChange={(e) => setNewItem({ ...newItem, companyName: e.target.value })}
+                      className="tap-target rounded-xl border border-input bg-surface px-3 text-sm"
+                    />
+                    <input
                       placeholder="New item description"
-                      value={newItem.description}
-                      onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
+                      value={newItem.item}
+                      onChange={(e) => setNewItem({ ...newItem, item: e.target.value })}
                       className="tap-target rounded-xl border border-input bg-surface px-3 text-sm"
                     />
                     <div className="flex gap-2">
@@ -257,11 +293,18 @@ export function BagManager() {
                         inputMode="decimal"
                         value={newItem.price}
                         onChange={(e) => setNewItem({ ...newItem, price: e.target.value })}
-                        className="tap-target w-28 rounded-xl border border-input bg-surface px-3 text-sm"
+                        className="tap-target w-24 rounded-xl border border-input bg-surface px-3 text-sm"
+                      />
+                      <input
+                        placeholder="Qty"
+                        inputMode="numeric"
+                        value={newItem.qty}
+                        onChange={(e) => setNewItem({ ...newItem, qty: e.target.value })}
+                        className="tap-target w-16 rounded-xl border border-input bg-surface px-3 text-sm"
                       />
                       <button
                         type="button"
-                        disabled={!newItem.description || createItem.isPending}
+                        disabled={!newItem.item || createItem.isPending}
                         onClick={() =>
                           createItem.mutate({ bagNumber: bag.bagNumber, ...newItem })
                         }
