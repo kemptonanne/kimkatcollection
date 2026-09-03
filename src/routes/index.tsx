@@ -13,13 +13,13 @@ const productsQuery = queryOptions({
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Kim Kat Collection — Jewelry & Collectibles Shop" },
+      { title: "KimKat Collection — Jewelry & Collectibles Shop" },
       {
         name: "description",
         content:
-          "Shop handpicked jewelry and collectibles from Kim Kat Collection, check your live-sale bag balance, and pay by Venmo, Cash App, or PayPal.",
+          "Shop handpicked jewelry and collectibles from KimKat Collection, check your live-sale bag balance, and pay by Venmo, Cash App, or PayPal.",
       },
-      { property: "og:title", content: "Kim Kat Collection — Jewelry & Collectibles" },
+      { property: "og:title", content: "KimKat Collection — Jewelry & Collectibles" },
       {
         property: "og:description",
         content: "Handpicked jewelry and collectibles, plus live-sale bag balances you can check anytime.",

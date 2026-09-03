@@ -12,10 +12,10 @@ export const Route = createFileRoute("/admin")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Shop admin — Kim Kat Collection" },
-      { name: "description", content: "Password-protected management for Kim Kat Collection products, bags and orders." },
+      { title: "Shop admin — KimKat Collection" },
+      { name: "description", content: "Password-protected management for KimKat Collection products, bags and orders." },
       { name: "robots", content: "noindex" },
-      { property: "og:title", content: "Shop admin — Kim Kat Collection" },
+      { property: "og:title", content: "Shop admin — KimKat Collection" },
       { property: "og:description", content: "Password-protected shop management." },
     ],
   }),

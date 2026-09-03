@@ -9,16 +9,16 @@ import { PaymentLinks } from "@/components/site-footer";
 export const Route = createFileRoute("/view-bag")({
   head: () => ({
     meta: [
-      { title: "Check my bag — Kim Kat Collection" },
+      { title: "Check my bag — KimKat Collection" },
       {
         name: "description",
         content:
-          "Look up your Kim Kat Collection live-sale bag by bag number to see items, balance and due date.",
+          "Look up your KimKat Collection live-sale bag by bag number to see items, balance, and due date.",
       },
-      { property: "og:title", content: "Check my bag — Kim Kat Collection" },
+      { property: "og:title", content: "Check my bag — KimKat Collection" },
       {
         property: "og:description",
-        content: "See your live-sale bag items, balance and due date in seconds.",
+        content: "See your live-sale bag items, balance, and due date in seconds.",
       },
     ],
   }),
