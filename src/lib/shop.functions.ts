@@ -22,8 +22,10 @@ export const listProducts = createServerFn({ method: "GET" }).handler(async () =
 });
 
 export const getProduct = createServerFn({ method: "GET" })
-  .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
+  .inputValidator((input: unknown) => z.object({ id: z.string().min(1) }).parse(input))
   .handler(async ({ data }) => {
+    // Non-UUID ids can never match a product row; treat them as "not found".
+    if (!z.string().uuid().safeParse(data.id).success) return null;
     const { getProductFromDb } = await import("./products.server");
     return getProductFromDb(data.id);
   });
