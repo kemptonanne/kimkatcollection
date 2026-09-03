@@ -38,7 +38,7 @@ function AdminPage() {
   const [tab, setTab] = useState<Tab>("products");
 
   if (session.isLoading) {
-    return <p className="bg-pattern px-4 py-16 text-center text-sm text-inksoft">Loading…</p>;
+    return <p className="px-4 py-16 text-center text-sm text-inksoft">Loading…</p>;
   }
 
   if (!session.data?.unlocked) {
@@ -63,7 +63,7 @@ function AdminPage() {
             setBusy(false);
           }
         }}
-        className="bg-pattern px-4 py-16"
+        className="px-4 py-16"
       >
         <div className="cozy-card relative mx-auto max-w-sm overflow-hidden px-6 py-10 text-center">
           <Heart className="absolute -right-3 -top-3 size-20 text-brand/10" fill="currentColor" />
@@ -92,7 +92,7 @@ function AdminPage() {
   }
 
   return (
-    <div className="bg-pattern px-4 pb-16 pt-6">
+    <div className="px-4 pb-16 pt-6">
       <div className="flex items-center justify-between gap-3">
         <h1 className="font-display text-2xl">Shop admin</h1>
         <button

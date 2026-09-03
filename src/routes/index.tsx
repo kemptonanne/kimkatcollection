@@ -42,7 +42,7 @@ function Shop() {
   const { data: products } = useSuspenseQuery(productsQuery);
 
   return (
-    <div className="bg-pattern pb-4">
+    <div className="pb-4">
       <section className="px-4 pt-6">
         <div className="relative overflow-hidden rounded-4xl bg-blush px-6 py-10 text-center shadow-soft">
           <Heart className="absolute -left-3 top-4 size-16 rotate-[-14deg] text-brand/20" fill="currentColor" />

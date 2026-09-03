@@ -30,7 +30,7 @@ export const Route = createFileRoute("/product/$id")({
     };
   },
   notFoundComponent: () => (
-    <div className="bg-pattern px-4 py-16 text-center">
+    <div className="px-4 py-16 text-center">
       <div className="cozy-card relative mx-auto max-w-sm overflow-hidden px-5 py-8">
         <Heart className="absolute -right-3 -top-3 size-20 text-brand/10" fill="currentColor" />
         <Cherry className="absolute -left-3 -bottom-3 size-20 text-brand/10" />
@@ -43,7 +43,7 @@ export const Route = createFileRoute("/product/$id")({
     </div>
   ),
   errorComponent: () => (
-    <p className="bg-pattern px-4 py-16 text-center text-sm text-inksoft">This item didn&apos;t load.</p>
+    <p className="px-4 py-16 text-center text-sm text-inksoft">This item didn&apos;t load.</p>
   ),
   component: ProductDetail,
 });
@@ -54,7 +54,7 @@ function ProductDetail() {
   const soldOut = product.quantity <= 0;
 
   return (
-    <div className="bg-pattern pb-28">
+    <div className="pb-28">
       <div className="relative aspect-square bg-blush">
         <Heart className="absolute left-3 top-3 size-10 text-brand/15" fill="currentColor" />
         <Cherry className="absolute right-3 bottom-3 size-10 text-brand/15" />
