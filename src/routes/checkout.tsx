@@ -23,11 +23,8 @@ export const Route = createFileRoute("/checkout")({
   component: Checkout,
 });
 
-const toneClass: Record<string, string> = {
-  lilac: "bg-lilac",
-  mint: "bg-mint",
-  butter: "bg-butter",
-};
+
+
 
 function Checkout() {
   const items = useCart();
@@ -42,7 +39,7 @@ function Checkout() {
   if (orderId) {
     return (
       <div className="bg-pattern px-4 py-16 text-center">
-        <div className="cozy-card relative mx-auto max-w-sm overflow-hidden bg-mint px-6 py-10">
+        <div className="cozy-card relative mx-auto max-w-sm overflow-hidden bg-blush px-6 py-10">
           <Heart className="absolute -right-4 -top-4 size-24 text-brand/10" fill="currentColor" />
           <Cherry className="absolute -left-4 -bottom-4 size-24 text-brand/10" />
           <BowIcon className="absolute left-1/2 top-1/2 size-32 -translate-x-1/2 -translate-y-1/2 text-brand/5" />
@@ -61,7 +58,7 @@ function Checkout() {
                 href={link.url}
                 target="_blank"
                 rel="noreferrer"
-                className={`cozy-card tap-target flex items-center justify-between px-5 py-4 ${toneClass[link.tone]}`}
+                className="cozy-card tap-target flex items-center justify-between bg-blush px-5 py-4"
               >
                 <span className="font-display font-semibold">{link.name}</span>
                 <span className="text-sm text-inksoft">{link.handle}</span>
@@ -165,7 +162,7 @@ function Checkout() {
           {PAYMENT_LINKS.map((link) => (
             <label
               key={link.name}
-              className={`cozy-card tap-target flex items-center gap-3 px-5 py-3 ${toneClass[link.tone]}`}
+              className="cozy-card tap-target flex items-center gap-3 bg-blush px-5 py-3"
             >
               <input
                 type="radio"

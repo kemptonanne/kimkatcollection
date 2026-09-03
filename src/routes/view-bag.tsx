@@ -81,9 +81,7 @@ function ViewMyBag() {
 
       <form onSubmit={onSubmit} className="mt-6 grid gap-3">
         <label className="grid gap-1.5">
-          <span className="flex items-center gap-1.5 text-sm font-bold">
-            <Cherry className="size-3.5 text-brand" /> Bag number <BowIcon className="size-3.5 text-brand" />
-          </span>
+          <span className="text-sm font-bold">Bag number</span>
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -161,17 +159,17 @@ function ViewMyBag() {
                     <dt className="text-xs font-bold uppercase tracking-wide text-inksoft">Total</dt>
                     <dd className="font-display text-lg">{money(parseMoney(bag.bagTotal))}</dd>
                   </div>
-                  <div className="cozy-card bg-mint px-4 py-3">
+                  <div className="cozy-card bg-lilac px-4 py-3">
                     <dt className="text-xs font-bold uppercase tracking-wide text-inksoft">Paid</dt>
                     <dd className="font-display text-lg">{money(parseMoney(bag.paymentsReceived))}</dd>
                   </div>
-                  <div className="cozy-card bg-butter px-4 py-3">
+                  <div className="cozy-card bg-lilac px-4 py-3">
                     <dt className="text-xs font-bold uppercase tracking-wide text-inksoft">
                       Remaining
                     </dt>
                     <dd className="font-display text-lg">{money(parseMoney(bag.balanceDue))}</dd>
                   </div>
-                  <div className="cozy-card bg-sky px-4 py-3">
+                  <div className="cozy-card bg-blush px-4 py-3">
                     <dt className="text-xs font-bold uppercase tracking-wide text-inksoft">Due</dt>
                     <dd className="font-display text-lg">{bag.dueDate || "—"}</dd>
                   </div>

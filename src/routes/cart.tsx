@@ -91,7 +91,7 @@ function CartPage() {
             ))}
           </ul>
 
-          <div className="cozy-card mt-6 flex items-center justify-between bg-butter px-5 py-4">
+          <div className="cozy-card mt-6 flex items-center justify-between bg-blush px-5 py-4">
             <span className="text-sm font-bold">Total</span>
             <span className="font-display text-xl">{money(total)}</span>
           </div>
