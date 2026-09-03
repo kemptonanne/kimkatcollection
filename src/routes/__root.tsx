@@ -81,16 +81,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Kim Kat Collection" },
+      { title: "KimKat Collection" },
       {
         name: "description",
-        content: "Jewelry and collectibles from Kim Kat Collection's TikTok live sales.",
+        content: "Jewelry and collectibles from KimKat Collection's TikTok live sales.",
       },
-      { name: "author", content: "Kim Kat Collection" },
-      { property: "og:title", content: "Kim Kat Collection" },
+      { name: "author", content: "KimKat Collection" },
+      { property: "og:title", content: "KimKat Collection" },
       {
         property: "og:description",
-        content: "Jewelry and collectibles from Kim Kat Collection's TikTok live sales.",
+        content: "Jewelry and collectibles from KimKat Collection's TikTok live sales.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -101,7 +101,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Nunito:wght@500;600;700;800&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Quicksand:wght@500;600;700&display=swap",
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
