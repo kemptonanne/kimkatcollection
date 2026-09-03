@@ -1,6 +1,6 @@
-# Kim Kat Collection
+# KimKat Collection
 
-A mobile-first storefront for jewelry and collectibles sold through TikTok live sales. Customers browse products, check out manually via Venmo/Cash App/PayPal links, and look up their live-sale bag by number at `/view-bag`.
+A cozy, mobile-first storefront for jewelry and collectibles sold through TikTok live sales. Customers browse products, check out manually via Venmo/Cash App/PayPal links, and look up their live-sale bag by number at `/view-bag`.
 
 ## How it's built
 
