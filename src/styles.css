@@ -5,8 +5,9 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Kim Kat Collection design system — "Hearts & Cherries".
- * Mobile-first, airy light pink surfaces, deep cherry ink, cherry-red brand accent.
+ * KimKat Collection design system — "Cozy Cherries, Hearts & Bows".
+ * Warm watercolor pinks, glossy cherry red, gingham hearts, ribbon bows.
+ * Mobile-first, soft and homey rather than sleek and modern.
  * All colors are oklch tokens. Never hardcode colors in components.
  */
 
@@ -19,8 +20,8 @@
   --radius-3xl: calc(var(--radius) + 16px);
   --radius-4xl: calc(var(--radius) + 24px);
 
-  --font-display: "Fraunces", ui-serif, Georgia, serif;
-  --font-body: "Nunito", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Libre Baskerville", ui-serif, Georgia, serif;
+  --font-body: "Quicksand", "Nunito", ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-body);
 
   --color-background: var(--background);
@@ -55,6 +56,7 @@
   --color-brand: var(--brand);
   --color-brand-foreground: var(--brand-foreground);
   --color-surface: var(--surface);
+  --color-leaf: var(--leaf);
 
   --color-chart-1: var(--brand);
   --color-chart-2: var(--accent);
@@ -72,42 +74,47 @@
 }
 
 :root {
-  --radius: 1rem;
+  --radius: 1.25rem;
 
-  /* Hearts & cherries: everything tinted pink/red, kept light and airy */
-  --cream: oklch(0.982 0.008 355); /* barely-pink white background */
-  --blush: oklch(0.955 0.03 355); /* light pink */
-  --lilac: oklch(0.94 0.04 10); /* light cherry blossom */
-  --mint: oklch(0.962 0.022 20); /* pale rose petal */
-  --sky: oklch(0.95 0.032 348); /* soft candy pink */
-  --butter: oklch(0.965 0.028 30); /* light peach-pink */
-  --ink: oklch(0.37 0.08 15); /* deep cherry ink */
-  --inksoft: oklch(0.55 0.06 15); /* muted cherry */
-  --brand: oklch(0.58 0.19 18); /* cherry red */
-  --brand-foreground: oklch(0.982 0.008 355);
-  --surface: oklch(1 0 0);
+  /* Warm watercolor pinks with cherry-red accents */
+  --cream: oklch(0.97 0.012 50);        /* warm blush-cream */
+  --blush: oklch(0.94 0.03 25);         /* peachy pink */
+  --lilac: oklch(0.92 0.04 350);        /* cherry-blossom pink */
+  --mint: oklch(0.94 0.025 150);        /* soft leaf green */
+  --sky: oklch(0.93 0.035 350);         /* candy pink */
+  --butter: oklch(0.95 0.03 70);        /* peach */
+  --ink: oklch(0.35 0.07 25);           /* warm cherry brown */
+  --inksoft: oklch(0.52 0.06 25);       /* muted cherry brown */
+  --brand: oklch(0.58 0.18 20);         /* glossy cherry red */
+  --brand-foreground: oklch(0.99 0.01 40);
+  --surface: oklch(0.99 0.01 40);      /* warm white */
+  --leaf: oklch(0.72 0.14 145);         /* cherry stem green */
 
   --background: var(--cream);
   --foreground: var(--ink);
-  --card: oklch(1 0 0);
+  --card: var(--surface);
   --card-foreground: var(--ink);
-  --popover: oklch(1 0 0);
+  --popover: var(--surface);
   --popover-foreground: var(--ink);
   --primary: var(--brand);
   --primary-foreground: var(--cream);
-  --secondary: var(--lilac);
+  --secondary: var(--blush);
   --secondary-foreground: var(--ink);
   --muted: var(--blush);
   --muted-foreground: var(--inksoft);
-  --accent: oklch(0.86 0.09 355); /* soft heart pink */
+  --accent: var(--lilac);
   --accent-foreground: var(--ink);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.99 0.01 355);
+  --destructive: oklch(0.55 0.22 25);
+  --destructive-foreground: oklch(0.99 0.01 40);
   --border: oklch(0.37 0.08 15 / 12%);
   --input: oklch(0.37 0.08 15 / 16%);
   --ring: var(--brand);
 
-  --shadow-soft: 0 6px 20px -12px oklch(0.37 0.08 15 / 40%);
+  --shadow-soft: 0 8px 24px -10px oklch(0.35 0.07 25 / 30%);
+  --shadow-card: 0 4px 14px -6px oklch(0.35 0.07 25 / 20%), 0 1px 3px oklch(0.35 0.07 25 / 8%);
+
+  /* Filled in by the app at runtime with the uploaded watercolor pattern URL */
+  --bg-pattern-url: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNDAiIGhlaWdodD0iMTQwIiB2aWV3Qm94PSIwIDAgMTQwIDE0MCI+CiAgPGcgZmlsbD0ibm9uZSIgc3Ryb2tlPSJva2xjaCgwLjU4IDAuMTkgMTggLyAwLjA5KSIgc3Ryb2tlLXdpZHRoPSIxLjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+CiAgICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxNiwxNikgc2NhbGUoMi4yKSI+CiAgICAgIDxwYXRoIGQ9Ik0xOSAxNGMxLjQ5LTEuNDYgMy0zLjIxIDMtNS41QTUuNSA1LjUgMCAwIDAgMTYuNSAzYy0xLjc2IDAtMyAuNS00LjUgMi0xLjUtMS41LTIuNzQtMi00LjUtMkE1LjUgNS41IDAgMCAwIDIgOC41YzAgMi4zIDEuNSA0LjA1IDMgNS41bDcgN1oiLz4KICAgIDwvZz4KICAgIDxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDgwLDIwKSBzY2FsZSgxLjkpIj4KICAgICAgPHBhdGggZD0iTTIgMTdhNSA1IDAgMCAwIDEwIDBjMC0yLjc2LTIuNS01LTUtMy0yLjUtMi01IC4yNC01IDNaIi8+CiAgICAgIDxwYXRoIGQ9Ik0xMiAxN2E1IDUgMCAwIDAgMTAgMGMwLTIuNzYtMi41LTUtNS0zLTIuNS0yLTUgLjI0LTUgM1oiLz4KICAgICAgPHBhdGggZD0iTTcgMTRjMy4yMi0yLjkxIDQuMjktOC43NSA1LTEyIDEuNjYgMi4zOCA0Ljk0IDkgNSAxMiIvPgogICAgICA8cGF0aCBkPSJNMjIgOWMtNC4yOSAwLTcuMTQtMi4zMy0xMC03IDUuNzEgMCAxMCA0LjY3IDEwIDdaIi8+CiAgICA8L2c+CiAgICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg1Niw5Mikgc2NhbGUoMS4zKSIgb3BhY2l0eT0iMC44Ij4KICAgICAgPHBhdGggZD0iTTE5IDE0YzEuNDktMS40NiAzLTMuMjEgMy01LjVBNS41IDUuNSAwIDAgMCAxNi41IDNjLTEuNzYgMC0zIC41LTQuNSAyLTEuNS0xLjUtMi43NC0yLTQuNS0yQTUuNSA1LjUgMCAwIDAgMiA4LjVjMCAyLjMgMS41IDQuMDUgMyA1LjVsNyA3WiIvPgogICAgPC9nPgogIDwvZz4KPC9zdmc+");
 }
 
 .dark {
@@ -128,7 +135,7 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-body);
-    font-weight: 500;
+    font-weight: 600;
     overflow-x: hidden;
   }
 
@@ -136,7 +143,7 @@
   h2,
   h3 {
     font-family: var(--font-display);
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: -0.01em;
   }
 }
@@ -149,13 +156,30 @@
 @utility pastel-card {
   border-radius: var(--radius-3xl);
   background-color: var(--color-card);
-  box-shadow: 0 0 0 1px oklch(0.37 0.08 15 / 6%);
+  box-shadow: var(--shadow-card);
+  border: 1px solid oklch(0.37 0.08 15 / 6%);
 }
 
 @utility bg-pattern {
-    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNDAiIGhlaWdodD0iMTQwIiB2aWV3Qm94PSIwIDAgMTQwIDE0MCI+CiAgPGcgZmlsbD0ibm9uZSIgc3Ryb2tlPSJva2xjaCgwLjU4IDAuMTkgMTggLyAwLjA5KSIgc3Ryb2tlLXdpZHRoPSIxLjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+CiAgICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxNiwxNikgc2NhbGUoMi4yKSI+CiAgICAgIDxwYXRoIGQ9Ik0xOSAxNGMxLjQ5LTEuNDYgMy0zLjIxIDMtNS41QTUuNSA1LjUgMCAwIDAgMTYuNSAzYy0xLjc2IDAtMyAuNS00LjUgMi0xLjUtMS41LTIuNzQtMi00LjUtMkE1LjUgNS41IDAgMCAwIDIgOC41YzAgMi4zIDEuNSA0LjA1IDMgNS41bDcgN1oiLz4KICAgIDwvZz4KICAgIDxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDgwLDIwKSBzY2FsZSgxLjkpIj4KICAgICAgPHBhdGggZD0iTTIgMTdhNSA1IDAgMCAwIDEwIDBjMC0yLjc2LTIuNS01LTUtMy0yLjUtMi01IC4yNC01IDNaIi8+CiAgICAgIDxwYXRoIGQ9Ik0xMiAxN2E1IDUgMCAwIDAgMTAgMGMwLTIuNzYtMi41LTUtNS0zLTIuNS0yLTUgLjI0LTUgM1oiLz4KICAgICAgPHBhdGggZD0iTTcgMTRjMy4yMi0yLjkxIDQuMjktOC43NSA1LTEyIDEuNjYgMi4zOCA0Ljk0IDkgNSAxMiIvPgogICAgICA8cGF0aCBkPSJNMjIgOWMtNC4yOSAwLTcuMTQtMi4zMy0xMC03IDUuNzEgMCAxMCA0LjY3IDEwIDdaIi8+CiAgICA8L2c+CiAgICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg1Niw5Mikgc2NhbGUoMS4zKSIgb3BhY2l0eT0iMC44Ij4KICAgICAgPHBhdGggZD0iTTE5IDE0YzEuNDktMS40NiAzLTMuMjEgMy01LjVBNS41IDUuNSAwIDAgMCAxNi41IDNjLTEuNzYgMC0zIC41LTQuNSAyLTEuNS0xLjUtMi43NC0yLTQuNS0yQTUuNSA1LjUgMCAwIDAgMiA4LjVjMCAyLjMgMS41IDQuMDUgMyA1LjVsNyA3WiIvPgogICAgPC9nPgogIDwvZz4KPC9zdmc+");
-  background-size: 140px 140px;
+  background-image: var(--bg-pattern-url);
+  background-size: 512px auto;
   background-position: center top;
   background-repeat: repeat;
+  background-color: var(--color-background);
   min-height: 100svh;
+}
+
+@utility cozy-card {
+  border-radius: var(--radius-3xl);
+  background-color: var(--color-card);
+  box-shadow: var(--shadow-card);
+  border: 1px solid oklch(0.58 0.18 20 / 10%);
+}
+
+@utility cozy-btn {
+  border-radius: 9999px;
+  background-color: var(--color-primary);
+  color: var(--color-primary-foreground);
+  box-shadow: inset 0 1px 0 oklch(1 0 0 / 20%), var(--shadow-soft);
+  font-weight: 700;
 }

@@ -93,7 +93,7 @@ export function ProductManager() {
 
   return (
     <div className="grid gap-6">
-      <section className="rounded-3xl bg-surface p-4">
+      <section className="cozy-card bg-surface p-4">
         <h2 className="font-display text-lg">{draft.id ? "Edit item" : "Add an item"}</h2>
         <div className="mt-3 grid gap-3">
           <label className="grid gap-1.5">
@@ -101,7 +101,7 @@ export function ProductManager() {
             <input
               value={draft.title}
               onChange={(e) => setDraft({ ...draft, title: e.target.value })}
-              className="tap-target rounded-2xl border border-input bg-cream px-4 text-base"
+              className="tap-target rounded-2xl border border-input bg-cream px-4 text-base shadow-card"
             />
           </label>
           <label className="grid gap-1.5">
@@ -110,7 +110,7 @@ export function ProductManager() {
               rows={4}
               value={draft.description}
               onChange={(e) => setDraft({ ...draft, description: e.target.value })}
-              className="rounded-2xl border border-input bg-cream px-4 py-3 text-base"
+              className="rounded-2xl border border-input bg-cream px-4 py-3 text-base shadow-card"
             />
           </label>
           <div className="grid grid-cols-2 gap-3">
@@ -120,7 +120,7 @@ export function ProductManager() {
                 inputMode="decimal"
                 value={draft.price}
                 onChange={(e) => setDraft({ ...draft, price: e.target.value })}
-                className="tap-target rounded-2xl border border-input bg-cream px-4 text-base"
+                className="tap-target rounded-2xl border border-input bg-cream px-4 text-base shadow-card"
               />
             </label>
             <label className="grid gap-1.5">
@@ -129,7 +129,7 @@ export function ProductManager() {
                 inputMode="numeric"
                 value={draft.quantity}
                 onChange={(e) => setDraft({ ...draft, quantity: e.target.value })}
-                className="tap-target rounded-2xl border border-input bg-cream px-4 text-base"
+                className="tap-target rounded-2xl border border-input bg-cream px-4 text-base shadow-card"
               />
             </label>
           </div>
@@ -140,14 +140,14 @@ export function ProductManager() {
               <ul className="flex gap-2 overflow-x-auto">
                 {draft.imageUrls.map((url) => (
                   <li key={url} className="relative shrink-0">
-                    <img src={url} alt="" width={144} height={144} className="size-18 rounded-2xl object-cover" />
+                    <img src={url} alt="" width={144} height={144} className="size-18 rounded-2xl object-cover shadow-card" />
                     <button
                       type="button"
                       aria-label="Remove photo"
                       onClick={() =>
                         setDraft((d) => ({ ...d, imageUrls: d.imageUrls.filter((u) => u !== url) }))
                       }
-                      className="absolute -right-1 -top-1 grid size-6 place-items-center rounded-full bg-brand text-xs text-brand-foreground"
+                      className="absolute -right-1 -top-1 grid size-6 place-items-center rounded-full bg-brand text-xs text-brand-foreground shadow-card"
                     >
                       ×
                     </button>
@@ -155,7 +155,7 @@ export function ProductManager() {
                 ))}
               </ul>
             )}
-            <label className="tap-target flex cursor-pointer items-center justify-center rounded-2xl bg-lilac text-sm font-bold">
+            <label className="tap-target flex cursor-pointer items-center justify-center rounded-2xl bg-lilac text-sm font-bold shadow-card">
               {uploading ? "Uploading…" : "Upload photos"}
               <input
                 type="file"
@@ -172,7 +172,7 @@ export function ProductManager() {
               type="button"
               disabled={saveMutation.isPending || !draft.title}
               onClick={() => saveMutation.mutate()}
-              className="tap-target flex flex-1 items-center justify-center rounded-full bg-brand text-sm font-bold text-brand-foreground disabled:opacity-60"
+              className="cozy-btn tap-target flex flex-1 items-center justify-center text-sm disabled:opacity-60"
             >
               {saveMutation.isPending ? "Saving…" : draft.id ? "Save changes" : "Add item"}
             </button>
@@ -180,7 +180,7 @@ export function ProductManager() {
               <button
                 type="button"
                 onClick={() => setDraft(emptyDraft)}
-                className="tap-target rounded-full bg-blush px-5 text-sm font-bold"
+                className="tap-target rounded-full bg-blush px-5 text-sm font-bold shadow-card"
               >
                 Cancel
               </button>
@@ -194,7 +194,7 @@ export function ProductManager() {
         {products.isLoading && <p className="mt-3 text-sm text-inksoft">Loading…</p>}
         <ul className="mt-3 grid gap-2">
           {(products.data ?? []).map((product) => (
-            <li key={product.id} className="flex items-center gap-3 rounded-3xl bg-surface p-3">
+            <li key={product.id} className="cozy-card flex items-center gap-3 bg-surface p-3">
               <div className="size-14 shrink-0 overflow-hidden rounded-2xl bg-blush">
                 {product.image_urls[0] ? (
                   <img
@@ -225,7 +225,7 @@ export function ProductManager() {
                     imageUrls: product.image_urls,
                   })
                 }
-                className="tap-target rounded-full bg-lilac px-4 text-sm font-bold"
+                className="tap-target rounded-full bg-lilac px-4 text-sm font-bold shadow-card"
               >
                 Edit
               </button>

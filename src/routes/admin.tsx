@@ -2,20 +2,22 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
+import { Cherry, Heart, Lock } from "lucide-react";
 import { toast } from "sonner";
 import { adminListOrders, adminLogin, adminLogout, adminStatus, adminUpdateOrderStatus } from "@/lib/admin.functions";
 import { ProductManager } from "@/components/admin/product-manager";
 import { BagManager } from "@/components/admin/bag-manager";
 import { money } from "@/lib/format";
+import { BowIcon } from "@/components/bow-icon";
 
 export const Route = createFileRoute("/admin")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Shop admin — Kim Kat Collection" },
-      { name: "description", content: "Password-protected management for Kim Kat Collection products, bags and orders." },
+      { title: "Shop admin — KimKat Collection" },
+      { name: "description", content: "Password-protected management for KimKat Collection products, bags and orders." },
       { name: "robots", content: "noindex" },
-      { property: "og:title", content: "Shop admin — Kim Kat Collection" },
+      { property: "og:title", content: "Shop admin — KimKat Collection" },
       { property: "og:description", content: "Password-protected shop management." },
     ],
   }),
@@ -36,7 +38,7 @@ function AdminPage() {
   const [tab, setTab] = useState<Tab>("products");
 
   if (session.isLoading) {
-    return <p className="px-4 py-16 text-center text-sm text-inksoft">Loading…</p>;
+    return <p className="bg-pattern px-4 py-16 text-center text-sm text-inksoft">Loading…</p>;
   }
 
   if (!session.data?.unlocked) {
@@ -61,32 +63,42 @@ function AdminPage() {
             setBusy(false);
           }
         }}
-        className="mx-auto max-w-sm px-4 py-16"
+        className="bg-pattern px-4 py-16"
       >
-        <h1 className="font-display text-2xl">Shop admin</h1>
-        <p className="mt-2 text-sm text-inksoft">Enter the admin password to manage the shop.</p>
-        <input
-          type="password"
-          autoComplete="current-password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="tap-target mt-5 w-full rounded-2xl border border-input bg-surface px-4 text-base"
-        />
-        <button
-          type="submit"
-          disabled={busy}
-          className="tap-target mt-4 flex w-full items-center justify-center rounded-full bg-brand text-base font-bold text-brand-foreground disabled:opacity-60"
-        >
-          {busy ? "Checking…" : "Unlock"}
-        </button>
+        <div className="cozy-card relative mx-auto max-w-sm overflow-hidden px-6 py-10 text-center">
+          <Heart className="absolute -right-3 -top-3 size-20 text-brand/10" fill="currentColor" />
+          <Cherry className="absolute -left-3 -bottom-3 size-20 text-brand/10" />
+          <BowIcon className="absolute left-1/2 top-1/2 size-28 -translate-x-1/2 -translate-y-1/2 text-brand/5" />
+          <Lock className="relative mx-auto size-10 text-brand" />
+          <h1 className="relative mt-4 font-display text-2xl">Shop admin</h1>
+          <p className="relative mt-2 text-sm text-inksoft">Enter the admin password to manage the shop.</p>
+          <input
+            type="password"
+            autoComplete="current-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="tap-target relative mt-5 w-full rounded-2xl border border-input bg-surface px-4 text-base shadow-card"
+          />
+          <button
+            type="submit"
+            disabled={busy}
+            className="cozy-btn tap-target relative mt-4 flex w-full items-center justify-center py-4 text-base disabled:opacity-60"
+          >
+            {busy ? "Checking…" : "Unlock"}
+          </button>
+        </div>
       </form>
     );
   }
 
   return (
-    <div className="px-4 pb-16 pt-6">
+    <div className="bg-pattern px-4 pb-16 pt-6">
       <div className="flex items-center justify-between gap-3">
-        <h1 className="font-display text-2xl">Shop admin</h1>
+        <div className="flex items-center gap-2 text-brand/40">
+          <Cherry className="size-4" />
+          <h1 className="font-display text-2xl">Shop admin</h1>
+          <BowIcon className="size-5" />
+        </div>
         <button
           type="button"
           onClick={async () => {
@@ -94,9 +106,9 @@ function AdminPage() {
             queryClient.clear();
             await queryClient.invalidateQueries({ queryKey: ["admin"] });
           }}
-          className="tap-target rounded-full bg-blush px-4 text-sm font-bold"
+          className="tap-target inline-flex items-center gap-1.5 rounded-full bg-blush px-4 py-2 text-sm font-bold shadow-card"
         >
-          Lock
+          <Lock className="size-4" /> Lock
         </button>
       </div>
 
@@ -107,7 +119,7 @@ function AdminPage() {
             type="button"
             onClick={() => setTab(value)}
             className={`tap-target shrink-0 rounded-full px-5 text-sm font-bold capitalize ${
-              tab === value ? "bg-brand text-brand-foreground" : "bg-lilac text-ink"
+              tab === value ? "cozy-btn" : "bg-lilac text-ink shadow-card"
             }`}
           >
             {value}
@@ -136,7 +148,7 @@ function OrderManager() {
   return (
     <ul className="grid gap-2">
       {orders.data.map((order) => (
-        <li key={order.id} className="rounded-3xl bg-surface p-4">
+        <li key={order.id} className="cozy-card bg-surface p-4">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
               <p className="font-bold">{order.buyer_name || "Unnamed buyer"}</p>
@@ -163,7 +175,7 @@ function OrderManager() {
               toast.success("Order updated");
               queryClient.invalidateQueries({ queryKey: ["admin", "orders"] });
             }}
-            className="tap-target mt-3 w-full rounded-2xl border border-input bg-cream px-4 text-sm"
+            className="tap-target mt-3 w-full rounded-2xl border border-input bg-cream px-4 text-sm shadow-card"
           >
             {["pending payment confirmation", "paid", "shipped", "cancelled"].map((status) => (
               <option key={status} value={status}>

@@ -1,4 +1,4 @@
-# Operating Kim Kat Collection
+# Operating KimKat Collection
 
 Day-to-day guide for running the shop. No code changes needed for any of this.
 
