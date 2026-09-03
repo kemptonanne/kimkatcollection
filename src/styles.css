@@ -121,6 +121,7 @@
 
   html {
     -webkit-text-size-adjust: 100%;
+    background-color: var(--color-blush);
   }
 
   body {
@@ -135,11 +136,7 @@
   body::before {
     content: "";
     position: fixed;
-    inset: 0;
-    /* Use the large viewport height so the backdrop doesn't shift or
-       resize when mobile browser chrome (URL bar) shows/hides on scroll.
-       Extra height below keeps the pattern visible during overscroll bounce. */
-    height: 125lvh;
+    inset: -1px;
     z-index: -1;
     background-image:
       linear-gradient(
@@ -151,6 +148,8 @@
     background-position: center;
     background-repeat: no-repeat;
     background-color: var(--color-background);
+    transform: translateZ(0);
+    pointer-events: none;
   }
 
   h1,
