@@ -161,7 +161,12 @@
 }
 
 @utility bg-pattern {
-  background-image: var(--bg-pattern-url);
+  background-image:
+    linear-gradient(
+      color-mix(in oklab, var(--color-background) 45%, transparent),
+      color-mix(in oklab, var(--color-background) 30%, transparent)
+    ),
+    var(--bg-pattern-url);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
