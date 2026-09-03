@@ -58,7 +58,7 @@ function Checkout() {
                 href={link.url}
                 target="_blank"
                 rel="noreferrer"
-                className={`cozy-card tap-target flex items-center justify-between px-5 py-4 ${toneClass[link.tone]}`}
+                className="cozy-card tap-target flex items-center justify-between bg-blush px-5 py-4"
               >
                 <span className="font-display font-semibold">{link.name}</span>
                 <span className="text-sm text-inksoft">{link.handle}</span>
@@ -162,7 +162,7 @@ function Checkout() {
           {PAYMENT_LINKS.map((link) => (
             <label
               key={link.name}
-              className={`cozy-card tap-target flex items-center gap-3 px-5 py-3 ${toneClass[link.tone]}`}
+              className="cozy-card tap-target flex items-center gap-3 bg-blush px-5 py-3"
             >
               <input
                 type="radio"

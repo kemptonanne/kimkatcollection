@@ -94,11 +94,7 @@ function AdminPage() {
   return (
     <div className="bg-pattern px-4 pb-16 pt-6">
       <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2 text-brand/40">
-          <Cherry className="size-4" />
-          <h1 className="font-display text-2xl">Shop admin</h1>
-          <BowIcon className="size-5" />
-        </div>
+        <h1 className="font-display text-2xl">Shop admin</h1>
         <button
           type="button"
           onClick={async () => {
@@ -108,7 +104,7 @@ function AdminPage() {
           }}
           className="tap-target inline-flex items-center gap-1.5 rounded-full bg-blush px-4 py-2 text-sm font-bold shadow-card"
         >
-          <Lock className="size-4" /> Lock
+          Lock
         </button>
       </div>
 
