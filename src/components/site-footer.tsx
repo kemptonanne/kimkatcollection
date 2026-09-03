@@ -1,6 +1,4 @@
 import { PAYMENT_LINKS, SIGNUP_FORM_URL } from "@/lib/format";
-import { Cherry, Heart } from "lucide-react";
-import { BowIcon } from "@/components/bow-icon";
 
 export function PaymentLinks({ title = "Pay your balance" }: { title?: string }) {
   return (
@@ -28,13 +26,6 @@ export function PaymentLinks({ title = "Pay your balance" }: { title?: string })
 export function SiteFooter() {
   return (
     <footer className="relative mt-12 border-t border-border/70 bg-blush px-4 py-8 text-center">
-      <div className="absolute inset-x-0 top-0 flex -translate-y-1/2 items-center justify-center gap-2 text-brand/30">
-        <Heart className="size-4" fill="currentColor" />
-        <Cherry className="size-5" />
-        <BowIcon className="size-5" />
-        <Cherry className="size-5" />
-        <Heart className="size-4" fill="currentColor" />
-      </div>
       <p className="font-display text-lg font-semibold text-brand">KimKat Collection</p>
       <p className="mx-auto mt-2 max-w-xs text-sm text-inksoft">
         Jewelry &amp; collectibles, live on TikTok.
