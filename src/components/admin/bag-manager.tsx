@@ -92,7 +92,7 @@ export function BagManager() {
 
   return (
     <div className="grid gap-3">
-      <p className="cozy-card bg-butter px-4 py-3 text-xs text-inksoft">
+      <p className="cozy-card bg-blush px-4 py-3 text-xs text-inksoft">
         Bag total and remaining balance are calculated by the spreadsheet — only payments, due date
         and status can be changed here.
       </p>
@@ -134,7 +134,7 @@ export function BagManager() {
                     <dt className="text-xs text-inksoft">Bag total</dt>
                     <dd className="font-bold">{money(parseMoney(bag.bagTotal))}</dd>
                   </div>
-                  <div className="cozy-card bg-mint px-3 py-2">
+                  <div className="cozy-card bg-lilac px-3 py-2">
                     <dt className="text-xs text-inksoft">Remaining</dt>
                     <dd className="font-bold">{money(parseMoney(bag.balanceDue))}</dd>
                   </div>
