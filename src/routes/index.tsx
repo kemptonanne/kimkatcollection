@@ -9,6 +9,11 @@ import { BowIcon } from "@/components/bow-icon";
 const productsQuery = queryOptions({
   queryKey: ["products"],
   queryFn: () => listProducts(),
+  // Trust the server-rendered data for a minute instead of refetching on
+  // hydration, and retry transient network blips before showing an error.
+  staleTime: 60_000,
+  retry: 2,
+  retryDelay: (attempt) => 500 * (attempt + 1),
 });
 
 export const Route = createFileRoute("/")({
