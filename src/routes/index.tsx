@@ -33,10 +33,17 @@ export const Route = createFileRoute("/")({
     ],
   }),
   loader: ({ context }) => context.queryClient.ensureQueryData(productsQuery),
-  errorComponent: () => (
-    <p className="px-4 py-16 text-center text-sm text-inksoft">
-      The shop didn&apos;t load. Please refresh and try again.
-    </p>
+  errorComponent: ({ reset }) => (
+    <div className="px-4 py-16 text-center">
+      <p className="text-sm text-inksoft">The shop didn&apos;t load. Sorry about that!</p>
+      <button
+        type="button"
+        onClick={() => reset()}
+        className="mt-4 inline-flex min-h-11 items-center rounded-full bg-brand px-6 text-sm font-semibold text-surface"
+      >
+        Try again
+      </button>
+    </div>
   ),
   component: Shop,
 });
