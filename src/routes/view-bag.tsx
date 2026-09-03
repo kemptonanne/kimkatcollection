@@ -5,29 +5,30 @@ import { Cherry, Heart, X } from "lucide-react";
 import { lookupBag } from "@/lib/bags.functions";
 import { money, parseMoney } from "@/lib/format";
 import { PaymentLinks } from "@/components/site-footer";
+import { BowIcon } from "@/components/bow-icon";
 
 export const Route = createFileRoute("/view-bag")({
   head: () => ({
     meta: [
-      { title: "Check my bag — KimKat Collection" },
+      { title: "View my bag — KimKat Collection" },
       {
         name: "description",
         content:
           "Look up your KimKat Collection live-sale bag by bag number to see items, balance, and due date.",
       },
-      { property: "og:title", content: "Check my bag — KimKat Collection" },
+      { property: "og:title", content: "View my bag — KimKat Collection" },
       {
         property: "og:description",
         content: "See your live-sale bag items, balance, and due date in seconds.",
       },
     ],
   }),
-  component: CheckMyBag,
+  component: ViewMyBag,
 });
 
 type Result = Awaited<ReturnType<typeof lookupBag>>;
 
-function CheckMyBag() {
+function ViewMyBag() {
   const lookup = useServerFn(lookupBag);
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
@@ -70,27 +71,31 @@ function CheckMyBag() {
         Enter your bag number to see what&apos;s inside, what you&apos;ve paid, and when it&apos;s
         due.
       </p>
-      <div className="mt-3 flex items-center gap-2 text-brand/40">
+      <div className="mt-3 flex items-center justify-center gap-2 text-brand/40">
+        <Cherry className="size-4" />
         <Heart className="size-4" fill="currentColor" />
-        <Cherry className="size-5" />
+        <BowIcon className="size-5" />
         <Heart className="size-4" fill="currentColor" />
+        <Cherry className="size-4" />
       </div>
 
       <form onSubmit={onSubmit} className="mt-6 grid gap-3">
         <label className="grid gap-1.5">
-          <span className="text-sm font-bold">Bag number</span>
+          <span className="flex items-center gap-1.5 text-sm font-bold">
+            <Cherry className="size-3.5 text-brand" /> Bag number <BowIcon className="size-3.5 text-brand" />
+          </span>
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             inputMode="numeric"
             placeholder="e.g. 1"
-            className="tap-target rounded-2xl border border-input bg-surface px-4 text-base"
+            className="tap-target rounded-2xl border border-input bg-surface px-4 text-base shadow-card"
           />
         </label>
         <button
           type="submit"
           disabled={loading}
-          className="tap-target flex items-center justify-center rounded-full bg-brand py-4 text-base font-bold text-brand-foreground disabled:opacity-60"
+          className="cozy-btn tap-target flex items-center justify-center py-4 text-base disabled:opacity-60"
         >
           {loading ? "Looking…" : "Find my bag"}
         </button>
@@ -111,7 +116,7 @@ function CheckMyBag() {
           onClick={() => setSheetOpen(false)}
         >
           <div
-            className="max-h-[85vh] w-full overflow-y-auto rounded-t-4xl bg-cream px-4 pb-8 pt-3"
+            className="max-h-[85vh] w-full overflow-y-auto rounded-t-4xl bg-cream px-4 pb-8 pt-3 shadow-soft"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-border" />
@@ -152,27 +157,27 @@ function CheckMyBag() {
                 </p>
 
                 <dl className="mt-4 grid grid-cols-2 gap-3">
-                  <div className="rounded-3xl bg-blush px-4 py-3">
+                  <div className="cozy-card bg-blush px-4 py-3">
                     <dt className="text-xs font-bold uppercase tracking-wide text-inksoft">Total</dt>
                     <dd className="font-display text-lg">{money(parseMoney(bag.bagTotal))}</dd>
                   </div>
-                  <div className="rounded-3xl bg-mint px-4 py-3">
+                  <div className="cozy-card bg-mint px-4 py-3">
                     <dt className="text-xs font-bold uppercase tracking-wide text-inksoft">Paid</dt>
                     <dd className="font-display text-lg">{money(parseMoney(bag.paymentsReceived))}</dd>
                   </div>
-                  <div className="rounded-3xl bg-butter px-4 py-3">
+                  <div className="cozy-card bg-butter px-4 py-3">
                     <dt className="text-xs font-bold uppercase tracking-wide text-inksoft">
                       Remaining
                     </dt>
                     <dd className="font-display text-lg">{money(parseMoney(bag.balanceDue))}</dd>
                   </div>
-                  <div className="rounded-3xl bg-sky px-4 py-3">
+                  <div className="cozy-card bg-sky px-4 py-3">
                     <dt className="text-xs font-bold uppercase tracking-wide text-inksoft">Due</dt>
                     <dd className="font-display text-lg">{bag.dueDate || "—"}</dd>
                   </div>
                 </dl>
 
-                <p className="mt-3 inline-flex rounded-full bg-lilac px-4 py-1.5 text-sm font-bold">
+                <p className="mt-3 inline-flex rounded-full bg-lilac px-4 py-1.5 text-sm font-bold shadow-card">
                   Status: {bag.status || "—"}
                 </p>
 
@@ -181,7 +186,7 @@ function CheckMyBag() {
                   {items.map((item) => (
                     <li
                       key={item.rowNumber}
-                      className="flex items-center justify-between gap-3 rounded-2xl bg-surface px-4 py-3 text-sm"
+                      className="cozy-card flex items-center justify-between gap-3 px-4 py-3 text-sm"
                     >
                       <span className="min-w-0">
                         <span className="block font-semibold">
@@ -200,7 +205,7 @@ function CheckMyBag() {
                     </li>
                   ))}
                   {items.length === 0 && (
-                    <li className="rounded-2xl bg-surface px-4 py-3 text-sm text-inksoft">
+                    <li className="cozy-card px-4 py-3 text-sm text-inksoft">
                       No items added yet.
                     </li>
                   )}
