@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Cherry, Heart, Trash2 } from "lucide-react";
 import { cartTotal, removeFromCart, setQuantity, useCart } from "@/lib/cart";
 import { money } from "@/lib/format";
+import { BowIcon } from "@/components/bow-icon";
 
 export const Route = createFileRoute("/cart")({
   head: () => ({
@@ -24,13 +25,14 @@ function CartPage() {
       <h1 className="font-display text-2xl">Your cart</h1>
 
       {items.length === 0 ? (
-        <div className="relative mt-8 overflow-hidden rounded-3xl bg-surface px-5 py-10 text-center">
+        <div className="cozy-card relative mt-8 overflow-hidden px-5 py-10 text-center">
           <Cherry className="absolute -right-3 -top-3 size-20 text-brand/10" />
           <Heart className="absolute -left-3 -bottom-3 size-20 text-brand/10" fill="currentColor" />
+          <BowIcon className="absolute left-1/2 top-1/2 size-28 -translate-x-1/2 -translate-y-1/2 text-brand/5" />
           <p className="relative text-sm text-inksoft">Your cart is empty.</p>
           <Link
             to="/"
-            className="relative tap-target mt-4 inline-flex items-center justify-center rounded-full bg-brand px-6 text-sm font-bold text-brand-foreground"
+            className="cozy-btn relative tap-target mt-4 inline-flex items-center justify-center px-6 text-sm"
           >
             Start shopping
           </Link>
@@ -39,7 +41,7 @@ function CartPage() {
         <>
           <ul className="mt-5 grid gap-3">
             {items.map((line) => (
-              <li key={line.id} className="flex gap-3 rounded-3xl bg-surface p-3">
+              <li key={line.id} className="cozy-card flex gap-3 p-3">
                 <div className="size-20 shrink-0 overflow-hidden rounded-2xl bg-blush">
                   {line.image ? (
                     <img
@@ -56,12 +58,12 @@ function CartPage() {
                   <p className="line-clamp-2 text-sm font-bold leading-snug">{line.title}</p>
                   <p className="mt-1 text-sm text-brand">{money(line.price)}</p>
                   <div className="mt-2 flex items-center gap-3">
-                    <div className="flex items-center rounded-full bg-lilac">
+                    <div className="flex items-center rounded-full bg-lilac shadow-card">
                       <button
                         type="button"
                         aria-label={`Decrease quantity of ${line.title}`}
                         onClick={() => setQuantity(line.id, line.quantity - 1)}
-                        className="tap-target rounded-full font-bold"
+                        className="tap-target rounded-full px-2 font-bold"
                       >
                         −
                       </button>
@@ -70,7 +72,7 @@ function CartPage() {
                         type="button"
                         aria-label={`Increase quantity of ${line.title}`}
                         onClick={() => setQuantity(line.id, line.quantity + 1)}
-                        className="tap-target rounded-full font-bold"
+                        className="tap-target rounded-full px-2 font-bold"
                       >
                         +
                       </button>
@@ -89,7 +91,7 @@ function CartPage() {
             ))}
           </ul>
 
-          <div className="mt-6 flex items-center justify-between rounded-3xl bg-butter px-5 py-4">
+          <div className="cozy-card mt-6 flex items-center justify-between bg-butter px-5 py-4">
             <span className="text-sm font-bold">Total</span>
             <span className="font-display text-xl">{money(total)}</span>
           </div>
@@ -97,7 +99,7 @@ function CartPage() {
           <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border/70 bg-cream/95 px-4 py-3 backdrop-blur">
             <Link
               to="/checkout"
-              className="tap-target flex w-full items-center justify-center rounded-full bg-brand py-4 text-base font-bold text-brand-foreground"
+              className="cozy-btn tap-target flex w-full items-center justify-center py-4 text-base"
             >
               Checkout · {money(total)}
             </Link>
