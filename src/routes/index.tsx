@@ -45,10 +45,6 @@ function Shop() {
     <div className="pb-4">
       <section className="px-4 pt-6">
         <div className="relative overflow-hidden rounded-4xl bg-blush px-6 py-10 text-center shadow-soft">
-          <Heart className="absolute -left-3 top-4 size-16 rotate-[-14deg] text-brand/20" fill="currentColor" />
-          <Cherry className="absolute -right-2 top-10 size-16 rotate-12 text-brand/20" />
-          <BowIcon className="absolute bottom-2 right-16 size-10 rotate-6 text-brand/15" />
-          <Heart className="absolute bottom-6 left-8 size-10 -rotate-12 text-brand/15" fill="currentColor" />
           <span className="inline-flex items-center gap-1.5 rounded-full bg-surface/80 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-brand shadow-card">
             New drops weekly
           </span>
