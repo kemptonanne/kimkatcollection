@@ -47,3 +47,8 @@ Shift the current cool pinks toward the warm, soft watercolor pinks from the pho
 - The uploaded pattern is registered through the asset CLI and referenced by URL in the `bg-pattern` utility; the existing inline SVG stays as the fallback layer.
 - Header changes are confined to `src/components/site-header.tsx`; motif and card changes touch the customer routes (`index`, product detail, cart, checkout, `view-bag`) and shared components only.
 - No changes to data, server functions, Sheets/Apps Script wiring, cart logic, or admin behavior. Tap targets stay at 44px+ and 375px remains the priority width.
+
+## 6. Text audit
+
+- Scan all display text site-wide for any remaining "Kim Kat" and replace with "KimKat" so the brand name is consistent everywhere.
+
