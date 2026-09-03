@@ -136,6 +136,9 @@
     content: "";
     position: fixed;
     inset: 0;
+    /* Use the large viewport height so the backdrop doesn't shift or
+       resize when mobile browser chrome (URL bar) shows/hides on scroll */
+    height: 100lvh;
     z-index: -1;
     background-image:
       linear-gradient(
