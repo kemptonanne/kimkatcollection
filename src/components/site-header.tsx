@@ -1,7 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { Cherry, Menu, ShoppingBag, X } from "lucide-react";
+import { Menu, ShoppingBag, X } from "lucide-react";
 import { useState } from "react";
-import { BowIcon } from "@/components/bow-icon";
 import { cartCount, useCart } from "@/lib/cart";
 import { SIGNUP_FORM_URL } from "@/lib/format";
 
@@ -29,9 +28,7 @@ export function SiteHeader() {
 
 
         <Link to="/" className="flex flex-col items-center leading-none" onClick={() => setOpen(false)}>
-          <span className="flex items-center gap-1.5 font-display text-lg font-semibold text-brand">
-            <Cherry className="size-4" /> KimKat <BowIcon className="size-4" />
-          </span>
+          <span className="font-display text-lg font-semibold text-brand">KimKat</span>
           <span className="text-[0.65rem] uppercase tracking-[0.28em] text-muted-foreground">
             Collection
           </span>
