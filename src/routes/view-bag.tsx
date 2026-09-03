@@ -101,7 +101,22 @@ function ViewMyBag() {
         </button>
       </form>
 
-      {error && <p className="mt-4 text-sm font-semibold text-destructive">{error}</p>}
+      {error && (
+        <div className="cozy-card mt-4 px-5 py-5 text-center" role="alert">
+          <p className="font-display text-lg">Hmm, we couldn&apos;t check right now</p>
+          <p className="mt-1 text-sm text-inksoft">
+            The bag list isn&apos;t answering — try again in a moment, or message Kim on TikTok if
+            it keeps happening.
+          </p>
+          <button
+            type="button"
+            onClick={onSubmit}
+            className="cozy-btn tap-target mt-4 inline-flex items-center justify-center px-6 text-sm"
+          >
+            Try again
+          </button>
+        </div>
+      )}
 
       <div className="mt-10">
         <PaymentLinks title="Pay on your bag" />
