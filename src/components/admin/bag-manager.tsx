@@ -92,7 +92,7 @@ export function BagManager() {
 
   return (
     <div className="grid gap-3">
-      <p className="rounded-2xl bg-butter px-4 py-3 text-xs text-inksoft">
+      <p className="cozy-card bg-butter px-4 py-3 text-xs text-inksoft">
         Bag total and remaining balance are calculated by the spreadsheet — only payments, due date
         and status can be changed here.
       </p>
@@ -107,7 +107,7 @@ export function BagManager() {
         const isOpen = openBag === bag.bagNumber;
 
         return (
-          <section key={bag.rowNumber} className="rounded-3xl bg-surface p-4">
+          <section key={bag.rowNumber} className="cozy-card bg-surface p-4">
             <button
               type="button"
               onClick={() => setOpenBag(isOpen ? null : bag.bagNumber)}
@@ -130,11 +130,11 @@ export function BagManager() {
             {isOpen && (
               <div className="mt-4 grid gap-4 border-t border-border pt-4">
                 <dl className="grid grid-cols-2 gap-2 text-sm">
-                  <div className="rounded-2xl bg-blush px-3 py-2">
+                  <div className="cozy-card bg-blush px-3 py-2">
                     <dt className="text-xs text-inksoft">Bag total</dt>
                     <dd className="font-bold">{money(parseMoney(bag.bagTotal))}</dd>
                   </div>
-                  <div className="rounded-2xl bg-mint px-3 py-2">
+                  <div className="cozy-card bg-mint px-3 py-2">
                     <dt className="text-xs text-inksoft">Remaining</dt>
                     <dd className="font-bold">{money(parseMoney(bag.balanceDue))}</dd>
                   </div>
@@ -152,7 +152,7 @@ export function BagManager() {
                           [bag.rowNumber]: { ...edit, paymentsReceived: e.target.value },
                         })
                       }
-                      className="tap-target rounded-2xl border border-input bg-cream px-4 text-base"
+                      className="tap-target rounded-2xl border border-input bg-cream px-4 text-base shadow-card"
                     />
                   </label>
                   <label className="grid gap-1.5">
@@ -166,7 +166,7 @@ export function BagManager() {
                           [bag.rowNumber]: { ...edit, dueDate: e.target.value },
                         })
                       }
-                      className="tap-target rounded-2xl border border-input bg-cream px-4 text-base"
+                      className="tap-target rounded-2xl border border-input bg-cream px-4 text-base shadow-card"
                     />
                   </label>
                   <label className="grid gap-1.5">
@@ -179,7 +179,7 @@ export function BagManager() {
                           [bag.rowNumber]: { ...edit, status: e.target.value },
                         })
                       }
-                      className="tap-target rounded-2xl border border-input bg-cream px-4 text-base"
+                      className="tap-target rounded-2xl border border-input bg-cream px-4 text-base shadow-card"
                     >
                       {[edit.status, ...BAG_STATUSES.filter((s) => s !== edit.status)]
                         .filter(Boolean)
@@ -194,7 +194,7 @@ export function BagManager() {
                     type="button"
                     disabled={saveBag.isPending}
                     onClick={() => saveBag.mutate({ rowNumber: bag.rowNumber, ...edit })}
-                    className="tap-target flex items-center justify-center rounded-full bg-brand text-sm font-bold text-brand-foreground disabled:opacity-60"
+                    className="cozy-btn tap-target flex items-center justify-center text-sm disabled:opacity-60"
                   >
                     Save bag
                   </button>
@@ -204,7 +204,7 @@ export function BagManager() {
                   <h3 className="text-sm font-bold">Items ({items.length})</h3>
                   <ul className="mt-2 grid gap-2">
                     {items.map((item) => (
-                      <li key={item.rowNumber} className="grid gap-2 rounded-2xl bg-cream p-3">
+                      <li key={item.rowNumber} className="cozy-card grid gap-2 bg-cream p-3">
                         {item.companyName && (
                           <span className="text-xs font-semibold text-inksoft">
                             {item.companyName}
@@ -224,7 +224,7 @@ export function BagManager() {
                               qty: item.qty,
                             })
                           }
-                          className="tap-target rounded-xl border border-input bg-surface px-3 text-sm"
+                          className="tap-target rounded-xl border border-input bg-surface px-3 text-sm shadow-card"
                         />
                         <div className="flex gap-2">
                           <input
@@ -242,7 +242,7 @@ export function BagManager() {
                                 qty: item.qty,
                               })
                             }
-                            className="tap-target w-28 rounded-xl border border-input bg-surface px-3 text-sm"
+                            className="tap-target w-28 rounded-xl border border-input bg-surface px-3 text-sm shadow-card"
                           />
                           <input
                             defaultValue={item.qty}
@@ -259,7 +259,7 @@ export function BagManager() {
                                 qty: e.target.value,
                               })
                             }
-                            className="tap-target w-16 rounded-xl border border-input bg-surface px-3 text-sm"
+                            className="tap-target w-16 rounded-xl border border-input bg-surface px-3 text-sm shadow-card"
                           />
                           <button
                             type="button"
@@ -274,18 +274,18 @@ export function BagManager() {
                     ))}
                   </ul>
 
-                  <div className="mt-3 grid gap-2 rounded-2xl bg-lilac p-3">
+                  <div className="cozy-card mt-3 grid gap-2 bg-lilac p-3">
                     <input
                       placeholder="Company name"
                       value={newItem.companyName}
                       onChange={(e) => setNewItem({ ...newItem, companyName: e.target.value })}
-                      className="tap-target rounded-xl border border-input bg-surface px-3 text-sm"
+                      className="tap-target rounded-xl border border-input bg-surface px-3 text-sm shadow-card"
                     />
                     <input
                       placeholder="New item description"
                       value={newItem.item}
                       onChange={(e) => setNewItem({ ...newItem, item: e.target.value })}
-                      className="tap-target rounded-xl border border-input bg-surface px-3 text-sm"
+                      className="tap-target rounded-xl border border-input bg-surface px-3 text-sm shadow-card"
                     />
                     <div className="flex gap-2">
                       <input
@@ -293,14 +293,14 @@ export function BagManager() {
                         inputMode="decimal"
                         value={newItem.price}
                         onChange={(e) => setNewItem({ ...newItem, price: e.target.value })}
-                        className="tap-target w-24 rounded-xl border border-input bg-surface px-3 text-sm"
+                        className="tap-target w-24 rounded-xl border border-input bg-surface px-3 text-sm shadow-card"
                       />
                       <input
                         placeholder="Qty"
                         inputMode="numeric"
                         value={newItem.qty}
                         onChange={(e) => setNewItem({ ...newItem, qty: e.target.value })}
-                        className="tap-target w-16 rounded-xl border border-input bg-surface px-3 text-sm"
+                        className="tap-target w-16 rounded-xl border border-input bg-surface px-3 text-sm shadow-card"
                       />
                       <button
                         type="button"
@@ -308,7 +308,7 @@ export function BagManager() {
                         onClick={() =>
                           createItem.mutate({ bagNumber: bag.bagNumber, ...newItem })
                         }
-                        className="tap-target ml-auto rounded-full bg-brand px-5 text-sm font-bold text-brand-foreground disabled:opacity-60"
+                        className="cozy-btn tap-target ml-auto px-5 text-sm disabled:opacity-60"
                       >
                         Add item
                       </button>
