@@ -125,7 +125,8 @@
   }
 
   body {
-    background-color: var(--color-background);
+    /* Background intentionally transparent: an opaque body background would
+     * paint OVER the fixed body::before backdrop layer (negative z-index). */
     color: var(--color-foreground);
     font-family: var(--font-body);
     font-weight: 600;
