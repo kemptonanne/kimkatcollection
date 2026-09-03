@@ -1,8 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Cherry, Heart, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { cartTotal, removeFromCart, setQuantity, useCart } from "@/lib/cart";
 import { money } from "@/lib/format";
-import { BowIcon } from "@/components/bow-icon";
 
 export const Route = createFileRoute("/cart")({
   head: () => ({
@@ -26,9 +25,6 @@ function CartPage() {
 
       {items.length === 0 ? (
         <div className="cozy-card relative mt-8 overflow-hidden px-5 py-10 text-center">
-          <Cherry className="absolute -right-3 -top-3 size-20 text-brand/10" />
-          <Heart className="absolute -left-3 -bottom-3 size-20 text-brand/10" fill="currentColor" />
-          <BowIcon className="absolute left-1/2 top-1/2 size-28 -translate-x-1/2 -translate-y-1/2 text-brand/5" />
           <p className="relative text-sm text-inksoft">Your cart is empty.</p>
           <Link
             to="/"
