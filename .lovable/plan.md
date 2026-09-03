@@ -31,7 +31,7 @@ Shift the current cool pinks toward the warm, soft watercolor pinks from the pho
 - Use the uploaded pattern image itself as the site background, tiled and softened (low opacity, warm wash over it) so it never fights the content.
 - Fall back to the existing SVG pattern behind it so the page still looks right before the image loads.
 - Motif density goes up: cherries, hearts (solid, gingham, dotted), bows, and small blossoms scattered like the photo.
-- Admin pages stay clean and plain, as they are today.
+- Admin pages get the same cohesive theme too — same palette, fonts, cards, and background pattern (kept a touch lighter so data stays readable).
 
 ## 5. Chunkier, hand-crafted cards
 
