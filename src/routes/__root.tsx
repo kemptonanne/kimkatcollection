@@ -10,7 +10,7 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
-import patternAsset from "@/assets/cherry-hearts-pattern.png.asset.json";
+import patternUrl from "@/assets/cozy-backdrop.jpg";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
