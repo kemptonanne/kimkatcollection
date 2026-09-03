@@ -130,7 +130,7 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   useEffect(() => {
-    document.body.style.setProperty("--bg-pattern-url", `url(${patternAsset.url})`);
+    document.body.style.setProperty("--bg-pattern-url", `url(${patternUrl})`);
   }, []);
 
   return (
