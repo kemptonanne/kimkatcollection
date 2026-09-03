@@ -27,7 +27,7 @@ export function PaymentLinks({ title = "Pay your balance" }: { title?: string })
 
 export function SiteFooter() {
   return (
-    <footer className="relative mt-12 border-t border-border/70 bg-blush/60 px-4 py-8 text-center">
+    <footer className="relative mt-12 border-t border-border/70 bg-blush px-4 py-8 text-center">
       <div className="absolute inset-x-0 top-0 flex -translate-y-1/2 items-center justify-center gap-2 text-brand/30">
         <Heart className="size-4" fill="currentColor" />
         <Cherry className="size-5" />
