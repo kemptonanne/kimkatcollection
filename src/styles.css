@@ -76,19 +76,19 @@
 :root {
   --radius: 1.25rem;
 
-  /* Warm watercolor pinks with cherry-red accents */
-  --cream: oklch(0.97 0.012 50);        /* warm blush-cream */
-  --blush: oklch(0.94 0.03 25);         /* peachy pink */
-  --lilac: oklch(0.92 0.04 350);        /* cherry-blossom pink */
-  --mint: oklch(0.94 0.025 150);        /* soft leaf green */
-  --sky: oklch(0.93 0.035 350);         /* candy pink */
-  --butter: oklch(0.95 0.03 70);        /* peach */
-  --ink: oklch(0.35 0.07 25);           /* warm cherry brown */
-  --inksoft: oklch(0.52 0.06 25);       /* muted cherry brown */
-  --brand: oklch(0.58 0.18 20);         /* glossy cherry red */
-  --brand-foreground: oklch(0.99 0.01 40);
-  --surface: oklch(0.99 0.01 40);      /* warm white */
-  --leaf: oklch(0.72 0.14 145);         /* cherry stem green */
+  /* Watercolor backdrop palette — blush wash, glossy cherries, pink bows, leaf green */
+  --cream: oklch(0.965 0.02 350);       /* blush watercolor wash */
+  --blush: oklch(0.93 0.045 355);       /* soft bow pink */
+  --lilac: oklch(0.90 0.06 355);        /* candy heart pink */
+  --mint: oklch(0.93 0.03 145);         /* soft leaf green */
+  --sky: oklch(0.92 0.05 355);          /* blossom pink */
+  --butter: oklch(0.95 0.025 70);       /* peach highlight */
+  --ink: oklch(0.34 0.075 20);          /* deep cherry brown */
+  --inksoft: oklch(0.52 0.06 20);       /* muted cherry brown */
+  --brand: oklch(0.55 0.20 15);         /* glossy cherry red */
+  --brand-foreground: oklch(0.99 0.01 350);
+  --surface: oklch(0.985 0.012 355);    /* warm blush white */
+  --leaf: oklch(0.70 0.13 145);         /* cherry stem green */
 
   --background: var(--cream);
   --foreground: var(--ink);
