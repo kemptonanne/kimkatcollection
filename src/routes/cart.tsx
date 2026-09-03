@@ -6,9 +6,9 @@ import { money } from "@/lib/format";
 export const Route = createFileRoute("/cart")({
   head: () => ({
     meta: [
-      { title: "Your cart — Kim Kat Collection" },
-      { name: "description", content: "Review the jewelry and collectibles in your Kim Kat Collection cart before checkout." },
-      { property: "og:title", content: "Your cart — Kim Kat Collection" },
+      { title: "Your cart — KimKat Collection" },
+      { name: "description", content: "Review the jewelry and collectibles in your KimKat Collection cart before checkout." },
+      { property: "og:title", content: "Your cart — KimKat Collection" },
       { property: "og:description", content: "Review your items before checkout." },
     ],
   }),

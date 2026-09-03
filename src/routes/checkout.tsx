@@ -10,12 +10,12 @@ import { submitOrder } from "@/lib/shop.functions";
 export const Route = createFileRoute("/checkout")({
   head: () => ({
     meta: [
-      { title: "Checkout — Kim Kat Collection" },
+      { title: "Checkout — KimKat Collection" },
       {
         name: "description",
-        content: "Place your Kim Kat Collection order and pay by Venmo, Cash App, or PayPal.",
+        content: "Place your KimKat Collection order and pay by Venmo, Cash App, or PayPal.",
       },
-      { property: "og:title", content: "Checkout — Kim Kat Collection" },
+      { property: "og:title", content: "Checkout — KimKat Collection" },
       { property: "og:description", content: "Place your order and pay by Venmo, Cash App, or PayPal." },
     ],
   }),

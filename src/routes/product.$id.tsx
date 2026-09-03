@@ -14,15 +14,15 @@ export const Route = createFileRoute("/product/$id")({
   head: ({ loaderData }) => {
     if (!loaderData) {
       return {
-        meta: [{ title: "Item unavailable — Kim Kat Collection" }, { name: "robots", content: "noindex" }],
+        meta: [{ title: "Item unavailable — KimKat Collection" }, { name: "robots", content: "noindex" }],
       };
     }
-    const description = loaderData.description.slice(0, 150) || "A little treasure from Kim Kat Collection.";
+    const description = loaderData.description.slice(0, 150) || "A little treasure from KimKat Collection.";
     return {
       meta: [
-        { title: `${loaderData.title} — Kim Kat Collection` },
+        { title: `${loaderData.title} — KimKat Collection` },
         { name: "description", content: description },
-        { property: "og:title", content: `${loaderData.title} — Kim Kat Collection` },
+        { property: "og:title", content: `${loaderData.title} — KimKat Collection` },
         { property: "og:description", content: description },
       ],
     };
