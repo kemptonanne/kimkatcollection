@@ -25,7 +25,7 @@ export function PaymentLinks({ title = "Pay your balance" }: { title?: string })
 
 export function SiteFooter() {
   return (
-    <footer className="relative mt-12 border-t border-border/70 bg-blush px-4 py-8 text-center before:absolute before:inset-x-0 before:top-full before:h-[100vh] before:bg-blush">
+    <footer className="relative mt-12 border-t border-border/70 bg-blush px-4 py-8 text-center">
       <p className="font-display text-lg font-semibold text-brand">KimKat Collection</p>
       <p className="mx-auto mt-2 max-w-xs text-sm text-inksoft">
         Jewelry &amp; collectibles, live on TikTok.
