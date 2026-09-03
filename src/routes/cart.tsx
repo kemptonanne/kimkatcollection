@@ -25,7 +25,17 @@ function CartPage() {
 
       {items.length === 0 ? (
         <div className="cozy-card relative mt-8 overflow-hidden px-5 py-10 text-center">
-          <p className="relative text-sm text-inksoft">Your cart is empty.</p>
+          <div className="relative flex items-center justify-center gap-2 text-brand/60">
+            <Cherry className="size-4" />
+            <Heart className="size-4" fill="currentColor" />
+            <BowIcon className="size-5" />
+            <Heart className="size-4" fill="currentColor" />
+            <Cherry className="size-4" />
+          </div>
+          <p className="relative mt-3 font-display text-lg">Your cart is empty</p>
+          <p className="relative mt-1 text-sm text-inksoft">
+            Little treasures await — come browse the latest drops.
+          </p>
           <Link
             to="/"
             className="cozy-btn relative tap-target mt-4 inline-flex items-center justify-center px-6 text-sm"
