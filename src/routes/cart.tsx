@@ -21,7 +21,7 @@ function CartPage() {
   const total = cartTotal(items);
 
   return (
-    <div className="bg-pattern px-4 pb-28 pt-6">
+    <div className="px-4 pb-28 pt-6">
       <h1 className="font-display text-2xl">Your cart</h1>
 
       {items.length === 0 ? (
