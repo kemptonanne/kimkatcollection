@@ -11,13 +11,12 @@ export function parseMoney(value: string | null | undefined): number {
 }
 
 export const PAYMENT_LINKS = [
-  { name: "Venmo", handle: "Kim-Kempton", url: "https://venmo.com/Kim-Kempton", tone: "lilac" },
-  { name: "Cash App", handle: "$KimKat0707", url: "https://cash.app/$KimKat0707", tone: "mint" },
+  { name: "Venmo", handle: "Kim-Kempton", url: "https://venmo.com/Kim-Kempton" },
+  { name: "Cash App", handle: "$KimKat0707", url: "https://cash.app/$KimKat0707" },
   {
     name: "PayPal",
     handle: "kimberlykempton77",
     url: "https://www.paypal.com/paypalme/kimberlykempton77",
-    tone: "butter",
   },
 ] as const;
 
