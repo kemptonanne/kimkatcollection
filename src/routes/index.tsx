@@ -125,8 +125,6 @@ function Shop() {
           to="/view-bag"
           className="relative flex items-center justify-between overflow-hidden rounded-4xl bg-lilac px-6 py-6 shadow-soft transition-transform active:scale-[0.99]"
         >
-          <Heart className="absolute -right-2 top-2 size-16 text-brand/10" fill="currentColor" />
-          <BowIcon className="absolute -left-3 -bottom-3 size-16 text-brand/10" />
           <span className="relative">
             <span className="block font-display text-xl">View my bag</span>
             <span className="mt-1 block text-sm text-inksoft">
