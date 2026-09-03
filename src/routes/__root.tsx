@@ -129,6 +129,10 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
+  useEffect(() => {
+    document.body.style.setProperty("--bg-pattern-url", `url(${patternAsset.url})`);
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <div className="mx-auto flex min-h-screen max-w-3xl flex-col bg-background">
