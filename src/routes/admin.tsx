@@ -2,13 +2,13 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import { Cherry, Heart, Lock } from "lucide-react";
+import { Lock } from "lucide-react";
 import { toast } from "sonner";
 import { adminListOrders, adminLogin, adminLogout, adminStatus, adminUpdateOrderStatus } from "@/lib/admin.functions";
 import { ProductManager } from "@/components/admin/product-manager";
 import { BagManager } from "@/components/admin/bag-manager";
 import { money } from "@/lib/format";
-import { BowIcon } from "@/components/bow-icon";
+
 
 export const Route = createFileRoute("/admin")({
   ssr: false,
@@ -66,9 +66,6 @@ function AdminPage() {
         className="px-4 py-16"
       >
         <div className="cozy-card relative mx-auto max-w-sm overflow-hidden px-6 py-10 text-center">
-          <Heart className="absolute -right-3 -top-3 size-20 text-brand/10" fill="currentColor" />
-          <Cherry className="absolute -left-3 -bottom-3 size-20 text-brand/10" />
-          <BowIcon className="absolute left-1/2 top-1/2 size-28 -translate-x-1/2 -translate-y-1/2 text-brand/5" />
           <Lock className="relative mx-auto size-10 text-brand" />
           <h1 className="relative mt-4 font-display text-2xl">Shop admin</h1>
           <p className="relative mt-2 text-sm text-inksoft">Enter the admin password to manage the shop.</p>
