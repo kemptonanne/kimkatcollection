@@ -38,7 +38,7 @@ function Checkout() {
 
   if (orderId) {
     return (
-      <div className="bg-pattern px-4 py-16 text-center">
+      <div className="px-4 py-16 text-center">
         <div className="cozy-card relative mx-auto max-w-sm overflow-hidden bg-blush px-6 py-10">
           <Heart className="absolute -right-4 -top-4 size-24 text-brand/10" fill="currentColor" />
           <Cherry className="absolute -left-4 -bottom-4 size-24 text-brand/10" />
@@ -75,7 +75,7 @@ function Checkout() {
 
   if (items.length === 0) {
     return (
-      <div className="bg-pattern px-4 py-16 text-center">
+      <div className="px-4 py-16 text-center">
         <div className="cozy-card relative mx-auto max-w-sm overflow-hidden px-5 py-8">
           <Heart className="absolute -right-3 -top-3 size-20 text-brand/10" fill="currentColor" />
           <Cherry className="absolute -left-3 -bottom-3 size-20 text-brand/10" />
@@ -117,7 +117,7 @@ function Checkout() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="bg-pattern px-4 pb-10 pt-6">
+    <form onSubmit={onSubmit} className="px-4 pb-10 pt-6">
       <h1 className="font-display text-2xl">Checkout</h1>
       <p className="mt-2 text-sm text-inksoft">
         Payment is sent manually after you place the order. No card details are collected here.

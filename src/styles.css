@@ -131,6 +131,24 @@
     overflow-x: hidden;
   }
 
+  /* Full-bleed watercolor backdrop behind the entire site */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background-image:
+      linear-gradient(
+        color-mix(in oklab, var(--color-background) 45%, transparent),
+        color-mix(in oklab, var(--color-background) 30%, transparent)
+      ),
+      var(--bg-pattern-url);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: var(--color-background);
+  }
+
   h1,
   h2,
   h3 {
