@@ -1,6 +1,4 @@
 import { PAYMENT_LINKS, SIGNUP_FORM_URL } from "@/lib/format";
-import { Cherry, Heart } from "lucide-react";
-import { BowIcon } from "@/components/bow-icon";
 
 export function PaymentLinks({ title = "Pay your balance" }: { title?: string }) {
   return (
