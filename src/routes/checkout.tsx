@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { cartTotal, clearCart, useCart } from "@/lib/cart";
 import { money, PAYMENT_LINKS } from "@/lib/format";
 import { submitOrder } from "@/lib/shop.functions";
+import { BowIcon } from "@/components/bow-icon";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
@@ -41,9 +42,10 @@ function Checkout() {
   if (orderId) {
     return (
       <div className="bg-pattern px-4 py-16 text-center">
-        <div className="relative mx-auto max-w-sm overflow-hidden rounded-4xl bg-mint px-6 py-10">
+        <div className="cozy-card relative mx-auto max-w-sm overflow-hidden bg-mint px-6 py-10">
           <Heart className="absolute -right-4 -top-4 size-24 text-brand/10" fill="currentColor" />
           <Cherry className="absolute -left-4 -bottom-4 size-24 text-brand/10" />
+          <BowIcon className="absolute left-1/2 top-1/2 size-32 -translate-x-1/2 -translate-y-1/2 text-brand/5" />
           <h1 className="relative font-display text-2xl">Order received</h1>
           <p className="relative mt-3 text-sm text-inksoft">
             Send your payment with the button below and Kim will confirm your order.
@@ -59,7 +61,7 @@ function Checkout() {
                 href={link.url}
                 target="_blank"
                 rel="noreferrer"
-                className={`tap-target flex items-center justify-between rounded-3xl px-5 py-4 ${toneClass[link.tone]}`}
+                className={`cozy-card tap-target flex items-center justify-between px-5 py-4 ${toneClass[link.tone]}`}
               >
                 <span className="font-display font-semibold">{link.name}</span>
                 <span className="text-sm text-inksoft">{link.handle}</span>
@@ -77,11 +79,12 @@ function Checkout() {
   if (items.length === 0) {
     return (
       <div className="bg-pattern px-4 py-16 text-center">
-        <div className="relative mx-auto max-w-sm overflow-hidden rounded-3xl bg-surface px-5 py-8">
+        <div className="cozy-card relative mx-auto max-w-sm overflow-hidden px-5 py-8">
           <Heart className="absolute -right-3 -top-3 size-20 text-brand/10" fill="currentColor" />
           <Cherry className="absolute -left-3 -bottom-3 size-20 text-brand/10" />
+          <BowIcon className="absolute left-1/2 top-1/2 size-28 -translate-x-1/2 -translate-y-1/2 text-brand/5" />
           <p className="relative text-sm text-inksoft">There&apos;s nothing to check out yet.</p>
-          <Link to="/" className="relative tap-target mt-4 inline-flex items-center text-sm font-bold text-brand">
+          <Link to="/" className="cozy-btn relative tap-target mt-4 inline-flex items-center px-6 text-sm">
             Start shopping
           </Link>
         </div>
@@ -123,7 +126,7 @@ function Checkout() {
         Payment is sent manually after you place the order. No card details are collected here.
       </p>
 
-      <ul className="mt-5 grid gap-2 rounded-3xl bg-surface p-4">
+      <ul className="cozy-card mt-5 grid gap-2 p-4">
         {items.map((line) => (
           <li key={line.id} className="flex justify-between gap-3 text-sm">
             <span className="min-w-0 truncate">
@@ -145,7 +148,7 @@ function Checkout() {
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="tap-target rounded-2xl border border-input bg-surface px-4 text-base"
+            className="tap-target rounded-2xl border border-input bg-surface px-4 text-base shadow-card"
           />
         </label>
         <label className="grid gap-1.5">
@@ -154,7 +157,7 @@ function Checkout() {
             required
             value={contact}
             onChange={(e) => setContact(e.target.value)}
-            className="tap-target rounded-2xl border border-input bg-surface px-4 text-base"
+            className="tap-target rounded-2xl border border-input bg-surface px-4 text-base shadow-card"
           />
         </label>
         <fieldset className="grid gap-2">
@@ -162,7 +165,7 @@ function Checkout() {
           {PAYMENT_LINKS.map((link) => (
             <label
               key={link.name}
-              className={`tap-target flex items-center gap-3 rounded-3xl px-5 ${toneClass[link.tone]}`}
+              className={`cozy-card tap-target flex items-center gap-3 px-5 py-3 ${toneClass[link.tone]}`}
             >
               <input
                 type="radio"
@@ -182,7 +185,7 @@ function Checkout() {
       <button
         type="submit"
         disabled={placing}
-        className="tap-target mt-8 flex w-full items-center justify-center rounded-full bg-brand py-4 text-base font-bold text-brand-foreground disabled:opacity-60"
+        className="cozy-btn tap-target mt-8 flex w-full items-center justify-center py-4 text-base disabled:opacity-60"
       >
         {placing ? "Placing order…" : `Place order · ${money(total)}`}
       </button>
