@@ -162,9 +162,10 @@
 
 @utility bg-pattern {
   background-image: var(--bg-pattern-url);
-  background-size: 512px auto;
-  background-position: center top;
-  background-repeat: repeat;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   background-color: var(--color-background);
   min-height: 100svh;
 }
