@@ -66,17 +66,22 @@ function ViewMyBag() {
 
   return (
     <div className="bg-pattern px-4 pb-12 pt-6">
-      <h1 className="font-display text-2xl">View my bag</h1>
-      <p className="mt-2 text-sm text-inksoft">
-        Enter your bag number to see what&apos;s inside, what you&apos;ve paid, and when it&apos;s
-        due.
-      </p>
-      <div className="mt-3 flex items-center justify-center gap-2 text-brand/40">
-        <Cherry className="size-4" />
-        <Heart className="size-4" fill="currentColor" />
-        <BowIcon className="size-5" />
-        <Heart className="size-4" fill="currentColor" />
-        <Cherry className="size-4" />
+      <div className="relative overflow-hidden rounded-4xl bg-blush px-6 py-8 text-center shadow-soft">
+        <Heart className="absolute -left-3 top-4 size-14 rotate-[-14deg] text-brand/20" fill="currentColor" />
+        <Cherry className="absolute -right-2 top-10 size-14 rotate-12 text-brand/20" />
+        <BowIcon className="absolute bottom-2 right-14 size-9 rotate-6 text-brand/15" />
+        <h1 className="relative font-display text-2xl">View my bag</h1>
+        <p className="relative mt-2 text-sm text-inksoft">
+          Enter your bag number to see what&apos;s inside, what you&apos;ve paid, and when it&apos;s
+          due.
+        </p>
+        <div className="relative mt-4 flex items-center justify-center gap-2 text-brand/60">
+          <Cherry className="size-4" />
+          <Heart className="size-4" fill="currentColor" />
+          <BowIcon className="size-5" />
+          <Heart className="size-4" fill="currentColor" />
+          <Cherry className="size-4" />
+        </div>
       </div>
 
       <form onSubmit={onSubmit} className="mt-6 grid gap-3">
