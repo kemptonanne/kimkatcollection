@@ -1,4 +1,5 @@
 import { Cherry, Heart } from "lucide-react";
+import { BowIcon } from "@/components/bow-icon";
 import { PAYMENT_LINKS, SIGNUP_FORM_URL } from "@/lib/format";
 
 const toneClass: Record<string, string> = {
