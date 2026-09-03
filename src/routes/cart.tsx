@@ -1,8 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Cherry, Heart, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { cartTotal, removeFromCart, setQuantity, useCart } from "@/lib/cart";
 import { money } from "@/lib/format";
-import { BowIcon } from "@/components/bow-icon";
 
 export const Route = createFileRoute("/cart")({
   head: () => ({
