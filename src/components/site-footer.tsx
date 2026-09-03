@@ -35,7 +35,7 @@ export function SiteFooter() {
   return (
     <footer className="mt-12 border-t border-border/70 bg-blush/50 px-4 py-8 text-center">
       <p className="flex items-center justify-center gap-1.5 font-display text-lg font-semibold text-brand">
-        <Heart className="size-4" fill="currentColor" /> Kim Kat Collection <Cherry className="size-4" />
+        <Cherry className="size-4" /> KimKat Collection <BowIcon className="size-4" />
       </p>
       <p className="mx-auto mt-2 max-w-xs text-sm text-inksoft">
         Jewelry &amp; collectibles, live on TikTok.
