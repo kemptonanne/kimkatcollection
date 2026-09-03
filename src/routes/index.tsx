@@ -4,6 +4,7 @@ import { Cherry, Heart } from "lucide-react";
 import { listProducts } from "@/lib/shop.functions";
 import { money } from "@/lib/format";
 import { PaymentLinks } from "@/components/site-footer";
+import { BowIcon } from "@/components/bow-icon";
 
 const productsQuery = queryOptions({
   queryKey: ["products"],
@@ -43,12 +44,12 @@ function Shop() {
   return (
     <div className="bg-pattern pb-4">
       <section className="px-4 pt-6">
-        <div className="relative overflow-hidden rounded-4xl bg-blush px-6 py-10 text-center">
+        <div className="relative overflow-hidden rounded-4xl bg-blush px-6 py-10 text-center shadow-soft">
           <Heart className="absolute -left-3 top-4 size-16 rotate-[-14deg] text-brand/20" fill="currentColor" />
           <Cherry className="absolute -right-2 top-10 size-16 rotate-12 text-brand/20" />
-          <Heart className="absolute bottom-2 right-16 size-10 rotate-6 text-brand/15" fill="currentColor" />
-          <Cherry className="absolute bottom-6 left-8 size-10 -rotate-12 text-brand/15" />
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-surface/80 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-brand">
+          <BowIcon className="absolute bottom-2 right-16 size-10 rotate-6 text-brand/15" />
+          <Heart className="absolute bottom-6 left-8 size-10 -rotate-12 text-brand/15" fill="currentColor" />
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-surface/80 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-brand shadow-card">
             <Cherry className="size-4" /> New drops weekly
           </span>
           <h1 className="mt-5 font-display text-3xl leading-tight">
@@ -58,9 +59,11 @@ function Shop() {
             Jewelry and collectibles from the live sales — grab them here between shows.
           </p>
           <div className="mt-5 flex items-center justify-center gap-2 text-brand/70">
+            <Cherry className="size-4" />
             <Heart className="size-4" fill="currentColor" />
-            <Cherry className="size-5" />
+            <BowIcon className="size-5" />
             <Heart className="size-4" fill="currentColor" />
+            <Cherry className="size-4" />
           </div>
         </div>
       </section>
@@ -72,10 +75,13 @@ function Shop() {
         </div>
 
         {products.length === 0 ? (
-          <div className="mt-6 rounded-3xl bg-surface px-5 py-8 text-center text-sm text-inksoft">
+          <div className="cozy-card mt-6 px-5 py-8 text-center text-sm text-inksoft">
             <div className="mb-3 flex items-center justify-center gap-2 text-brand/30">
+              <Cherry className="size-6" />
               <Heart className="size-6" fill="currentColor" />
-              <Cherry className="size-7" />
+              <BowIcon className="size-7" />
+              <Heart className="size-6" fill="currentColor" />
+              <Cherry className="size-6" />
             </div>
             Nothing listed right now — check back soon.
           </div>
@@ -86,7 +92,7 @@ function Shop() {
                 <Link
                   to="/product/$id"
                   params={{ id: product.id }}
-                  className="block overflow-hidden rounded-3xl bg-surface transition-transform active:scale-[0.98]"
+                  className="cozy-card block overflow-hidden transition-transform active:scale-[0.98]"
                 >
                   <div className={`aspect-square ${tones[i % tones.length]}`}>
                     {product.image_urls[0] ? (
@@ -117,12 +123,12 @@ function Shop() {
       <section className="mt-10 px-4">
         <Link
           to="/view-bag"
-          className="relative flex items-center justify-between overflow-hidden rounded-4xl bg-sky px-6 py-6 transition-transform active:scale-[0.99]"
+          className="relative flex items-center justify-between overflow-hidden rounded-4xl bg-sky px-6 py-6 shadow-soft transition-transform active:scale-[0.99]"
         >
           <Heart className="absolute -right-2 top-2 size-16 text-brand/10" fill="currentColor" />
-          <Cherry className="absolute -left-3 -bottom-3 size-16 text-brand/10" />
+          <BowIcon className="absolute -left-3 -bottom-3 size-16 text-brand/10" />
           <span className="relative">
-            <span className="block font-display text-xl">Check my bag</span>
+            <span className="block font-display text-xl">View my bag</span>
             <span className="mt-1 block text-sm text-inksoft">
               See your items, balance, and due date.
             </span>
