@@ -36,7 +36,7 @@ export const Route = createFileRoute("/")({
   component: Shop,
 });
 
-const tones = ["bg-blush", "bg-lilac", "bg-mint", "bg-sky", "bg-butter"];
+const tones = ["bg-blush", "bg-lilac"];
 
 function Shop() {
   const { data: products } = useSuspenseQuery(productsQuery);
@@ -50,7 +50,7 @@ function Shop() {
           <BowIcon className="absolute bottom-2 right-16 size-10 rotate-6 text-brand/15" />
           <Heart className="absolute bottom-6 left-8 size-10 -rotate-12 text-brand/15" fill="currentColor" />
           <span className="inline-flex items-center gap-1.5 rounded-full bg-surface/80 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-brand shadow-card">
-            <Cherry className="size-4" /> New drops weekly
+            New drops weekly
           </span>
           <h1 className="mt-5 font-display text-3xl leading-tight">
             Little treasures, picked with <span className="text-brand">love</span>
@@ -123,7 +123,7 @@ function Shop() {
       <section className="mt-10 px-4">
         <Link
           to="/view-bag"
-          className="relative flex items-center justify-between overflow-hidden rounded-4xl bg-sky px-6 py-6 shadow-soft transition-transform active:scale-[0.99]"
+          className="relative flex items-center justify-between overflow-hidden rounded-4xl bg-lilac px-6 py-6 shadow-soft transition-transform active:scale-[0.99]"
         >
           <Heart className="absolute -right-2 top-2 size-16 text-brand/10" fill="currentColor" />
           <BowIcon className="absolute -left-3 -bottom-3 size-16 text-brand/10" />
