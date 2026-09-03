@@ -11,7 +11,9 @@ const toneClass: Record<string, string> = {
 export function PaymentLinks({ title = "Pay your balance" }: { title?: string }) {
   return (
     <section className="px-4">
-      <h2 className="mb-3 text-lg font-semibold">{title}</h2>
+      <h2 className="mb-3 flex items-center gap-2 text-lg font-semibold">
+        <Cherry className="size-4 text-brand" /> {title} <BowIcon className="size-4 text-brand" />
+      </h2>
       <ul className="grid gap-3">
         {PAYMENT_LINKS.map((link) => (
           <li key={link.name}>
@@ -19,7 +21,7 @@ export function PaymentLinks({ title = "Pay your balance" }: { title?: string })
               href={link.url}
               target="_blank"
               rel="noreferrer"
-              className={`tap-target flex items-center justify-between rounded-3xl px-5 py-4 text-ink transition-transform active:scale-[0.99] ${toneClass[link.tone]}`}
+              className={`cozy-card tap-target flex items-center justify-between px-5 py-4 text-ink transition-transform active:scale-[0.99] ${toneClass[link.tone]}`}
             >
               <span className="font-display text-base font-semibold">{link.name}</span>
               <span className="text-sm text-inksoft">{link.handle}</span>
@@ -33,7 +35,14 @@ export function PaymentLinks({ title = "Pay your balance" }: { title?: string })
 
 export function SiteFooter() {
   return (
-    <footer className="mt-12 border-t border-border/70 bg-blush/50 px-4 py-8 text-center">
+    <footer className="relative mt-12 border-t border-border/70 bg-blush/60 px-4 py-8 text-center">
+      <div className="absolute inset-x-0 top-0 flex -translate-y-1/2 items-center justify-center gap-2 text-brand/30">
+        <Heart className="size-4" fill="currentColor" />
+        <Cherry className="size-5" />
+        <BowIcon className="size-5" />
+        <Cherry className="size-5" />
+        <Heart className="size-4" fill="currentColor" />
+      </div>
       <p className="flex items-center justify-center gap-1.5 font-display text-lg font-semibold text-brand">
         <Cherry className="size-4" /> KimKat Collection <BowIcon className="size-4" />
       </p>
@@ -44,7 +53,7 @@ export function SiteFooter() {
         href={SIGNUP_FORM_URL}
         target="_blank"
         rel="noreferrer"
-        className="tap-target mt-4 inline-flex items-center justify-center rounded-full bg-brand px-6 text-sm font-bold text-brand-foreground"
+        className="cozy-btn tap-target mt-4 inline-flex items-center justify-center px-6 text-sm"
       >
         Join the customer list
       </a>
