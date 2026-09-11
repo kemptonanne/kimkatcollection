@@ -38,4 +38,9 @@ export default tseslint.config(
     },
   },
   eslintPluginPrettier,
+  {
+    // `useSession` here is TanStack Start's server session helper, not a React hook.
+    files: ["**/*.server.ts"],
+    rules: { "react-hooks/rules-of-hooks": "off" },
+  },
 );
