@@ -78,55 +78,60 @@ function Shop() {
       </section>
 
       <section className="mt-8 px-4">
-        <div className="flex items-baseline justify-between">
-          <h2 className="text-lg font-semibold">Shop all</h2>
-          <span className="text-sm text-inksoft">{products.length} items</span>
-        </div>
-
-        {products.length === 0 ? (
-          <div className="cozy-card mt-6 px-5 py-8 text-center text-sm text-inksoft">
-            <div className="mb-3 flex items-center justify-center gap-2 text-brand/30">
-              <Cherry className="size-6" />
-              <Heart className="size-6" fill="currentColor" />
-              <BowIcon className="size-7" />
-              <Heart className="size-6" fill="currentColor" />
-              <Cherry className="size-6" />
-            </div>
-            Nothing listed right now — check back soon.
+        <div className="cozy-card bg-surface/90 backdrop-blur-sm px-4 py-5">
+          <div className="flex items-baseline justify-between">
+            <h2 className="text-lg font-semibold">Shop all</h2>
+            <span className="text-sm text-inksoft">{products.length} items</span>
           </div>
-        ) : (
-          <ul className="mt-4 grid grid-cols-2 gap-3">
-            {products.map((product, i) => (
-              <li key={product.id}>
-                <Link
-                  to="/product/$id"
-                  params={{ id: product.id }}
-                  className="cozy-card block overflow-hidden transition-transform active:scale-[0.98]"
-                >
-                  <div className={`aspect-square ${tones[i % tones.length]}`}>
-                    {product.image_urls[0] ? (
-                      <img
-                        src={product.image_urls[0]}
-                        alt={product.title}
-                        loading="lazy"
-                        width={512}
-                        height={512}
-                        className="size-full object-cover"
-                      />
-                    ) : null}
-                  </div>
-                  <div className="px-3 py-3">
-                    <p className="line-clamp-2 text-sm font-bold leading-snug">{product.title}</p>
-                    <p className="mt-1 font-display text-base text-brand">{money(product.price)}</p>
-                    {product.quantity <= 0 && (
-                      <p className="mt-1 text-xs font-semibold text-inksoft">Sold out</p>
-                    )}
-                  </div>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
+
+          {products.length === 0 ? (
+            <div className="cozy-card mt-6 px-5 py-8 text-center">
+              <div className="mb-3 flex items-center justify-center gap-2 text-brand/30">
+                <Cherry className="size-6" />
+                <Heart className="size-6" fill="currentColor" />
+                <BowIcon className="size-7" />
+                <Heart className="size-6" fill="currentColor" />
+                <Cherry className="size-6" />
+              </div>
+              <p className="font-display text-lg text-ink">Between drops</p>
+              <p className="mt-1 text-sm text-inksoft">
+                New pieces are added after each live sale. Check back soon!
+              </p>
+            </div>
+          ) : (
+            <ul className="mt-4 grid grid-cols-2 gap-3">
+              {products.map((product, i) => (
+                <li key={product.id}>
+                  <Link
+                    to="/product/$id"
+                    params={{ id: product.id }}
+                    className="cozy-card block overflow-hidden transition-transform active:scale-[0.98]"
+                  >
+                    <div className={`aspect-square ${tones[i % tones.length]}`}>
+                      {product.image_urls[0] ? (
+                        <img
+                          src={product.image_urls[0]}
+                          alt={product.title}
+                          loading="lazy"
+                          width={512}
+                          height={512}
+                          className="size-full object-cover"
+                        />
+                      ) : null}
+                    </div>
+                    <div className="px-3 py-3">
+                      <p className="line-clamp-2 text-sm font-bold leading-snug">{product.title}</p>
+                      <p className="mt-1 font-display text-base text-brand">{money(product.price)}</p>
+                      {product.quantity <= 0 && (
+                        <p className="mt-1 text-xs font-semibold text-inksoft">Sold out</p>
+                      )}
+                    </div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </section>
 
       <section className="mt-10 px-4">

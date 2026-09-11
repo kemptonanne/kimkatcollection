@@ -66,13 +66,13 @@ function ViewMyBag() {
 
   return (
     <div className="px-4 pb-12 pt-6">
-      <div className="relative overflow-hidden rounded-4xl bg-blush px-6 py-8 text-center shadow-soft">
+      <div className="relative overflow-hidden rounded-4xl bg-blush px-6 py-6 text-center shadow-soft">
         <h1 className="relative font-display text-2xl">View my bag</h1>
         <p className="relative mt-2 text-sm text-inksoft">
           Enter your bag number to see what&apos;s inside, what you&apos;ve paid, and when it&apos;s
           due.
         </p>
-        <div className="relative mt-4 flex items-center justify-center gap-2 text-brand/60">
+        <div className="relative mt-3 flex items-center justify-center gap-2 text-brand/60">
           <Cherry className="size-4" />
           <Heart className="size-4" fill="currentColor" />
           <BowIcon className="size-5" />
@@ -167,20 +167,20 @@ function ViewMyBag() {
               </p>
             ) : (
               <>
-                <dl className="mt-4 grid grid-cols-2 gap-3">
-                  <div className="cozy-card bg-blush px-4 py-3">
+                <dl className="mt-4 grid grid-cols-2 gap-2">
+                  <div className="cozy-card bg-blush px-4 py-2">
                     <dt className="text-xs font-bold uppercase tracking-wide text-inksoft">
                       Total
                     </dt>
                     <dd className="font-display text-lg">{money(parseMoney(bag.bagTotal))}</dd>
                   </div>
-                  <div className="cozy-card bg-lilac px-4 py-3">
+                  <div className="cozy-card bg-lilac px-4 py-2">
                     <dt className="text-xs font-bold uppercase tracking-wide text-inksoft">
                       Remaining
                     </dt>
                     <dd className="font-display text-lg">{money(parseMoney(bag.balanceDue))}</dd>
                   </div>
-                  <div className="cozy-card bg-blush px-4 py-3">
+                  <div className="cozy-card bg-blush px-4 py-2">
                     <dt className="text-xs font-bold uppercase tracking-wide text-inksoft">Due</dt>
                     <dd className="font-display text-lg">{bag.dueDate || "—"}</dd>
                   </div>
