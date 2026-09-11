@@ -169,7 +169,9 @@ function ViewMyBag() {
               <>
                 <dl className="mt-4 grid grid-cols-2 gap-3">
                   <div className="cozy-card bg-blush px-4 py-3">
-                    <dt className="text-xs font-bold uppercase tracking-wide text-inksoft">Total</dt>
+                    <dt className="text-xs font-bold uppercase tracking-wide text-inksoft">
+                      Total
+                    </dt>
                     <dd className="font-display text-lg">{money(parseMoney(bag.bagTotal))}</dd>
                   </div>
                   <div className="cozy-card bg-lilac px-4 py-3">
@@ -183,7 +185,6 @@ function ViewMyBag() {
                     <dd className="font-display text-lg">{bag.dueDate || "—"}</dd>
                   </div>
                 </dl>
-
 
                 <p className="mt-3 inline-flex rounded-full bg-lilac px-4 py-1.5 text-sm font-bold shadow-card">
                   Status: {bag.status || "—"}
@@ -207,9 +208,7 @@ function ViewMyBag() {
                           <span className="text-xs text-inksoft">{item.dateClaimed}</span>
                         )}
                       </span>
-                      <span className="shrink-0 font-bold">
-                        {money(parseMoney(item.total))}
-                      </span>
+                      <span className="shrink-0 font-bold">{money(parseMoney(item.total))}</span>
                     </li>
                   ))}
                   {items.length === 0 && (

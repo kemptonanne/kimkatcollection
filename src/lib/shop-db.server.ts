@@ -46,7 +46,12 @@ type OrderUpdate = Partial<OrderInsert>;
 type ShopDatabase = {
   public: {
     Tables: {
-      products: { Row: ProductRow; Insert: ProductInsert; Update: ProductUpdate; Relationships: [] };
+      products: {
+        Row: ProductRow;
+        Insert: ProductInsert;
+        Update: ProductUpdate;
+        Relationships: [];
+      };
       orders: { Row: OrderRow; Insert: OrderInsert; Update: OrderUpdate; Relationships: [] };
     };
     Views: Record<string, never>;

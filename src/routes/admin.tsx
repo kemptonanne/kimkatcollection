@@ -4,18 +4,26 @@ import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { Lock } from "lucide-react";
 import { toast } from "sonner";
-import { adminListOrders, adminLogin, adminLogout, adminStatus, adminUpdateOrderStatus } from "@/lib/admin.functions";
+import {
+  adminListOrders,
+  adminLogin,
+  adminLogout,
+  adminStatus,
+  adminUpdateOrderStatus,
+} from "@/lib/admin.functions";
 import { ProductManager } from "@/components/admin/product-manager";
 import { BagManager } from "@/components/admin/bag-manager";
 import { money } from "@/lib/format";
-
 
 export const Route = createFileRoute("/admin")({
   ssr: false,
   head: () => ({
     meta: [
       { title: "Shop admin — KimKat Collection" },
-      { name: "description", content: "Password-protected management for KimKat Collection products, bags and orders." },
+      {
+        name: "description",
+        content: "Password-protected management for KimKat Collection products, bags and orders.",
+      },
       { name: "robots", content: "noindex" },
       { property: "og:title", content: "Shop admin — KimKat Collection" },
       { property: "og:description", content: "Password-protected shop management." },
@@ -68,7 +76,9 @@ function AdminPage() {
         <div className="cozy-card relative mx-auto max-w-sm overflow-hidden px-6 py-10 text-center">
           <Lock className="relative mx-auto size-10 text-brand" />
           <h1 className="relative mt-4 font-display text-2xl">Shop admin</h1>
-          <p className="relative mt-2 text-sm text-inksoft">Enter the admin password to manage the shop.</p>
+          <p className="relative mt-2 text-sm text-inksoft">
+            Enter the admin password to manage the shop.
+          </p>
           <input
             type="password"
             autoComplete="current-password"
