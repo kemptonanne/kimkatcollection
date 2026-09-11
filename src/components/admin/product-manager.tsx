@@ -140,7 +140,13 @@ export function ProductManager() {
               <ul className="flex gap-2 overflow-x-auto">
                 {draft.imageUrls.map((url) => (
                   <li key={url} className="relative shrink-0">
-                    <img src={url} alt="" width={144} height={144} className="size-18 rounded-2xl object-cover shadow-card" />
+                    <img
+                      src={url}
+                      alt=""
+                      width={144}
+                      height={144}
+                      className="size-18 rounded-2xl object-cover shadow-card"
+                    />
                     <button
                       type="button"
                       aria-label="Remove photo"

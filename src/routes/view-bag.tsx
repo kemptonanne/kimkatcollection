@@ -167,18 +167,12 @@ function ViewMyBag() {
               </p>
             ) : (
               <>
-                <p className="mt-1 text-sm text-inksoft">
-                  {bag.customerName} · {bag.tiktokHandle}
-                </p>
-
                 <dl className="mt-4 grid grid-cols-2 gap-3">
                   <div className="cozy-card bg-blush px-4 py-3">
-                    <dt className="text-xs font-bold uppercase tracking-wide text-inksoft">Total</dt>
+                    <dt className="text-xs font-bold uppercase tracking-wide text-inksoft">
+                      Total
+                    </dt>
                     <dd className="font-display text-lg">{money(parseMoney(bag.bagTotal))}</dd>
-                  </div>
-                  <div className="cozy-card bg-lilac px-4 py-3">
-                    <dt className="text-xs font-bold uppercase tracking-wide text-inksoft">Paid</dt>
-                    <dd className="font-display text-lg">{money(parseMoney(bag.paymentsReceived))}</dd>
                   </div>
                   <div className="cozy-card bg-lilac px-4 py-3">
                     <dt className="text-xs font-bold uppercase tracking-wide text-inksoft">
@@ -200,7 +194,7 @@ function ViewMyBag() {
                 <ul className="mt-2 grid gap-2">
                   {items.map((item) => (
                     <li
-                      key={item.rowNumber}
+                      key={item.id}
                       className="cozy-card flex items-center justify-between gap-3 px-4 py-3 text-sm"
                     >
                       <span className="min-w-0">
@@ -214,9 +208,7 @@ function ViewMyBag() {
                           <span className="text-xs text-inksoft">{item.dateClaimed}</span>
                         )}
                       </span>
-                      <span className="shrink-0 font-bold">
-                        {money(parseMoney(item.total || item.price))}
-                      </span>
+                      <span className="shrink-0 font-bold">{money(parseMoney(item.total))}</span>
                     </li>
                   ))}
                   {items.length === 0 && (

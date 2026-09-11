@@ -16,10 +16,14 @@ export const Route = createFileRoute("/product/$id")({
   head: ({ loaderData }) => {
     if (!loaderData) {
       return {
-        meta: [{ title: "Item unavailable — KimKat Collection" }, { name: "robots", content: "noindex" }],
+        meta: [
+          { title: "Item unavailable — KimKat Collection" },
+          { name: "robots", content: "noindex" },
+        ],
       };
     }
-    const description = loaderData.description.slice(0, 150) || "A little treasure from KimKat Collection.";
+    const description =
+      loaderData.description.slice(0, 150) || "A little treasure from KimKat Collection.";
     return {
       meta: [
         { title: `${loaderData.title} — KimKat Collection` },

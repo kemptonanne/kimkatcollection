@@ -53,8 +53,10 @@ Set these in Lovable (never commit them to code):
 ## Development
 
 ```sh
-npm install
-npm run dev
+bun install
+bun run dev
 ```
+
+Other scripts: `bun run build`, `bun run typecheck`, `bun run lint`.
 
 See `OPERATIONS.md` for how to run the shop day-to-day (products, bags, payments, admin).
