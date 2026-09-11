@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { Cherry, Heart } from "lucide-react";
+import { Cherry, Heart, ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { cartTotal, clearCart, useCart } from "@/lib/cart";
@@ -58,10 +58,14 @@ function Checkout() {
                 href={link.url}
                 target="_blank"
                 rel="noreferrer"
+                aria-label={`Pay with ${link.name} (opens in new tab)`}
                 className="cozy-card tap-target flex items-center justify-between bg-blush px-5 py-4"
               >
                 <span className="font-display font-semibold">{link.name}</span>
-                <span className="text-sm text-inksoft">{link.handle}</span>
+                <span className="flex items-center gap-1.5 text-sm text-inksoft">
+                  {link.handle}
+                  <ExternalLink className="size-4" aria-hidden="true" />
+                </span>
               </a>
             </li>
           ))}
