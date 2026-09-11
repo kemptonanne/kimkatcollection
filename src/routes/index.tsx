@@ -28,7 +28,8 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "KimKat Collection — Jewelry & Collectibles" },
       {
         property: "og:description",
-        content: "Handpicked jewelry and collectibles, plus live-sale bag balances you can check anytime.",
+        content:
+          "Handpicked jewelry and collectibles, plus live-sale bag balances you can check anytime.",
       },
     ],
   }),

@@ -120,9 +120,7 @@ export function BagManager() {
                 </span>
               </span>
               <span className="shrink-0 text-right">
-                <span className="block text-sm font-bold">
-                  {money(parseMoney(bag.balanceDue))}
-                </span>
+                <span className="block text-sm font-bold">{money(parseMoney(bag.balanceDue))}</span>
                 <span className="block text-xs text-inksoft">{bag.status || "—"}</span>
               </span>
             </button>
@@ -305,9 +303,7 @@ export function BagManager() {
                       <button
                         type="button"
                         disabled={!newItem.item || createItem.isPending}
-                        onClick={() =>
-                          createItem.mutate({ bagNumber: bag.bagNumber, ...newItem })
-                        }
+                        onClick={() => createItem.mutate({ bagNumber: bag.bagNumber, ...newItem })}
                         className="cozy-btn tap-target ml-auto px-5 text-sm disabled:opacity-60"
                       >
                         Add item

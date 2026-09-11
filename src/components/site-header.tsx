@@ -26,8 +26,11 @@ export function SiteHeader() {
           {open ? <X className="size-6" /> : <Menu className="size-6" />}
         </button>
 
-
-        <Link to="/" className="flex flex-col items-center leading-none" onClick={() => setOpen(false)}>
+        <Link
+          to="/"
+          className="flex flex-col items-center leading-none"
+          onClick={() => setOpen(false)}
+        >
           <span className="font-display text-lg font-semibold text-brand">KimKat</span>
           <span className="text-[0.65rem] uppercase tracking-[0.28em] text-muted-foreground">
             Collection
