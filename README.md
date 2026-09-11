@@ -6,7 +6,7 @@ Live site: [https://kimkatcollection.com](https://kimkatcollection.com)
 
 ## Overview
 
-KimKat Collection is a real, customer-facing storefront and back-office tool for a jewelry and collectibles shop that sells primarily through TikTok live sales. The site lets customers browse products, add items to a cart, check out via manual payment links, and look up their live-sale bag by number. A password-protected admin area keeps product, order, and bag management in one place without forcing the business onto a complex SaaS platform it didn't need.
+I built KimKat Collection as a real, customer-facing storefront and back-office tool for a jewelry and collectibles shop that sells primarily through TikTok live sales. The site lets customers browse products, add items to a cart, check out via manual payment links, and look up their live-sale bag by number. A password-protected admin area keeps product, order, and bag management in one place without forcing the business onto a complex SaaS platform it didn't need.
 
 ## The Problem
 
@@ -14,7 +14,7 @@ The business was already running on a mix of tools: TikTok for sales, a Google S
 
 ## The Solution
 
-Build a mobile-first storefront that connects to the owner's existing Google Sheets workflow for live-sale bags while handling products, orders, and product photos in a separate Supabase project. Customers get a simple shop and bag lookup; the owner gets an admin dashboard that protects spreadsheet formulas and keeps sensitive data server-side.
+I built a mobile-first storefront that connects to the owner's existing Google Sheets workflow for live-sale bags while handling products, orders, and product photos in a separate Supabase project. Customers get a simple shop and bag lookup; the owner gets an admin dashboard that protects spreadsheet formulas and keeps sensitive data server-side.
 
 ## Screenshots
 
@@ -54,7 +54,7 @@ flowchart TB
 
 ## Key Features
 
-- Mobile-first storefront with 44px+ tap targets and a cozy, on-brand design
+- Mobile-first storefront with a responsive, cozy, on-brand design
 - Product listing, detail pages, cart, and manual-payment checkout
 - Public "View my bag" lookup by bag number, showing only what a customer needs to see
 - Password-protected admin for products, orders, and live-sale bag management
@@ -96,7 +96,6 @@ src/
   components/        # UI components (cards, header, footer, admin tools)
   assets/            # Brand imagery and backdrop
 apps-script/         # BagTrackerAPI.gs — Apps Script to paste into the sheet
-OPERATIONS.md        # Day-to-day shop operations guide
 ```
 
 ## Local Development
@@ -125,8 +124,6 @@ Set these in Lovable or your deployment platform. Never commit values to the rep
 - `SHOP_SUPABASE_URL`
 - `SHOP_SUPABASE_ANON_KEY`
 - `SHOP_SUPABASE_SERVICE_ROLE_KEY`
-
-See `OPERATIONS.md` for how to run the shop day-to-day (products, bags, payments, admin).
 
 ## Future Improvements
 
