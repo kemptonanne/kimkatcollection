@@ -6,7 +6,8 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["dist", ".output", ".vinxi"] },
+  // `src/integrations/supabase` is auto-generated and must not be hand-edited.
+  { ignores: ["dist", ".output", ".vinxi", "src/integrations/supabase"] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ["**/*.{ts,tsx}"],
@@ -37,4 +38,9 @@ export default tseslint.config(
     },
   },
   eslintPluginPrettier,
+  {
+    // `useSession` here is TanStack Start's server session helper, not a React hook.
+    files: ["**/*.server.ts"],
+    rules: { "react-hooks/rules-of-hooks": "off" },
+  },
 );

@@ -87,7 +87,7 @@ export const adminListOrders = createServerFn({ method: "GET" }).handler(async (
   const { requireAdmin } = await import("./admin-session.server");
   await requireAdmin();
   const { shopAdmin } = await import("./shop-db.server");
-    const supabaseAdmin = shopAdmin();
+  const supabaseAdmin = shopAdmin();
   const { data, error } = await supabaseAdmin
     .from("orders")
     .select("id, items, total, status, buyer_name, buyer_contact, payment_method, created_at")

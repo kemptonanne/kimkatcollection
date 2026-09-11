@@ -17,14 +17,14 @@ export const Route = createFileRoute("/checkout")({
         content: "Place your KimKat Collection order and pay by Venmo, Cash App, or PayPal.",
       },
       { property: "og:title", content: "Checkout — KimKat Collection" },
-      { property: "og:description", content: "Place your order and pay by Venmo, Cash App, or PayPal." },
+      {
+        property: "og:description",
+        content: "Place your order and pay by Venmo, Cash App, or PayPal.",
+      },
     ],
   }),
   component: Checkout,
 });
-
-
-
 
 function Checkout() {
   const items = useCart();
@@ -66,7 +66,10 @@ function Checkout() {
             </li>
           ))}
         </ul>
-        <Link to="/" className="tap-target mt-6 inline-flex items-center text-sm font-bold text-brand">
+        <Link
+          to="/"
+          className="tap-target mt-6 inline-flex items-center text-sm font-bold text-brand"
+        >
           Back to the shop
         </Link>
       </div>
@@ -81,7 +84,10 @@ function Checkout() {
           <Cherry className="absolute -left-3 -bottom-3 size-20 text-brand/10" />
           <BowIcon className="absolute left-1/2 top-1/2 size-28 -translate-x-1/2 -translate-y-1/2 text-brand/5" />
           <p className="relative text-sm text-inksoft">There&apos;s nothing to check out yet.</p>
-          <Link to="/" className="cozy-btn relative tap-target mt-4 inline-flex items-center px-6 text-sm">
+          <Link
+            to="/"
+            className="cozy-btn relative tap-target mt-4 inline-flex items-center px-6 text-sm"
+          >
             Start shopping
           </Link>
         </div>
