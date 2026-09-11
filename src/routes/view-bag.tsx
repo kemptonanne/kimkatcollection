@@ -167,18 +167,10 @@ function ViewMyBag() {
               </p>
             ) : (
               <>
-                <p className="mt-1 text-sm text-inksoft">
-                  {bag.customerName} · {bag.tiktokHandle}
-                </p>
-
                 <dl className="mt-4 grid grid-cols-2 gap-3">
                   <div className="cozy-card bg-blush px-4 py-3">
                     <dt className="text-xs font-bold uppercase tracking-wide text-inksoft">Total</dt>
                     <dd className="font-display text-lg">{money(parseMoney(bag.bagTotal))}</dd>
-                  </div>
-                  <div className="cozy-card bg-lilac px-4 py-3">
-                    <dt className="text-xs font-bold uppercase tracking-wide text-inksoft">Paid</dt>
-                    <dd className="font-display text-lg">{money(parseMoney(bag.paymentsReceived))}</dd>
                   </div>
                   <div className="cozy-card bg-lilac px-4 py-3">
                     <dt className="text-xs font-bold uppercase tracking-wide text-inksoft">
@@ -191,6 +183,7 @@ function ViewMyBag() {
                     <dd className="font-display text-lg">{bag.dueDate || "—"}</dd>
                   </div>
                 </dl>
+
 
                 <p className="mt-3 inline-flex rounded-full bg-lilac px-4 py-1.5 text-sm font-bold shadow-card">
                   Status: {bag.status || "—"}
