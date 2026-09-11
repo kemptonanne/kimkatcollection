@@ -193,7 +193,7 @@ function ViewMyBag() {
                 <ul className="mt-2 grid gap-2">
                   {items.map((item) => (
                     <li
-                      key={item.rowNumber}
+                      key={item.id}
                       className="cozy-card flex items-center justify-between gap-3 px-4 py-3 text-sm"
                     >
                       <span className="min-w-0">
@@ -208,7 +208,7 @@ function ViewMyBag() {
                         )}
                       </span>
                       <span className="shrink-0 font-bold">
-                        {money(parseMoney(item.total || item.price))}
+                        {money(parseMoney(item.total))}
                       </span>
                     </li>
                   ))}
