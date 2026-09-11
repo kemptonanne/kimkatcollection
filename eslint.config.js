@@ -9,11 +9,6 @@ export default tseslint.config(
   // `src/integrations/supabase` is auto-generated and must not be hand-edited.
   { ignores: ["dist", ".output", ".vinxi", "src/integrations/supabase"] },
   {
-    // `useSession` here is TanStack Start's server session helper, not a React hook.
-    files: ["**/*.server.ts"],
-    rules: { "react-hooks/rules-of-hooks": "off" },
-  },
-  {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ["**/*.{ts,tsx}"],
     languageOptions: {
