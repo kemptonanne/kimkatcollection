@@ -125,8 +125,6 @@ Set these in Lovable or your deployment platform. Never commit values to the rep
 - `SHOP_SUPABASE_ANON_KEY`
 - `SHOP_SUPABASE_SERVICE_ROLE_KEY`
 
-
-
 ## Future Improvements
 
 - Inventory count tracking and low-stock alerts
