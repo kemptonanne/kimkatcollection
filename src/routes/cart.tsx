@@ -29,7 +29,7 @@ function CartPage() {
       <h1 className="font-display text-2xl">Your cart</h1>
 
       {items.length === 0 ? (
-        <div className="cozy-card relative mt-8 overflow-hidden px-5 py-10 text-center">
+        <div className="cozy-card relative mt-5 overflow-hidden px-5 py-10 text-center">
           <div className="relative flex items-center justify-center gap-2 text-brand/60">
             <Cherry className="size-4" />
             <Heart className="size-4" fill="currentColor" />
