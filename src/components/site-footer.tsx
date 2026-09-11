@@ -1,3 +1,5 @@
+import { ExternalLink } from "lucide-react";
+
 import { PAYMENT_LINKS, SIGNUP_FORM_URL } from "@/lib/format";
 
 export function PaymentLinks({ title = "Pay your balance" }: { title?: string }) {
@@ -11,10 +13,14 @@ export function PaymentLinks({ title = "Pay your balance" }: { title?: string })
               href={link.url}
               target="_blank"
               rel="noreferrer"
+              aria-label={`Pay with ${link.name} (opens in new tab)`}
               className="cozy-card tap-target flex items-center justify-between bg-blush px-5 py-4 text-ink transition-transform active:scale-[0.99]"
             >
               <span className="font-display text-base font-semibold">{link.name}</span>
-              <span className="text-sm text-inksoft">{link.handle}</span>
+              <span className="flex items-center gap-1.5 text-sm text-inksoft">
+                {link.handle}
+                <ExternalLink className="size-4" aria-hidden="true" />
+              </span>
             </a>
           </li>
         ))}
