@@ -198,6 +198,11 @@ export function ProductManager() {
       <section>
         <h2 className="font-display text-lg">Listed items</h2>
         {products.isLoading && <p className="mt-3 text-sm text-inksoft">Loading…</p>}
+        {products.isError && (
+          <p role="alert" className="mt-3 text-sm text-destructive">
+            Products could not be loaded. Please refresh and try again.
+          </p>
+        )}
         <ul className="mt-3 grid gap-2">
           {(products.data ?? []).map((product) => (
             <li key={product.id} className="cozy-card flex items-center gap-3 bg-surface p-3">

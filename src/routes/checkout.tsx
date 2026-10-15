@@ -119,8 +119,10 @@ function Checkout() {
       });
       clearCart();
       setOrderId(result.id);
-    } catch {
-      toast.error("We couldn't place that order. Please try again.");
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "We couldn't place that order. Please try again.",
+      );
     } finally {
       setPlacing(false);
     }

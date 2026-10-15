@@ -67,6 +67,8 @@ function AdminPage() {
             } else {
               toast.error("Incorrect password");
             }
+          } catch {
+            toast.error("Sign-in is unavailable. Please try again.");
           } finally {
             setBusy(false);
           }
@@ -81,6 +83,7 @@ function AdminPage() {
           </p>
           <input
             type="password"
+            aria-label="Admin password"
             autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -146,6 +149,12 @@ function OrderManager() {
   const orders = useQuery({ queryKey: ["admin", "orders"], queryFn: () => list() });
 
   if (orders.isLoading) return <p className="text-sm text-inksoft">Loading orders…</p>;
+  if (orders.isError)
+    return (
+      <p role="alert" className="text-sm text-destructive">
+        Orders could not be loaded. Please refresh and try again.
+      </p>
+    );
   if (!orders.data?.length) return <p className="text-sm text-inksoft">No orders yet.</p>;
 
   return (

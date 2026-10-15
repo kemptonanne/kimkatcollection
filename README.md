@@ -1,4 +1,5 @@
 # KimKat Collection
+
 ## Case study: connecting a small business's storefront and operations
 
 A customer-facing commerce application that connects a live-sale business's existing Google Sheets workflow with a mobile storefront and an admin workspace.
@@ -21,13 +22,13 @@ This is an AI-assisted implementation project. Its portfolio value is the connec
 
 ## From workflow to product
 
-| Business need | Implemented capability | Transferable lesson |
-| --- | --- | --- |
-| Customers need to review items claimed during live sales | Bag lookup with items, totals, balance, due date, and status | Translate an internal record into a focused customer experience |
-| Owner already operates from a spreadsheet | Apps Script API connecting the application to Bags and Claims tabs | Integrate with an established workflow before proposing a migration |
-| Customers also need to browse outside live sales | Product catalog, detail pages, cart, and order submission | Connect customer-facing features with operational data |
-| Owner needs to maintain records | Password-gated product, order, and bag administration | Design for the person doing the recurring work |
-| Payments happen through existing apps | Manual-payment checkout and pending-confirmation order status | Match the actual payment process and make its limits explicit |
+| Business need                                            | Implemented capability                                             | Transferable lesson                                                 |
+| -------------------------------------------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------- |
+| Customers need to review items claimed during live sales | Bag lookup with items, totals, balance, due date, and status       | Translate an internal record into a focused customer experience     |
+| Owner already operates from a spreadsheet                | Apps Script API connecting the application to Bags and Claims tabs | Integrate with an established workflow before proposing a migration |
+| Customers also need to browse outside live sales         | Product catalog, detail pages, cart, and order submission          | Connect customer-facing features with operational data              |
+| Owner needs to maintain records                          | Password-gated product, order, and bag administration              | Design for the person doing the recurring work                      |
+| Payments happen through existing apps                    | Manual-payment checkout and pending-confirmation order status      | Match the actual payment process and make its limits explicit       |
 
 ## Architecture
 
@@ -69,7 +70,7 @@ Useful next measures are repeated customer balance questions, owner time spent u
 
 ## Known limitations and next steps
 
-- Order totals are calculated from submitted item prices; authoritative catalog-price and inventory validation should be added before treating orders as confirmed sales.
+- Checkout reloads catalog prices and stock on the server, rejects changed prices and unavailable quantities, and calculates totals in integer cents. Pending orders do not reserve or decrement inventory; the owner confirms availability and payment manually.
 - Public bag lookup needs an explicit decision about acceptable disclosure and stronger access controls if required.
 - Claim edits use delete-then-add operations; stable item identifiers and atomic updates would improve reliability.
 - Shared-password administration is a simple starting point; individual accounts and audit history would support broader use.
@@ -81,15 +82,15 @@ Useful next measures are repeated customer balance questions, owner time spent u
 
 ### Source map
 
-| Path | Responsibility |
-| --- | --- |
-| `src/routes/` | Storefront, product, cart, checkout, bag lookup, and admin pages |
-| `src/lib/bags.functions.ts` | Public bag response and authenticated bag administration |
-| `src/lib/sheets.server.ts` | Spreadsheet transport, cache, mappings, and writes |
-| `src/lib/shop.functions.ts` | Product queries and order submission |
-| `src/lib/shop-db.server.ts` | Public and privileged Supabase clients |
-| `src/lib/admin-session.server.ts` | Admin password verification and session handling |
-| `apps-script/BagTrackerAPI.gs` | Spreadsheet API deployed separately in Google Apps Script |
+| Path                              | Responsibility                                                   |
+| --------------------------------- | ---------------------------------------------------------------- |
+| `src/routes/`                     | Storefront, product, cart, checkout, bag lookup, and admin pages |
+| `src/lib/bags.functions.ts`       | Public bag response and authenticated bag administration         |
+| `src/lib/sheets.server.ts`        | Spreadsheet transport, cache, mappings, and writes               |
+| `src/lib/shop.functions.ts`       | Product queries and order submission                             |
+| `src/lib/shop-db.server.ts`       | Public and privileged Supabase clients                           |
+| `src/lib/admin-session.server.ts` | Admin password verification and session handling                 |
+| `apps-script/BagTrackerAPI.gs`    | Spreadsheet API deployed separately in Google Apps Script        |
 
 ### Local development
 
@@ -97,12 +98,15 @@ Useful next measures are repeated customer balance questions, owner time spent u
 bun install
 bun run dev
 bun run typecheck
+bun run test
 bun run build
 ```
 
 The repository also provides `bun run lint` and `bun run format`.
 
-Configure these environment variables with your own services; never commit their values:
+Copy `.env.example` to `.env.local` and configure your own services; never commit their values. See [setup](docs/SETUP.md) and [verification status](docs/VERIFICATION.md).
+
+Required server-only variables:
 
 - `BAG_API_URL`
 - `BAG_API_TOKEN`

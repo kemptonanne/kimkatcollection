@@ -2,18 +2,18 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 const orderItemSchema = z.object({
-  id: z.string(),
+  id: z.string().uuid(),
   title: z.string(),
-  price: z.number(),
-  quantity: z.number().int().min(1),
+  price: z.number().finite().min(0),
+  quantity: z.number().int().min(1).max(999),
 });
 
 const submitOrderSchema = z.object({
-  items: z.array(orderItemSchema).min(1),
+  items: z.array(orderItemSchema).min(1).max(100),
   total: z.number().min(0),
-  buyerName: z.string().max(120).optional(),
-  buyerContact: z.string().max(200).optional(),
-  paymentMethod: z.string().max(40).optional(),
+  buyerName: z.string().trim().min(1).max(120),
+  buyerContact: z.string().trim().min(1).max(200),
+  paymentMethod: z.enum(["Venmo", "Cash App", "PayPal"]),
 });
 
 export const listProducts = createServerFn({ method: "GET" }).handler(async () => {
@@ -34,11 +34,18 @@ export const submitOrder = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => submitOrderSchema.parse(input))
   .handler(async ({ data }) => {
     const { shopAdmin } = await import("./shop-db.server");
-    const total = data.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const { data: order, error } = await shopAdmin()
+    const db = shopAdmin();
+    const { data: products, error: catalogError } = await db
+      .from("products")
+      .select("id, title, price, quantity")
+      .in("id", [...new Set(data.items.map((item) => item.id))]);
+    if (catalogError) throw new Error("The catalog could not be checked. Please try again.");
+    const { validateOrderItems } = await import("./order-validation");
+    const { items, total } = validateOrderItems(data.items, products ?? []);
+    const { data: order, error } = await db
       .from("orders")
       .insert({
-        items: data.items,
+        items,
         total,
         status: "pending payment confirmation",
         buyer_name: data.buyerName ?? null,
