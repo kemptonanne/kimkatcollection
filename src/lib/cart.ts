@@ -17,7 +17,21 @@ function read(): CartLine[] {
   if (typeof window === "undefined") return [];
   try {
     const raw = window.localStorage.getItem(KEY);
-    return raw ? (JSON.parse(raw) as CartLine[]) : [];
+    const parsed: unknown = raw ? JSON.parse(raw) : [];
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(
+      (line): line is CartLine =>
+        line != null &&
+        typeof line === "object" &&
+        typeof line.id === "string" &&
+        typeof line.title === "string" &&
+        typeof line.price === "number" &&
+        Number.isFinite(line.price) &&
+        line.price >= 0 &&
+        Number.isSafeInteger(line.quantity) &&
+        line.quantity > 0 &&
+        (line.image === null || typeof line.image === "string"),
+    );
   } catch {
     return [];
   }
@@ -26,7 +40,11 @@ function read(): CartLine[] {
 function commit(next: CartLine[]) {
   lines = next;
   if (typeof window !== "undefined") {
-    window.localStorage.setItem(KEY, JSON.stringify(next));
+    try {
+      window.localStorage.setItem(KEY, JSON.stringify(next));
+    } catch {
+      // The current cart still works when browser storage is unavailable or full.
+    }
   }
   listeners.forEach((l) => l());
 }

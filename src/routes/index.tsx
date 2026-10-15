@@ -121,7 +121,9 @@ function Shop() {
                     </div>
                     <div className="px-3 py-3">
                       <p className="line-clamp-2 text-sm font-bold leading-snug">{product.title}</p>
-                      <p className="mt-1 font-display text-base text-brand">{money(product.price)}</p>
+                      <p className="mt-1 font-display text-base text-brand">
+                        {money(product.price)}
+                      </p>
                       {product.quantity <= 0 && (
                         <p className="mt-1 text-xs font-semibold text-inksoft">Sold out</p>
                       )}

@@ -86,6 +86,12 @@ export function BagManager() {
 
   if (bags.isLoading) return <p className="text-sm text-inksoft">Loading bags…</p>;
   if (bags.isError)
+    return (
+      <p role="alert" className="text-sm text-destructive">
+        Bags could not be loaded. Please refresh and try again.
+      </p>
+    );
+  if (bags.isError)
     return <p className="text-sm text-destructive">Could not reach the bag spreadsheet.</p>;
 
   const data = bags.data!;
