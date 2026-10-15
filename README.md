@@ -1,121 +1,108 @@
 # KimKat Collection
+## Case study: connecting a small business's storefront and operations
 
-A production commerce and live-sale operations platform built for a TikTok-based jewelry and collectibles business.
+A customer-facing commerce application that connects a live-sale business's existing Google Sheets workflow with a mobile storefront and an admin workspace.
 
-Live site: [https://kimkatcollection.com](https://kimkatcollection.com)
+**Relevant skills:** workflow analysis, stakeholder-focused product decisions, AI-assisted development, API integration, and implementation.
 
-## Overview
+[Business website](https://kimkatcollection.com)
 
-I built KimKat Collection as a real, customer-facing storefront and back-office tool for a jewelry and collectibles shop that sells primarily through TikTok live sales. The site lets customers browse products, add items to a cart, check out via manual payment links, and look up their live-sale bag by number. A password-protected admin area keeps product, order, and bag management in one place without forcing the business onto a complex SaaS platform it didn't need.
+## Business context
 
-## The Problem
+KimKat Collection sells jewelry and collectibles through TikTok live sales. Customers claim items during a sale; those items accumulate in a numbered "bag." The owner tracks claims, payments, balances, and status in Google Sheets and accepts payments through existing payment apps.
 
-The business was already running on a mix of tools: TikTok for sales, a Google Sheet for tracking live-sale bags and claims, and manual Venmo/Cash App/PayPal payments. A traditional e-commerce platform would have meant migrating the bag workflow, paying for features that wouldn't get used, and retraining day-to-day operations. What was needed was a lightweight storefront that fit the existing process instead of replacing it.
+The product challenge was to give customers a clearer way to browse and check their bags while keeping the owner's familiar spreadsheet workflow.
 
-## The Solution
+## My contribution
 
-I built a mobile-first storefront that connects to the owner's existing Google Sheets workflow for live-sale bags while handling products, orders, and product photos in a separate Supabase project. Customers get a simple shop and bag lookup; the owner gets an admin dashboard that protects spreadsheet formulas and keeps sensitive data server-side.
+I used Lovable to scaffold the application and worked on adapting it to the business's storefront and operational requirements. The project brings together customer journeys, an admin interface, server functions, Supabase, and a Google Apps Script API.
 
-## Screenshots
+This is an AI-assisted implementation project. Its portfolio value is the connection between a real business process and a working application: choosing what to automate, preserving useful existing tools, and understanding the tradeoffs of the resulting system.
 
-<!-- TODO: add screenshots once assets are available -->
+## From workflow to product
 
-- **Storefront / homepage** — `TODO: storefront-homepage.png`
-- **Customer bag view** — `TODO: customer-bag-view.png`
-- **Admin dashboard** — `TODO: admin-dashboard.png`
+| Business need | Implemented capability | Transferable lesson |
+| --- | --- | --- |
+| Customers need to review items claimed during live sales | Bag lookup with items, totals, balance, due date, and status | Translate an internal record into a focused customer experience |
+| Owner already operates from a spreadsheet | Apps Script API connecting the application to Bags and Claims tabs | Integrate with an established workflow before proposing a migration |
+| Customers also need to browse outside live sales | Product catalog, detail pages, cart, and order submission | Connect customer-facing features with operational data |
+| Owner needs to maintain records | Password-gated product, order, and bag administration | Design for the person doing the recurring work |
+| Payments happen through existing apps | Manual-payment checkout and pending-confirmation order status | Match the actual payment process and make its limits explicit |
 
 ## Architecture
 
 ```mermaid
-flowchart TB
-    subgraph Users
-        C[Customer]
-        A[Admin]
-    end
-
-    subgraph Storefront
-        R[React + TanStack Start]
-        SF[TanStack Server Functions]
-    end
-
-    subgraph Data
-        SP[Supabase<br/>products / orders / photos]
-        GAS[Google Apps Script API]
-        GS[Google Sheets<br/>bags / claims]
-    end
-
-    C -->|browse / cart / view bag| R
-    A -->|manage products, bags, orders| R
-    R --> SF
-    SF -->|products, orders, photos| SP
-    SF -->|bag reads / limited writes| GAS
-    GAS -->|Bags + Claims tabs| GS
+flowchart TD
+    UI["React storefront and admin"] --> SF["TanStack server functions"]
+    SF --> DB["Supabase: products, orders, photos"]
+    SF --> API["Google Apps Script API"]
+    API --> GS["Google Sheets: bags and claims"]
 ```
 
-## Key Features
+The cart uses browser localStorage. Server functions connect to the shop database and spreadsheet API. Admin operations check a session before accessing management functions.
 
-- Mobile-first storefront with a responsive, cozy, on-brand design
-- Product listing, detail pages, cart, and manual-payment checkout
-- Public "View my bag" lookup by bag number, showing only what a customer needs to see
-- Password-protected admin for products, orders, and live-sale bag management
-- Google Apps Script integration that reads and writes the owner's existing spreadsheet
-- Spreadsheet formula protection: only Payments Received, Due Date, and Status are writable
-- Product photos stored in a private Supabase storage bucket
-- Server-side credentials and admin session handling
+## Decisions and tradeoffs
 
-## Product & Technical Decisions
+**Keep the spreadsheet as the live-sale source of truth.** Bags and claims stay in Sheets; products and orders live in Supabase. This fits the existing operation, but introduces two data systems to maintain.
 
-- **Preserve the existing Google Sheets workflow instead of forcing a migration.** The owner's live-sale operation already ran on a spreadsheet. Rebuilding that as a database would have added complexity without improving the business. The Apps Script API bridges the sheet and the site.
-- **Separate public and admin access.** Public bag lookup returns only bag number, items, totals, balance due, due date, and status. Customer names, TikTok handles, payments received, and row numbers stay server-side for admin use.
-- **Keep sensitive credentials server-side.** All Supabase service-role keys, spreadsheet tokens, and admin secrets live in environment variables and are only used in server functions.
-- **Design around existing manual payment methods.** Checkout provides Venmo, Cash App, and PayPal links rather than integrating a payment gateway, matching how the business actually collects money.
+**Limit the public response.** The bag endpoint returns a selected set of fields rather than the full spreadsheet record. Customer names, TikTok handles, payments received, and spreadsheet row identifiers are excluded. Bag-number lookup is still public; it is not customer authentication.
 
-## Challenges I Solved
+**Constrain bag-summary edits.** Updates to the Bags tab target payments received, due date, and status. Claims have separate add, replace, and delete operations. This distinction matters: the integration does more than update three fields across the entire spreadsheet.
 
-- **Google Sheets integration.** Built a fetch-based Apps Script API that the storefront can call reliably, with caching and privacy-safe responses for public lookups.
-- **Protecting spreadsheet formulas.** Limited writes to only Payments Received, Due Date, and Status so the rest of the sheet keeps its formula-driven columns intact.
-- **Managing Supabase + Google Sheets together.** Split data cleanly: products, orders, and photos live in Supabase; bags and claims stay in the sheet. This let the site be stateful where it matters without disrupting the existing workflow.
-- **Building for real day-to-day business use.** Every feature was shaped by how the owner actually sells: live sales, manual payments, bag numbers, and a simple admin flow.
+**Reduce repeat spreadsheet requests.** The server uses a 30-second in-memory read cache, invalidates it after writes, and supports single-request bag-and-claims lookup. Older Apps Script deployments have fallback paths. The cache is local to a server instance; it is not shared infrastructure.
 
-## Tech Stack
+**Keep payment confirmation manual.** Submitting an order records it as pending payment confirmation. Payment links support the existing process; they do not verify payment or provide automated reconciliation.
 
-- **Framework:** TanStack Start (React 19, Vite, file-based routing)
-- **Styling:** Tailwind CSS v4
-- **Backend / data:** Supabase (products, orders, private product-photos bucket)
-- **Live-sale data:** Google Apps Script Web App API + Google Sheets
-- **Cart:** Browser `localStorage`
-- **Admin auth:** Password gate with signed session cookie
-- **Package manager / runtime:** Bun
+## What the project demonstrates
 
-## Project Structure
+- Turning a business workflow into customer and admin requirements.
+- Connecting familiar tools through APIs rather than replacing the whole process.
+- Making practical scope decisions around payments, data ownership, and administration.
+- Using AI development tools to implement a real application while inspecting how the pieces work.
+- Explaining implementation constraints clearly to technical and nontechnical audiences.
 
-```text
-src/
-  routes/            # TanStack file-based routes (storefront, admin, bag lookup)
-  lib/               # Server functions, database clients, cart, admin session
-  components/        # UI components (cards, header, footer, admin tools)
-  assets/            # Brand imagery and backdrop
-apps-script/         # BagTrackerAPI.gs — Apps Script to paste into the sheet
-```
+## Results and next validation
 
-## Local Development
+The repository implements the storefront, cart, order submission, bag lookup, admin tools, and spreadsheet integration described above. This case study does not claim measured time savings, revenue impact, adoption, or conversion improvements.
+
+Useful next measures are repeated customer balance questions, owner time spent updating bags, lookup success rate, and checkout completion. Establish a baseline before attributing an improvement to the application.
+
+## Known limitations and next steps
+
+- Order totals are calculated from submitted item prices; authoritative catalog-price and inventory validation should be added before treating orders as confirmed sales.
+- Public bag lookup needs an explicit decision about acceptable disclosure and stronger access controls if required.
+- Claim edits use delete-then-add operations; stable item identifiers and atomic updates would improve reliability.
+- Shared-password administration is a simple starting point; individual accounts and audit history would support broader use.
+- Deployment configuration, database policies, storage access, and live payment behavior require environment-specific verification.
+
+## Technical reference
+
+**Stack:** React 19, TanStack Start, Vite, TypeScript, Tailwind CSS v4, Supabase, Google Apps Script, Google Sheets, Bun.
+
+### Source map
+
+| Path | Responsibility |
+| --- | --- |
+| `src/routes/` | Storefront, product, cart, checkout, bag lookup, and admin pages |
+| `src/lib/bags.functions.ts` | Public bag response and authenticated bag administration |
+| `src/lib/sheets.server.ts` | Spreadsheet transport, cache, mappings, and writes |
+| `src/lib/shop.functions.ts` | Product queries and order submission |
+| `src/lib/shop-db.server.ts` | Public and privileged Supabase clients |
+| `src/lib/admin-session.server.ts` | Admin password verification and session handling |
+| `apps-script/BagTrackerAPI.gs` | Spreadsheet API deployed separately in Google Apps Script |
+
+### Local development
 
 ```sh
 bun install
 bun run dev
+bun run typecheck
+bun run build
 ```
 
-Other useful scripts:
+The repository also provides `bun run lint` and `bun run format`.
 
-```sh
-bun run build      # production build
-bun run typecheck  # TypeScript check
-bun run lint       # ESLint + Prettier
-```
-
-## Environment Variables
-
-Set these in Lovable or your deployment platform. Never commit values to the repo.
+Configure these environment variables with your own services; never commit their values:
 
 - `BAG_API_URL`
 - `BAG_API_TOKEN`
@@ -125,13 +112,10 @@ Set these in Lovable or your deployment platform. Never commit values to the rep
 - `SHOP_SUPABASE_ANON_KEY`
 - `SHOP_SUPABASE_SERVICE_ROLE_KEY`
 
-## Future Improvements
+The Apps Script project expects `SECRET_TOKEN` in Script Properties and `Bags` and `Claims` sheets with the column layout defined in the script. Local source alone does not provision the database, storage bucket, or spreadsheet service.
 
-- Inventory count tracking and low-stock alerts
-- Automated payment-status updates from payment apps
-- Customer-facing order history
-- Admin analytics dashboard for sales and bag trends
+## Portfolio framing
 
-## About the Project
+**One-line description:** Built an AI-assisted storefront and operations tool that connects a live-sale business's Google Sheets workflow with customer bag lookup and an admin interface.
 
-KimKat Collection was built as a real production system for a working business, not a demo. The goal was to make the day-to-day selling experience easier while respecting the tools and workflows the owner already had in place.
+**Interview discussion:** How to understand an existing process, choose a useful scope, connect tools, and explain what still needs validation before scaling.
