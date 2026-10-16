@@ -1,0 +1,54 @@
+name: One-time privacy cleanup
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/privacy-cleanup.yml']
+permissions:
+  contents: write
+concurrency:
+  group: one-time-privacy-cleanup
+  cancel-in-progress: false
+jobs:
+  clean:
+    if: github.repository == 'kemptonanne/kimkatcollection' && github.event.head_commit.message == 'Run authorized one-time history privacy cleanup'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out complete history
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install pinned history-filtering tool
+        run: python3 -m pip install --user git-filter-repo==2.47.0
+      - name: Filter flagged paths and verify current files
+        env:
+          EXPECTED_PARENT: '7e934a2c14bd580c9168d09dcff9e15872a8bb5a'
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "$EXPECTED_PARENT"
+          original_tree="$(git rev-parse HEAD^{tree})"
+          python3 -m git_filter_repo --force --refs refs/heads/main --invert-paths \
+            --path .env \
+            --path OPERATIONS.md \
+            --path docs/VERIFICATION.md \
+            --path .lovable/plan.md \
+            --path .lovable/plan/
+          test "$(git rev-parse HEAD^{tree})" = "$original_tree"
+          test -z "$(git log --format=%H main -- .env OPERATIONS.md docs/VERIFICATION.md .lovable/plan.md .lovable/plan/)"
+          echo "Flagged paths removed; current project tree is unchanged."
+      - name: Replace main only if no newer work exists
+        env:
+          CLEANUP_TOKEN: ${{ github.token }}
+          EXPECTED_HEAD: ${{ github.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          auth_header="$(printf 'x-access-token:%s' "$CLEANUP_TOKEN" | base64 -w0)"
+          echo "::add-mask::$auth_header"
+          export GIT_CONFIG_COUNT=1
+          export GIT_CONFIG_KEY_0=http.https://github.com/.extraheader
+          export GIT_CONFIG_VALUE_0="AUTHORIZATION: basic $auth_header"
+          git push --force-with-lease="refs/heads/main:$EXPECTED_HEAD" https://github.com/kemptonanne/kimkatcollection.git HEAD:refs/heads/main
+          echo "History cleanup pushed successfully."
