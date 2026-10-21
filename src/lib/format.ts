@@ -22,5 +22,7 @@ export const PAYMENT_LINKS = [
 
 export const SIGNUP_FORM_URL = "https://forms.gle/D56V8iAxyrtbjczL7";
 
+export const TELEGRAM_URL = "https://t.me/kimkatcollection";
+
 export const BAG_STATUSES = ["Open", "Active", "Hold", "Closed"] as const;
 export type BagStatus = (typeof BAG_STATUSES)[number];

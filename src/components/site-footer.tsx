@@ -1,6 +1,6 @@
 import { ExternalLink } from "lucide-react";
 
-import { PAYMENT_LINKS, SIGNUP_FORM_URL } from "@/lib/format";
+import { PAYMENT_LINKS, SIGNUP_FORM_URL, TELEGRAM_URL } from "@/lib/format";
 
 export function PaymentLinks({ title = "Pay your balance" }: { title?: string }) {
   return (

@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Menu, ShoppingBag, X } from "lucide-react";
 import { useState } from "react";
 import { cartCount, useCart } from "@/lib/cart";
-import { SIGNUP_FORM_URL } from "@/lib/format";
+import { SIGNUP_FORM_URL, TELEGRAM_URL } from "@/lib/format";
 
 const NAV = [
   { to: "/", label: "Shop" },
