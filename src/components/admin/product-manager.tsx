@@ -139,6 +139,7 @@ export function ProductManager() {
 
           <div className="grid gap-2">
             <span className="text-sm font-bold">Photos</span>
+            <p className="text-sm text-inksoft">JPEG, PNG, WebP, or GIF. Up to 3 MB per photo.</p>
             {draft.imageUrls.length > 0 && (
               <ul className="flex gap-2 overflow-x-auto">
                 {draft.imageUrls.map((url) => (

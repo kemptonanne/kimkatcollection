@@ -2,7 +2,7 @@ import { MAX_PHOTO_DATA_URL_LENGTH, validatePhotoFile } from "./product-photo";
 
 export function parseProductPhoto(dataUrl: string) {
   if (dataUrl.length > MAX_PHOTO_DATA_URL_LENGTH)
-    throw new Error("Each photo must be 5 MB or smaller.");
+    throw new Error("Each photo must be 3 MB or smaller.");
   const match = /^data:(image\/(?:jpeg|png|webp|gif));base64,([A-Za-z0-9+/]+={0,2})$/.exec(dataUrl);
   if (!match) throw new Error("Choose a JPEG, PNG, WebP, or GIF photo.");
   const contentType = match[1]!;
