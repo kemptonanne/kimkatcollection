@@ -327,7 +327,8 @@ async function claimPost(payload: Record<string, unknown>): Promise<void> {
     clearBagCache();
     if (isUnknownAction(error)) throw new Error(CLAIM_EDIT_UNSUPPORTED);
     const detail = error instanceof BagApiError ? error.detail : "";
-    if (/changed since|ambiguous|busy|invalid claim|required/i.test(detail)) throw new Error(detail);
+    if (/changed since|ambiguous|busy|invalid claim|required/i.test(detail))
+      throw new Error(detail);
     throw new Error("Could not save that claim. Nothing was changed — refresh and try again.");
   }
 }

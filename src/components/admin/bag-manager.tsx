@@ -246,7 +246,12 @@ export function BagManager() {
                           aria-label="Item description"
                           onBlur={(e) =>
                             e.target.value !== item.item &&
-                            editItem.mutate({ claim: item, item: e.target.value, price: item.price, qty: item.qty })
+                            editItem.mutate({
+                              claim: item,
+                              item: e.target.value,
+                              price: item.price,
+                              qty: item.qty,
+                            })
                           }
                           className="tap-target rounded-xl border border-input bg-surface px-3 text-sm shadow-card"
                         />
@@ -257,7 +262,12 @@ export function BagManager() {
                             aria-label="Item price"
                             onBlur={(e) =>
                               e.target.value !== item.price &&
-                              editItem.mutate({ claim: item, item: item.item, price: e.target.value, qty: item.qty })
+                              editItem.mutate({
+                                claim: item,
+                                item: item.item,
+                                price: e.target.value,
+                                qty: item.qty,
+                              })
                             }
                             className="tap-target w-28 rounded-xl border border-input bg-surface px-3 text-sm shadow-card"
                           />
@@ -267,7 +277,12 @@ export function BagManager() {
                             aria-label="Item quantity"
                             onBlur={(e) =>
                               e.target.value !== item.qty &&
-                              editItem.mutate({ claim: item, item: item.item, price: item.price, qty: e.target.value })
+                              editItem.mutate({
+                                claim: item,
+                                item: item.item,
+                                price: item.price,
+                                qty: e.target.value,
+                              })
                             }
                             className="tap-target w-16 rounded-xl border border-input bg-surface px-3 text-sm shadow-card"
                           />

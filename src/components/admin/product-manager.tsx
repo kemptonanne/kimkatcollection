@@ -10,6 +10,7 @@ import {
   adminUploadPhoto,
 } from "@/lib/admin.functions";
 import { money } from "@/lib/format";
+import { PHOTO_ACCEPT, validatePhotoFile } from "@/lib/product-photo";
 
 type Draft = {
   id?: string;
@@ -78,14 +79,16 @@ export function ProductManager() {
     if (!files?.length) return;
     setUploading(true);
     try {
-      for (const file of Array.from(files).slice(0, 4)) {
+      const selected = Array.from(files).slice(0, 4);
+      for (const file of selected) validatePhotoFile(file.type, file.size);
+      for (const file of selected) {
         const dataUrl = await readFileAsDataUrl(file);
         const { url } = await upload({ data: { dataUrl, fileName: file.name } });
         setDraft((d) => ({ ...d, imageUrls: [...d.imageUrls, url] }));
       }
       toast.success("Photo uploaded");
-    } catch {
-      toast.error("Photo upload failed.");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Photo upload failed.");
     } finally {
       setUploading(false);
     }
@@ -165,7 +168,8 @@ export function ProductManager() {
               {uploading ? "Uploading…" : "Upload photos"}
               <input
                 type="file"
-                accept="image/*"
+                accept={PHOTO_ACCEPT}
+                disabled={uploading}
                 multiple
                 className="hidden"
                 onChange={(e) => onPickFiles(e.target.files)}

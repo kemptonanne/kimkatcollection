@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { MAX_PHOTO_DATA_URL_LENGTH } from "./product-photo";
 
 const productSchema = z.object({
   title: z.string().min(1).max(160),
@@ -74,7 +75,12 @@ export const adminDeleteProduct = createServerFn({ method: "POST" })
 
 export const adminUploadPhoto = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) =>
-    z.object({ dataUrl: z.string().min(10), fileName: z.string().max(200) }).parse(input),
+    z
+      .object({
+        dataUrl: z.string().min(10).max(MAX_PHOTO_DATA_URL_LENGTH),
+        fileName: z.string().max(200),
+      })
+      .parse(input),
   )
   .handler(async ({ data }) => {
     const { requireAdmin } = await import("./admin-session.server");

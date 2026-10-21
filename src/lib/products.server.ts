@@ -1,3 +1,4 @@
+import { parseProductPhoto } from "./product-photo.server";
 import { shopAdmin, shopPublic } from "./shop-db.server";
 
 const SIGNED_URL_TTL = 60 * 60 * 24 * 365 * 5; // 5 years
@@ -60,11 +61,8 @@ export async function getProductFromDb(id: string): Promise<Product | null> {
 
 /** Uploads a base64 data URL to storage and returns a long-lived signed URL. */
 export async function uploadProductPhoto(dataUrl: string, fileName: string): Promise<string> {
+  const { contentType, bytes } = parseProductPhoto(dataUrl);
   const supabaseAdmin = shopAdmin();
-  const match = /^data:([^;]+);base64,(.+)$/.exec(dataUrl);
-  if (!match) throw new Error("Unsupported image format.");
-  const contentType = match[1]!;
-  const bytes = Buffer.from(match[2]!, "base64");
   const path = `${crypto.randomUUID()}-${fileName.replace(/[^a-zA-Z0-9.\-_]/g, "_")}`;
 
   const { error } = await supabaseAdmin.storage
