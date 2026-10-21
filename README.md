@@ -13,8 +13,8 @@ I used Lovable to scaffold the application and adapted it to the business's stor
 - **Customer bag lookup:** View claimed items, totals, balance due, due date, and status.
 - **Storefront:** Browse products, view item details, and manage a cart.
 - **Checkout:** Submit an order and access Venmo, Cash App, or PayPal payment links. Prices and available quantities are checked against the catalog on the server.
-- **Admin workspace:** Manage products, upload photos, review orders, and update bags and claims behind a password-protected session.
-- **Spreadsheet integration:** Keep live-sale records in Google Sheets, with bag-summary edits limited to payments, due dates, and status to protect calculated fields.
+- **Admin workspace:** Manage products, upload photos, and review orders behind a password-protected session.
+- **Spreadsheet integration:** The owner manages bags and claims in Google Sheets; the website reads those records for customer bag lookup.
 
 ## Adoption and results
 
@@ -71,6 +71,5 @@ See [setup instructions](docs/SETUP.md) for database, storage, spreadsheet, and 
 
 ## Future improvements
 
-- Replace delete-then-add claim edits with reliable, atomic updates and stable item identifiers.
 - Add customer-specific bag access and individual admin accounts with an audit trail.
 - Add inventory reservation and payment reconciliation as the business's ordering workflow evolves.

@@ -10,7 +10,7 @@ function ContactKim() {
       aria-label="Message Kim on TikTok (opens in new tab)"
       className="font-bold text-brand underline underline-offset-4"
     >
-      Message Kim on TikTok
+      message Kim on TikTok
     </a>
   );
 }
