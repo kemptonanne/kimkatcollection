@@ -13,7 +13,10 @@
  *   GET  ?action=getBagItems&bagNumber=…&token=…
  *   POST { action: "updateBag", token, bagNumber, paymentsReceived?, dueDate?, status? }
  *   POST { action: "addItem", token, bagNumber, companyName, item, price, qty }
- *   POST { action: "deleteItem", token, bagNumber, companyName, item, price, qty, dateClaimed }
+ *   POST { action: "updateItem", token, sheetRow, expected, companyName, item, price, qty }
+ *   POST { action: "deleteClaim", token, sheetRow, expected }
+ * updateItem/deleteClaim need the newer Apps Script (claims carry `sheetRow`).
+ * Against an older deployment edits fail closed: nothing is written.
  * All POSTs use Content-Type: text/plain (Apps Script can't handle CORS preflight).
  *
  * The getBag / getAllItems actions only exist in the newer Apps Script version;
@@ -34,6 +37,8 @@ export type BagRow = {
 
 export type BagItemRow = {
   rowNumber: number;
+  /** Real spreadsheet row from the newer Apps Script; null on older deployments. */
+  sheetRow: number | null;
   bagNumber: string;
   companyName: string;
   item: string;
@@ -136,12 +141,12 @@ async function apiPost(payload: Record<string, unknown>): Promise<void> {
   if (!response.ok) {
     const body = await response.text();
     console.error(`Bag API write failed [${response.status}]: ${body}`);
-    throw new Error(`Bag API write failed [${response.status}]`);
+    throw new BagApiError(`Bag API write failed [${response.status}]`, body);
   }
   const data = (await response.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
   if (data && data.ok === false) {
     console.error(`Bag API write returned an error: ${data.error ?? "unknown"}`);
-    throw new Error(`Bag API error: ${data.error ?? "unknown"}`);
+    throw new BagApiError(`Bag API error: ${data.error ?? "unknown"}`, data.error ?? "");
   }
   clearBagCache();
 }
@@ -169,6 +174,10 @@ function toItemRow(
 ): BagItemRow {
   return {
     rowNumber,
+    sheetRow:
+      Number.isInteger(Number(item["sheetRow"])) && Number(item["sheetRow"]) >= 2
+        ? Number(item["sheetRow"])
+        : null,
     bagNumber: asText(item["bagNumber"]) || fallbackBagNumber,
     companyName: asText(item["companyName"]),
     item: asText(item["item"]),
@@ -299,31 +308,63 @@ export async function appendBagItem(item: {
   });
 }
 
+export type ClaimSnapshot = {
+  bagNumber: string;
+  companyName: string;
+  item: string;
+  price: string;
+  qty: string;
+  dateClaimed: string;
+};
+
+export const CLAIM_EDIT_UNSUPPORTED =
+  "Editing claims needs the updated Bag Tracker script. Nothing was changed — redeploy the Apps Script, then try again.";
+
+async function claimPost(payload: Record<string, unknown>): Promise<void> {
+  try {
+    await apiPost(payload);
+  } catch (error) {
+    clearBagCache();
+    if (isUnknownAction(error)) throw new Error(CLAIM_EDIT_UNSUPPORTED);
+    const detail = error instanceof BagApiError ? error.detail : "";
+    if (/changed since|ambiguous|busy|invalid claim|required/i.test(detail)) throw new Error(detail);
+    throw new Error("Could not save that claim. Nothing was changed — refresh and try again.");
+  }
+}
+
+function requireSheetRow(sheetRow: number | null): number {
+  if (sheetRow === null || !Number.isInteger(sheetRow) || sheetRow < 2) {
+    throw new Error(CLAIM_EDIT_UNSUPPORTED);
+  }
+  return sheetRow;
+}
+
+/**
+ * Atomic in-place claim edit. The script verifies `expected` still matches the
+ * row exactly (and is unique) under a lock, then writes only
+ * Company/Item/Price/Qty. Never deletes or re-adds rows.
+ */
 export async function writeBagItem(
-  rowNumber: number,
-  item: { bagNumber: string; companyName: string; item: string; price: string; qty: string },
+  sheetRow: number | null,
+  expected: ClaimSnapshot,
+  next: { companyName: string; item: string; price: string; qty: string },
 ): Promise<void> {
-  // The API has no "edit item" endpoint, so replace the row: delete then re-add.
-  const existing = await itemByRowNumber(rowNumber);
-  await deleteItemPost(existing);
-  await appendBagItem(item);
-}
-
-export async function deleteBagItemRow(rowNumber: number): Promise<void> {
-  const item = await itemByRowNumber(rowNumber);
-  await deleteItemPost(item);
-}
-
-async function deleteItemPost(item: BagItemRow): Promise<void> {
-  await apiPost({
-    action: "deleteItem",
-    bagNumber: item.bagNumber,
-    companyName: item.companyName,
-    item: item.item,
-    price: item.price,
-    qty: item.qty,
-    dateClaimed: item.dateClaimed,
+  await claimPost({
+    action: "updateItem",
+    sheetRow: requireSheetRow(sheetRow),
+    expected,
+    companyName: next.companyName,
+    item: next.item,
+    price: next.price,
+    qty: next.qty,
   });
+}
+
+export async function deleteBagItemRow(
+  sheetRow: number | null,
+  expected: ClaimSnapshot,
+): Promise<void> {
+  await claimPost({ action: "deleteClaim", sheetRow: requireSheetRow(sheetRow), expected });
 }
 
 // ---------- Row-number lookups (rowNumber is synthetic, assigned by read order) ----------
@@ -333,11 +374,4 @@ async function bagByRowNumber(rowNumber: number): Promise<BagRow> {
   const bag = bags.find((b) => b.rowNumber === rowNumber);
   if (!bag) throw new Error(`No bag found for row ${rowNumber}. Refresh and try again.`);
   return bag;
-}
-
-async function itemByRowNumber(rowNumber: number): Promise<BagItemRow> {
-  const items = await readBagItems();
-  const item = items.find((i) => i.rowNumber === rowNumber);
-  if (!item) throw new Error(`No item found for row ${rowNumber}. Refresh and try again.`);
-  return item;
 }

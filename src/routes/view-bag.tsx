@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Cherry, Heart, X } from "lucide-react";
 import { lookupBag } from "@/lib/bags.functions";
 import { money, parseMoney } from "@/lib/format";
@@ -28,6 +28,29 @@ export const Route = createFileRoute("/view-bag")({
 
 type Result = Awaited<ReturnType<typeof lookupBag>>;
 
+const LAST_BAG_KEY = "kkc:last-bag";
+/** Matches the server-side lookup validation (z.string().max(60)). */
+const BAG_QUERY_MAX = 60;
+
+function readLastBag(): string {
+  try {
+    return window.localStorage.getItem(LAST_BAG_KEY) ?? "";
+  } catch {
+    return "";
+  }
+}
+
+function saveLastBag(value: string): void {
+  try {
+    window.localStorage.setItem(LAST_BAG_KEY, value);
+  } catch {
+    // Storage blocked (private mode, quota) — remembering the bag is optional.
+  }
+}
+
+const FOCUSABLE =
+  'a[href], button:not([disabled]), input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])';
+
 function ViewMyBag() {
   const lookup = useServerFn(lookupBag);
   const [query, setQuery] = useState("");
@@ -35,16 +58,61 @@ function ViewMyBag() {
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<Result | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const returnFocusRef = useRef<HTMLElement | null>(null);
+
+  // Dialog a11y: focus in, trap Tab, Escape closes, lock scroll, restore focus.
+  useEffect(() => {
+    if (!sheetOpen) return;
+    const panel = panelRef.current;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    panel?.focus();
+
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setSheetOpen(false);
+        return;
+      }
+      if (event.key !== "Tab" || !panel) return;
+      const nodes = Array.from(panel.querySelectorAll<HTMLElement>(FOCUSABLE));
+      if (nodes.length === 0) {
+        event.preventDefault();
+        panel.focus();
+        return;
+      }
+      const first = nodes[0]!;
+      const last = nodes[nodes.length - 1]!;
+      const active = document.activeElement;
+      if (event.shiftKey && (active === first || active === panel || !panel.contains(active))) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (active === last || !panel.contains(active))) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = previousOverflow;
+      const target = returnFocusRef.current;
+      if (target && document.contains(target)) target.focus();
+    };
+  }, [sheetOpen]);
 
   // Remember the last bag number so repeat visitors don't retype it.
   useEffect(() => {
-    const saved = window.localStorage.getItem("kkc:last-bag");
+    const saved = readLastBag().slice(0, BAG_QUERY_MAX);
     if (saved) setQuery(saved);
   }, []);
 
   async function onSubmit(event: React.FormEvent) {
     event.preventDefault();
     if (!query.trim()) return;
+    returnFocusRef.current =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null;
     setLoading(true);
     setError(null);
     setResult(null);
@@ -52,7 +120,7 @@ function ViewMyBag() {
     try {
       const data = await lookup({ data: { query: query.trim() } });
       setResult(data);
-      window.localStorage.setItem("kkc:last-bag", query.trim());
+      saveLastBag(query.trim());
     } catch {
       setSheetOpen(false);
       setError("We couldn't reach the bag list right now. Please try again in a moment.");
@@ -88,6 +156,7 @@ function ViewMyBag() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             inputMode="numeric"
+            maxLength={BAG_QUERY_MAX}
             placeholder="e.g. 1"
             className="tap-target rounded-2xl border border-input bg-surface px-4 text-base shadow-card"
           />
@@ -131,7 +200,9 @@ function ViewMyBag() {
           onClick={() => setSheetOpen(false)}
         >
           <div
-            className="max-h-[85vh] w-full overflow-y-auto rounded-t-4xl bg-cream px-4 pb-8 pt-3 shadow-soft"
+            ref={panelRef}
+            tabIndex={-1}
+            className="max-h-[85vh] w-full overflow-y-auto rounded-t-4xl bg-cream px-4 pb-8 pt-3 shadow-soft outline-none"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-border" />

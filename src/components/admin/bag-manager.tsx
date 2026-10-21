@@ -59,29 +59,56 @@ export function BagManager() {
     onError: () => toast.error("Could not add that item."),
   });
 
+  type Claim = {
+    sheetRow: number | null;
+    bagNumber: string;
+    companyName: string;
+    item: string;
+    price: string;
+    qty: string;
+    dateClaimed: string;
+  };
+  const snapshot = (c: Claim) => ({
+    bagNumber: c.bagNumber,
+    companyName: c.companyName,
+    item: c.item,
+    price: c.price,
+    qty: c.qty,
+    dateClaimed: c.dateClaimed,
+  });
+  const errorText = (err: unknown, fallback: string) =>
+    err instanceof Error && err.message ? err.message : fallback;
+
   const editItem = useMutation({
-    mutationFn: (vars: {
-      rowNumber: number;
-      bagNumber: string;
-      companyName: string;
-      item: string;
-      price: string;
-      qty: string;
-    }) => updateItem({ data: vars }),
+    mutationFn: ({ claim, ...next }: { claim: Claim; item: string; price: string; qty: string }) =>
+      updateItem({
+        data: {
+          sheetRow: claim.sheetRow,
+          expected: snapshot(claim),
+          next: { companyName: claim.companyName, ...next },
+        },
+      }),
     onSuccess: () => {
       toast.success("Item updated");
       refresh();
     },
-    onError: () => toast.error("Could not update that item."),
+    onError: (err) => {
+      toast.error(errorText(err, "Could not update that item."));
+      refresh();
+    },
   });
 
   const removeItem = useMutation({
-    mutationFn: (rowNumber: number) => deleteItem({ data: { rowNumber } }),
+    mutationFn: (claim: Claim) =>
+      deleteItem({ data: { sheetRow: claim.sheetRow, expected: snapshot(claim) } }),
     onSuccess: () => {
       toast.success("Item removed");
       refresh();
     },
-    onError: () => toast.error("Could not remove that item."),
+    onError: (err) => {
+      toast.error(errorText(err, "Could not remove that item."));
+      refresh();
+    },
   });
 
   if (bags.isLoading) return <p className="text-sm text-inksoft">Loading bags…</p>;
@@ -219,14 +246,7 @@ export function BagManager() {
                           aria-label="Item description"
                           onBlur={(e) =>
                             e.target.value !== item.item &&
-                            editItem.mutate({
-                              rowNumber: item.rowNumber,
-                              bagNumber: item.bagNumber,
-                              companyName: item.companyName,
-                              item: e.target.value,
-                              price: item.price,
-                              qty: item.qty,
-                            })
+                            editItem.mutate({ claim: item, item: e.target.value, price: item.price, qty: item.qty })
                           }
                           className="tap-target rounded-xl border border-input bg-surface px-3 text-sm shadow-card"
                         />
@@ -237,14 +257,7 @@ export function BagManager() {
                             aria-label="Item price"
                             onBlur={(e) =>
                               e.target.value !== item.price &&
-                              editItem.mutate({
-                                rowNumber: item.rowNumber,
-                                bagNumber: item.bagNumber,
-                                companyName: item.companyName,
-                                item: item.item,
-                                price: e.target.value,
-                                qty: item.qty,
-                              })
+                              editItem.mutate({ claim: item, item: item.item, price: e.target.value, qty: item.qty })
                             }
                             className="tap-target w-28 rounded-xl border border-input bg-surface px-3 text-sm shadow-card"
                           />
@@ -254,21 +267,14 @@ export function BagManager() {
                             aria-label="Item quantity"
                             onBlur={(e) =>
                               e.target.value !== item.qty &&
-                              editItem.mutate({
-                                rowNumber: item.rowNumber,
-                                bagNumber: item.bagNumber,
-                                companyName: item.companyName,
-                                item: item.item,
-                                price: item.price,
-                                qty: e.target.value,
-                              })
+                              editItem.mutate({ claim: item, item: item.item, price: item.price, qty: e.target.value })
                             }
                             className="tap-target w-16 rounded-xl border border-input bg-surface px-3 text-sm shadow-card"
                           />
                           <button
                             type="button"
                             aria-label="Delete item"
-                            onClick={() => removeItem.mutate(item.rowNumber)}
+                            onClick={() => removeItem.mutate(item)}
                             className="tap-target ml-auto flex items-center justify-center rounded-full text-inksoft"
                           >
                             <Trash2 className="size-5" />

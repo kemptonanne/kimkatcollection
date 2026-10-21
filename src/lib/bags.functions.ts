@@ -83,25 +83,38 @@ export const adminAddBagItem = createServerFn({ method: "POST" })
     return { ok: true as const };
   });
 
+const snapshotSchema = z.object({
+  bagNumber: z.string().min(1).max(40),
+  companyName: z.string().max(120),
+  item: z.string().min(1).max(300),
+  price: z.string().max(40),
+  qty: z.string().max(10),
+  dateClaimed: z.string().max(40),
+});
+
+const claimRefSchema = z.object({
+  sheetRow: z.number().int().min(2).nullable(),
+  expected: snapshotSchema,
+});
+
 export const adminUpdateBagItem = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) =>
-    itemSchema.extend({ rowNumber: z.number().int().min(2) }).parse(input),
+    claimRefSchema.extend({ next: itemSchema.omit({ bagNumber: true }) }).parse(input),
   )
   .handler(async ({ data }) => {
     const { requireAdmin } = await import("./admin-session.server");
     await requireAdmin();
     const { writeBagItem } = await import("./sheets.server");
-    const { rowNumber, ...item } = data;
-    await writeBagItem(rowNumber, item);
+    await writeBagItem(data.sheetRow, data.expected, data.next);
     return { ok: true as const };
   });
 
 export const adminDeleteBagItem = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => z.object({ rowNumber: z.number().int().min(2) }).parse(input))
+  .inputValidator((input: unknown) => claimRefSchema.parse(input))
   .handler(async ({ data }) => {
     const { requireAdmin } = await import("./admin-session.server");
     await requireAdmin();
     const { deleteBagItemRow } = await import("./sheets.server");
-    await deleteBagItemRow(data.rowNumber);
+    await deleteBagItemRow(data.sheetRow, data.expected);
     return { ok: true as const };
   });
