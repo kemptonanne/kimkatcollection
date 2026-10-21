@@ -65,6 +65,18 @@ export function SiteHeader() {
                 New Customer Sign-Up
               </a>
             </li>
+            <li>
+              <a
+                href={TELEGRAM_URL}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Join us on Telegram (opens in new tab)"
+                onClick={() => setOpen(false)}
+                className="tap-target flex items-center rounded-2xl px-3 text-base font-semibold text-ink transition-colors hover:bg-blush"
+              >
+                Telegram
+              </a>
+            </li>
             {NAV.map((item) => (
               <li key={item.to}>
                 <Link
