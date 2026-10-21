@@ -3,7 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
 import { Cherry, Heart, X } from "lucide-react";
 import { lookupBag } from "@/lib/bags.functions";
-import { money, parseMoney } from "@/lib/format";
+import { TIKTOK_URL, money, parseMoney } from "@/lib/format";
 import { PaymentLinks } from "@/components/site-footer";
 import { BowIcon } from "@/components/bow-icon";
 
@@ -173,8 +173,17 @@ function ViewMyBag() {
         <div className="cozy-card mt-4 px-5 py-5 text-center" role="alert">
           <p className="font-display text-lg">Hmm, we couldn&apos;t check right now</p>
           <p className="mt-1 text-sm text-inksoft">
-            The bag list isn&apos;t answering — try again in a moment, or message Kim on TikTok if
-            it keeps happening.
+            The bag list isn&apos;t answering — try again in a moment, or{" "}
+            <a
+              href={TIKTOK_URL}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Message Kim on TikTok (opens in new tab)"
+              className="font-bold text-brand underline underline-offset-4"
+            >
+              message Kim on TikTok
+            </a>{" "}
+            if it keeps happening.
           </p>
           <button
             type="button"

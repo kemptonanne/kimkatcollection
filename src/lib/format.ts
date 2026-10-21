@@ -22,6 +22,8 @@ export const PAYMENT_LINKS = [
 
 export const SIGNUP_FORM_URL = "https://forms.gle/D56V8iAxyrtbjczL7";
 
+export const TIKTOK_URL = "https://www.tiktok.com/@kimkatcollection";
+
 export const TELEGRAM_URL = "https://t.me/kimkatcollection";
 
 export const BAG_STATUSES = ["Open", "Active", "Hold", "Closed"] as const;

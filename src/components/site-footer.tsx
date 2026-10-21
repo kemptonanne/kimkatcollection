@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ExternalLink } from "lucide-react";
 
-import { PAYMENT_LINKS, SIGNUP_FORM_URL, TELEGRAM_URL } from "@/lib/format";
+import { PAYMENT_LINKS, SIGNUP_FORM_URL, TELEGRAM_URL, TIKTOK_URL } from "@/lib/format";
 
 export function PaymentLinks({ title = "Pay your balance" }: { title?: string }) {
   return (
@@ -43,7 +43,17 @@ export function SiteFooter() {
       <div className="mx-auto mt-5 max-w-md rounded-2xl bg-surface/70 px-4 py-4">
         <h2 className="font-display text-base">Need a hand?</h2>
         <p className="mt-1 text-sm text-inksoft">
-          Questions about your bag, payment, or shipping? Message Kim on TikTok.
+          Questions about your bag, payment, or shipping?{" "}
+          <a
+            href={TIKTOK_URL}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Message Kim on TikTok (opens in new tab)"
+            className="font-bold text-brand underline underline-offset-4"
+          >
+            Message Kim on TikTok
+          </a>
+          .
         </p>
       </div>
       <p className="mt-5 text-sm text-inksoft">
