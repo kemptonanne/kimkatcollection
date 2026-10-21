@@ -40,7 +40,7 @@ export function CustomerHelp() {
           </summary>
           <p className="pb-4 text-sm leading-relaxed text-inksoft">
             Look up your bag, check your remaining balance, then choose Venmo, Cash App, or PayPal.
-            You&apos;ll send payment in your chosen app.
+            You&apos;ll send payment in your chosen app. All payments are due on Mondays.
           </p>
         </details>
         <details className="py-1">
@@ -53,10 +53,10 @@ export function CustomerHelp() {
         </details>
         <details className="py-1">
           <summary className="tap-target cursor-pointer py-3 text-sm font-bold">
-            What about shipping costs and delivery times?
+            How much is shipping, and when do orders ship?
           </summary>
           <p className="pb-4 text-sm leading-relaxed text-inksoft">
-            For shipping costs and delivery estimates for your order, <ContactKim /> before paying.
+            Shipping costs vary with current USPS rates. Orders ship on Wednesdays.
           </p>
         </details>
         <details className="py-1">
@@ -64,8 +64,7 @@ export function CustomerHelp() {
             Can I return or exchange an item?
           </summary>
           <p className="pb-4 text-sm leading-relaxed text-inksoft">
-            Before purchasing, <ContactKim /> to ask about return or exchange options for the item
-            you&apos;re considering.
+            All items are sold as-is. All sales are final, with no returns or exchanges.
           </p>
         </details>
       </div>
