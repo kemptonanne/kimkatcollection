@@ -1,9 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { Cherry, Heart } from "lucide-react";
+import { Cherry } from "lucide-react";
 import { listProducts } from "@/lib/shop.functions";
 import { TELEGRAM_URL, money } from "@/lib/format";
 import { PaymentLinks } from "@/components/site-footer";
+import { CustomerHelp } from "@/components/customer-help";
 import { BowIcon } from "@/components/bow-icon";
 
 const productsQuery = queryOptions({
@@ -57,30 +58,24 @@ function Shop() {
   return (
     <div className="pb-4">
       <section className="px-4 pt-6">
-        <div className="relative overflow-hidden rounded-4xl bg-blush px-6 py-10 text-center shadow-soft">
+        <div className="relative overflow-hidden rounded-3xl bg-blush px-5 py-6 sm:px-6 sm:py-9 text-center shadow-soft">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-surface/80 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-brand shadow-card">
             Jewelry &amp; collectibles
           </span>
-          <h1 className="mt-5 font-display text-3xl leading-tight">
+          <h1 className="mt-3 font-display text-2xl leading-tight sm:mt-5 sm:text-3xl">
             Little treasures, picked with <span className="text-brand">love</span>
           </h1>
-          <p className="mt-3 text-sm text-inksoft">
+          <p className="mx-auto mt-2 max-w-md text-sm text-inksoft sm:mt-3">
             Shop available pieces between live sales, or check your bag and remaining balance.
           </p>
-          <div className="mt-5 flex items-center justify-center gap-2 text-brand/70">
-            <Cherry className="size-4" />
-            <Heart className="size-4" fill="currentColor" />
-            <BowIcon className="size-5" />
-            <Heart className="size-4" fill="currentColor" />
-            <Cherry className="size-4" />
-          </div>
+          <BowIcon className="mx-auto mt-3 size-5 text-brand/60 sm:mt-5" aria-hidden="true" />
         </div>
       </section>
 
       <section className="mt-6 px-4">
         <Link
           to="/view-bag"
-          className="relative flex items-center justify-between overflow-hidden rounded-4xl bg-lilac px-6 py-6 shadow-soft transition-transform active:scale-[0.99]"
+          className="relative flex items-center justify-between overflow-hidden rounded-3xl bg-lilac px-5 py-5 sm:px-6 sm:py-6 shadow-soft transition-transform active:scale-[0.99]"
         >
           <span className="relative">
             <span className="mb-1 block text-xs font-bold uppercase tracking-wide text-brand">
@@ -108,13 +103,7 @@ function Shop() {
 
           {products.length === 0 ? (
             <div className="cozy-card mt-6 px-5 py-8 text-center">
-              <div className="mb-3 flex items-center justify-center gap-2 text-brand/30">
-                <Cherry className="size-6" />
-                <Heart className="size-6" fill="currentColor" />
-                <BowIcon className="size-7" />
-                <Heart className="size-6" fill="currentColor" />
-                <Cherry className="size-6" />
-              </div>
+              <Cherry className="mx-auto mb-3 size-6 text-brand/40" aria-hidden="true" />
               <p className="font-display text-lg text-ink">Between drops</p>
               <p className="mt-1 text-sm text-inksoft">
                 No pieces are listed at the moment. Join us on Telegram for live-sale updates.
@@ -166,6 +155,7 @@ function Shop() {
           )}
         </div>
       </section>
+      <CustomerHelp />
     </div>
   );
 }

@@ -1,11 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
-import { Cherry, Heart, X } from "lucide-react";
+import { X } from "lucide-react";
 import { lookupBag } from "@/lib/bags.functions";
 import { TIKTOK_URL, money, parseMoney } from "@/lib/format";
 import { PaymentLinks } from "@/components/site-footer";
-import { BowIcon } from "@/components/bow-icon";
 
 export const Route = createFileRoute("/view-bag")({
   head: () => ({
@@ -131,21 +130,17 @@ function ViewMyBag() {
 
   const bag = result?.found ? result.bag : null;
   const items = result?.found ? result.items : [];
+  const remaining = parseMoney(bag?.balanceDue);
+  const paidInFull =
+    !!bag && bag.balanceDue.trim() !== "" && remaining <= 0 && parseMoney(bag.bagTotal) > 0;
 
   return (
     <div className="px-4 pb-12 pt-6">
-      <div className="relative overflow-hidden rounded-4xl bg-blush px-6 py-6 text-center shadow-soft">
+      <div className="relative overflow-hidden rounded-3xl bg-blush px-5 py-5 text-center shadow-soft">
         <h1 className="relative font-display text-2xl">View my bag</h1>
         <p className="relative mt-2 text-sm text-inksoft">
           Enter your bag number to view your items, remaining balance, and payment due date.
         </p>
-        <div className="relative mt-3 flex items-center justify-center gap-2 text-brand/60">
-          <Cherry className="size-4" />
-          <Heart className="size-4" fill="currentColor" />
-          <BowIcon className="size-5" />
-          <Heart className="size-4" fill="currentColor" />
-          <Cherry className="size-4" />
-        </div>
       </div>
 
       <form onSubmit={onSubmit} className="mt-6 grid gap-3">
@@ -195,13 +190,9 @@ function ViewMyBag() {
         </div>
       )}
 
-      <div className="mt-10">
-        <PaymentLinks />
-      </div>
-
       {sheetOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-end bg-ink/40"
+          className="fixed inset-0 z-50 flex items-end justify-center bg-ink/40 sm:items-center sm:p-6"
           role="dialog"
           aria-modal="true"
           aria-label="Bag details"
@@ -210,7 +201,7 @@ function ViewMyBag() {
           <div
             ref={panelRef}
             tabIndex={-1}
-            className="max-h-[85vh] w-full overflow-y-auto rounded-t-4xl bg-cream px-4 pb-8 pt-3 shadow-soft outline-none"
+            className="max-h-[85vh] w-full max-w-2xl overflow-y-auto rounded-t-3xl bg-cream px-4 pb-8 pt-3 shadow-soft outline-none sm:rounded-3xl sm:px-6"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-border" />
@@ -246,22 +237,23 @@ function ViewMyBag() {
               </p>
             ) : (
               <>
-                <dl className="mt-4 grid grid-cols-2 gap-2">
-                  <div className="cozy-card bg-blush px-4 py-2">
-                    <dt className="text-xs font-bold uppercase tracking-wide text-inksoft">
-                      Total
-                    </dt>
-                    <dd className="font-display text-lg">{money(parseMoney(bag.bagTotal))}</dd>
+                <dl className="mt-4 grid grid-cols-2 gap-3">
+                  <div className="col-span-2 rounded-2xl bg-lilac px-5 py-4">
+                    <dt className="text-sm font-bold text-inksoft">Remaining balance</dt>
+                    <dd className="mt-1 font-display text-3xl text-brand">{money(remaining)}</dd>
+                    {paidInFull && (
+                      <p className="mt-2 text-sm font-bold text-brand">Paid in full</p>
+                    )}
                   </div>
-                  <div className="cozy-card bg-lilac px-4 py-2">
-                    <dt className="text-xs font-bold uppercase tracking-wide text-inksoft">
-                      Remaining
-                    </dt>
-                    <dd className="font-display text-lg">{money(parseMoney(bag.balanceDue))}</dd>
+                  <div className="rounded-2xl bg-surface px-4 py-3">
+                    <dt className="text-xs font-bold text-inksoft">Bag total</dt>
+                    <dd className="mt-1 font-display text-base">
+                      {money(parseMoney(bag.bagTotal))}
+                    </dd>
                   </div>
-                  <div className="cozy-card bg-blush px-4 py-2">
-                    <dt className="text-xs font-bold uppercase tracking-wide text-inksoft">Due</dt>
-                    <dd className="font-display text-lg">{bag.dueDate || "—"}</dd>
+                  <div className="rounded-2xl bg-surface px-4 py-3">
+                    <dt className="text-xs font-bold text-inksoft">Payment due</dt>
+                    <dd className="mt-1 font-display text-base">{bag.dueDate || "Not listed"}</dd>
                   </div>
                 </dl>
 
@@ -269,6 +261,12 @@ function ViewMyBag() {
                   Status: {bag.status || "—"}
                 </p>
 
+                {remaining > 0 && (
+                  <PaymentLinks
+                    className="mt-5"
+                    description="Choose an app to pay your remaining balance."
+                  />
+                )}
                 <h3 className="mt-6 text-base font-semibold">Items ({items.length})</h3>
                 <ul className="mt-2 grid gap-2">
                   {items.map((item) => (

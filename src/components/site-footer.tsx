@@ -2,13 +2,19 @@ import { ExternalLink } from "lucide-react";
 
 import { PAYMENT_LINKS, SIGNUP_FORM_URL, TELEGRAM_URL, TIKTOK_URL } from "@/lib/format";
 
-export function PaymentLinks({ title = "Pay your balance" }: { title?: string }) {
+export function PaymentLinks({
+  title = "Pay your balance",
+  className = "px-4",
+  description = "Check your remaining balance before sending payment.",
+}: {
+  title?: string;
+  className?: string;
+  description?: string;
+}) {
   return (
-    <section className="px-4">
+    <section className={className}>
       <h2 className="text-lg font-semibold">{title}</h2>
-      <p className="mb-3 mt-1 text-sm text-inksoft">
-        Check your remaining balance before sending payment.
-      </p>
+      <p className="mb-3 mt-1 text-sm text-inksoft">{description}</p>
       <ul className="grid gap-3">
         {PAYMENT_LINKS.map((link) => (
           <li key={link.name}>
@@ -17,10 +23,10 @@ export function PaymentLinks({ title = "Pay your balance" }: { title?: string })
               target="_blank"
               rel="noreferrer"
               aria-label={`Pay with ${link.name} (opens in new tab)`}
-              className="cozy-card tap-target flex items-center justify-between bg-blush px-5 py-4 text-ink transition-transform active:scale-[0.99]"
+              className="cozy-card tap-target flex items-center justify-between bg-blush px-4 py-3 text-ink transition-transform active:scale-[0.99]"
             >
               <span className="font-display text-base font-semibold">{link.name}</span>
-              <span className="flex items-center gap-1.5 text-sm text-inksoft">
+              <span className="flex min-w-0 items-center gap-1.5 break-all text-sm text-inksoft">
                 {link.handle}
                 <ExternalLink className="size-4" aria-hidden="true" />
               </span>

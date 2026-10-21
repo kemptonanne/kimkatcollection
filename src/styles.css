@@ -102,8 +102,8 @@
   --input: oklch(0.36 0.05 355 / 16%);
   --ring: var(--brand);
 
-  --shadow-soft: 0 8px 24px -10px oklch(0.36 0.05 355 / 28%);
-  --shadow-card: 0 4px 14px -6px oklch(0.36 0.05 355 / 18%), 0 1px 3px oklch(0.36 0.05 355 / 8%);
+  --shadow-soft: 0 6px 18px -10px oklch(0.36 0.05 355 / 18%);
+  --shadow-card: 0 3px 10px -6px oklch(0.36 0.05 355 / 10%), 0 1px 2px oklch(0.36 0.05 355 / 5%);
 
   /* Filled in by the app at runtime with the uploaded watercolor pattern URL */
   --bg-pattern-url: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNDAiIGhlaWdodD0iMTQwIiB2aWV3Qm94PSIwIDAgMTQwIDE0MCI+CiAgPGcgZmlsbD0ibm9uZSIgc3Ryb2tlPSJva2xjaCgwLjU4IDAuMTkgMTggLyAwLjA5KSIgc3Ryb2tlLXdpZHRoPSIxLjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+CiAgICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxNiwxNikgc2NhbGUoMi4yKSI+CiAgICAgIDxwYXRoIGQ9Ik0xOSAxNGMxLjQ5LTEuNDYgMy0zLjIxIDMtNS41QTUuNSA1LjUgMCAwIDAgMTYuNSAzYy0xLjc2IDAtMyAuNS00LjUgMi0xLjUtMS41LTIuNzQtMi00LjUtMkE1LjUgNS41IDAgMCAwIDIgOC41YzAgMi4zIDEuNSA0LjA1IDMgNS41bDcgN1oiLz4KICAgIDwvZz4KICAgIDxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDgwLDIwKSBzY2FsZSgxLjkpIj4KICAgICAgPHBhdGggZD0iTTIgMTdhNSA1IDAgMCAwIDEwIDBjMC0yLjc2LTIuNS01LTUtMy0yLjUtMi01IC4yNC01IDNaIi8+CiAgICAgIDxwYXRoIGQ9Ik0xMiAxN2E1IDUgMCAwIDAgMTAgMGMwLTIuNzYtMi41LTUtNS0zLTIuNS0yLTUgLjI0LTUgM1oiLz4KICAgICAgPHBhdGggZD0iTTcgMTRjMy4yMi0yLjkxIDQuMjktOC43NSA1LTEyIDEuNjYgMi4zOCA0Ljk0IDkgNSAxMiIvPgogICAgICA8cGF0aCBkPSJNMjIgOWMtNC4yOSAwLTcuMTQtMi4zMy0xMC03IDUuNzEgMCAxMCA0LjY3IDEwIDdaIi8+CiAgICA8L2c+CiAgICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg1Niw5Mikgc2NhbGUoMS4zKSIgb3BhY2l0eT0iMC44Ij4KICAgICAgPHBhdGggZD0iTTE5IDE0YzEuNDktMS40NiAzLTMuMjEgMy01LjVBNS41IDUuNSAwIDAgMCAxNi41IDNjLTEuNzYgMC0zIC41LTQuNSAyLTEuNS0xLjUtMi43NC0yLTQuNS0yQTUuNSA1LjUgMCAwIDAgMiA4LjVjMCAyLjMgMS41IDQuMDUgMyA1LjVsNyA3WiIvPgogICAgPC9nPgogIDwvZz4KPC9zdmc+");
@@ -191,7 +191,7 @@
 }
 
 @utility cozy-card {
-  border-radius: var(--radius-3xl);
+  border-radius: var(--radius-2xl);
   background-color: var(--color-card);
   box-shadow: var(--shadow-card);
   border: 1px solid oklch(0.44 0.11 355 / 10%);
