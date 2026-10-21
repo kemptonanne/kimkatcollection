@@ -36,24 +36,26 @@ export function SiteFooter() {
       <p className="mx-auto mt-2 max-w-xs text-sm text-inksoft">
         Jewelry &amp; collectibles, live on TikTok.
       </p>
-      <a
-        href={SIGNUP_FORM_URL}
-        target="_blank"
-        rel="noreferrer"
-        className="cozy-btn tap-target mt-4 inline-flex items-center justify-center px-6 text-sm"
-      >
-        Join the customer list
-      </a>
-      <a
-        href={TELEGRAM_URL}
-        target="_blank"
-        rel="noreferrer"
-        aria-label="Join us on Telegram (opens in new tab)"
-        className="cozy-card tap-target mt-3 inline-flex items-center justify-center gap-2 bg-surface px-6 text-sm font-semibold text-brand"
-      >
-        Join us on Telegram
-        <ExternalLink className="size-4" aria-hidden="true" />
-      </a>
+      <div className="mt-4 flex flex-wrap flex-col items-center justify-center gap-3 sm:flex-row">
+        <a
+          href={SIGNUP_FORM_URL}
+          target="_blank"
+          rel="noreferrer"
+          className="cozy-btn tap-target inline-flex items-center justify-center px-6 text-sm"
+        >
+          Join the customer list
+        </a>
+        <a
+          href={TELEGRAM_URL}
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Join us on Telegram (opens in new tab)"
+          className="cozy-card tap-target inline-flex items-center justify-center gap-2 bg-surface px-6 text-sm font-semibold text-brand"
+        >
+          Join us on Telegram
+          <ExternalLink className="size-4" aria-hidden="true" />
+        </a>
+      </div>
     </footer>
   );
 }
