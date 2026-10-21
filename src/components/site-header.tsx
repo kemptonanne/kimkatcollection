@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Menu, ShoppingBag, X } from "lucide-react";
 import { useState } from "react";
 import { cartCount, useCart } from "@/lib/cart";
-import { SIGNUP_FORM_URL } from "@/lib/format";
+import { SIGNUP_FORM_URL, TELEGRAM_URL } from "@/lib/format";
 
 const NAV = [
   { to: "/", label: "Shop" },
@@ -63,6 +63,18 @@ export function SiteHeader() {
                 className="tap-target flex items-center rounded-2xl px-3 text-base font-semibold text-ink transition-colors hover:bg-blush"
               >
                 New Customer Sign-Up
+              </a>
+            </li>
+            <li>
+              <a
+                href={TELEGRAM_URL}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Join us on Telegram (opens in new tab)"
+                onClick={() => setOpen(false)}
+                className="tap-target flex items-center rounded-2xl px-3 text-base font-semibold text-ink transition-colors hover:bg-blush"
+              >
+                Telegram
               </a>
             </li>
             {NAV.map((item) => (
