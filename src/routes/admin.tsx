@@ -11,6 +11,7 @@ import {
   adminStatus,
   adminUpdateOrderStatus,
 } from "@/lib/admin.functions";
+import { endAdminSession } from "@/lib/admin-session";
 import { ProductManager } from "@/components/admin/product-manager";
 import { money } from "@/lib/format";
 
@@ -42,6 +43,7 @@ function AdminPage() {
   const session = useQuery({ queryKey: ["admin", "status"], queryFn: () => status() });
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
+  const [locking, setLocking] = useState(false);
   const [tab, setTab] = useState<Tab>("products");
 
   if (session.isLoading) {
@@ -106,14 +108,20 @@ function AdminPage() {
         <h1 className="font-display text-2xl">Shop admin</h1>
         <button
           type="button"
+          disabled={locking}
           onClick={async () => {
-            await logout();
-            queryClient.clear();
-            await queryClient.invalidateQueries({ queryKey: ["admin"] });
+            setLocking(true);
+            try {
+              await endAdminSession(queryClient, () => logout());
+            } catch {
+              toast.error("Could not lock the shop. Please try again.");
+            } finally {
+              setLocking(false);
+            }
           }}
           className="tap-target inline-flex items-center gap-1.5 rounded-full bg-blush px-4 py-2 text-sm font-bold shadow-card"
         >
-          Lock
+          {locking ? "Locking…" : "Lock"}
         </button>
       </div>
 
