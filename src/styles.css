@@ -73,14 +73,14 @@
   --radius: 1.25rem;
 
   /* Soft Blush & Berry — one cohesive pink/berry palette, no green or yellow */
-  --cream: oklch(0.945 0.02 355);       /* pale blush wash #fae9ec */
-  --blush: oklch(0.885 0.035 355);      /* rose card #eccdd2 */
-  --lilac: oklch(0.84 0.05 355);        /* deeper rose chip */
-  --ink: oklch(0.36 0.05 355);          /* dark berry-cocoa #58323c */
-  --inksoft: oklch(0.45 0.045 355);     /* soft berry-cocoa */
-  --brand: oklch(0.44 0.11 355);        /* deep berry #8e3b4e */
+  --cream: oklch(0.945 0.02 355); /* pale blush wash #fae9ec */
+  --blush: oklch(0.885 0.035 355); /* rose card #eccdd2 */
+  --lilac: oklch(0.84 0.05 355); /* deeper rose chip */
+  --ink: oklch(0.36 0.05 355); /* dark berry-cocoa #58323c */
+  --inksoft: oklch(0.45 0.045 355); /* soft berry-cocoa */
+  --brand: oklch(0.44 0.11 355); /* deep berry #8e3b4e */
   --brand-foreground: oklch(0.96 0.015 355);
-  --surface: oklch(0.975 0.012 355);    /* blush white */
+  --surface: oklch(0.975 0.012 355); /* blush white */
 
   --background: var(--cream);
   --foreground: var(--ink);
@@ -142,8 +142,8 @@
     z-index: -1;
     background-image:
       linear-gradient(
-        color-mix(in oklab, var(--color-background) 45%, transparent),
-        color-mix(in oklab, var(--color-background) 30%, transparent)
+        color-mix(in oklab, var(--color-background) 65%, transparent),
+        color-mix(in oklab, var(--color-background) 55%, transparent)
       ),
       var(--bg-pattern-url);
     background-size: cover;
@@ -178,8 +178,8 @@
 @utility bg-pattern {
   background-image:
     linear-gradient(
-      color-mix(in oklab, var(--color-background) 45%, transparent),
-      color-mix(in oklab, var(--color-background) 30%, transparent)
+      color-mix(in oklab, var(--color-background) 65%, transparent),
+      color-mix(in oklab, var(--color-background) 55%, transparent)
     ),
     var(--bg-pattern-url);
   background-size: cover;
@@ -201,6 +201,8 @@
   border-radius: 9999px;
   background-color: var(--color-primary);
   color: var(--color-primary-foreground);
-  box-shadow: inset 0 1px 0 oklch(1 0 0 / 20%), var(--shadow-soft);
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 20%),
+    var(--shadow-soft);
   font-weight: 700;
 }

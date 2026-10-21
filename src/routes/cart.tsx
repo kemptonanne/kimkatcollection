@@ -27,6 +27,13 @@ function CartPage() {
   return (
     <div className="px-4 pb-28 pt-6">
       <h1 className="font-display text-2xl">Your cart</h1>
+      <p className="mt-2 text-sm text-inksoft">
+        Claimed during a live? Your items are in{" "}
+        <Link to="/view-bag" className="font-bold text-brand underline underline-offset-4">
+          View my bag
+        </Link>
+        .
+      </p>
 
       {items.length === 0 ? (
         <div className="cozy-card relative mt-5 overflow-hidden px-5 py-10 text-center">
@@ -39,13 +46,13 @@ function CartPage() {
           </div>
           <p className="relative mt-3 font-display text-lg">Your cart is empty</p>
           <p className="relative mt-1 text-sm text-inksoft">
-            Little treasures await — come browse the latest drops.
+            Items added from the online shop will appear here.
           </p>
           <Link
             to="/"
             className="cozy-btn relative tap-target mt-4 inline-flex items-center justify-center px-6 text-sm"
           >
-            Start shopping
+            Browse the shop
           </Link>
         </div>
       ) : (

@@ -137,8 +137,7 @@ function ViewMyBag() {
       <div className="relative overflow-hidden rounded-4xl bg-blush px-6 py-6 text-center shadow-soft">
         <h1 className="relative font-display text-2xl">View my bag</h1>
         <p className="relative mt-2 text-sm text-inksoft">
-          Enter your bag number to see what&apos;s inside, what you&apos;ve paid, and when it&apos;s
-          due.
+          Enter your bag number to view your items, remaining balance, and payment due date.
         </p>
         <div className="relative mt-3 flex items-center justify-center gap-2 text-brand/60">
           <Cherry className="size-4" />
@@ -188,7 +187,7 @@ function ViewMyBag() {
       )}
 
       <div className="mt-10">
-        <PaymentLinks title="Pay on your bag" />
+        <PaymentLinks />
       </div>
 
       {sheetOpen && (

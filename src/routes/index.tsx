@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { Cherry, Heart } from "lucide-react";
 import { listProducts } from "@/lib/shop.functions";
-import { money } from "@/lib/format";
+import { TELEGRAM_URL, money } from "@/lib/format";
 import { PaymentLinks } from "@/components/site-footer";
 import { BowIcon } from "@/components/bow-icon";
 
@@ -59,13 +59,13 @@ function Shop() {
       <section className="px-4 pt-6">
         <div className="relative overflow-hidden rounded-4xl bg-blush px-6 py-10 text-center shadow-soft">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-surface/80 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-brand shadow-card">
-            New drops weekly
+            Jewelry &amp; collectibles
           </span>
           <h1 className="mt-5 font-display text-3xl leading-tight">
             Little treasures, picked with <span className="text-brand">love</span>
           </h1>
           <p className="mt-3 text-sm text-inksoft">
-            Jewelry and collectibles from the live sales — grab them here between shows.
+            Shop available pieces between live sales, or check your bag and remaining balance.
           </p>
           <div className="mt-5 flex items-center justify-center gap-2 text-brand/70">
             <Cherry className="size-4" />
@@ -76,6 +76,28 @@ function Shop() {
           </div>
         </div>
       </section>
+
+      <section className="mt-6 px-4">
+        <Link
+          to="/view-bag"
+          className="relative flex items-center justify-between overflow-hidden rounded-4xl bg-lilac px-6 py-6 shadow-soft transition-transform active:scale-[0.99]"
+        >
+          <span className="relative">
+            <span className="mb-1 block text-xs font-bold uppercase tracking-wide text-brand">
+              Claimed during a live?
+            </span>
+            <span className="block font-display text-xl">View my bag</span>
+            <span className="mt-1 block text-sm text-inksoft">
+              See your items, remaining balance, and payment due date.
+            </span>
+          </span>
+          <span className="relative text-2xl text-brand">→</span>
+        </Link>
+      </section>
+
+      <div className="mt-6">
+        <PaymentLinks />
+      </div>
 
       <section className="mt-8 px-4">
         <div className="cozy-card bg-surface/90 backdrop-blur-sm px-4 py-5">
@@ -95,8 +117,17 @@ function Shop() {
               </div>
               <p className="font-display text-lg text-ink">Between drops</p>
               <p className="mt-1 text-sm text-inksoft">
-                New pieces are added after each live sale. Check back soon!
+                No pieces are listed at the moment. Join us on Telegram for live-sale updates.
               </p>
+              <a
+                href={TELEGRAM_URL}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Get live-sale updates on Telegram (opens in new tab)"
+                className="cozy-btn tap-target mt-4 inline-flex items-center justify-center px-5 text-sm"
+              >
+                Get live-sale updates
+              </a>
             </div>
           ) : (
             <ul className="mt-4 grid grid-cols-2 gap-3">
@@ -135,25 +166,6 @@ function Shop() {
           )}
         </div>
       </section>
-
-      <section className="mt-10 px-4">
-        <Link
-          to="/view-bag"
-          className="relative flex items-center justify-between overflow-hidden rounded-4xl bg-lilac px-6 py-6 shadow-soft transition-transform active:scale-[0.99]"
-        >
-          <span className="relative">
-            <span className="block font-display text-xl">View my bag</span>
-            <span className="mt-1 block text-sm text-inksoft">
-              See your items, balance, and due date.
-            </span>
-          </span>
-          <span className="relative text-2xl text-brand">→</span>
-        </Link>
-      </section>
-
-      <div className="mt-10">
-        <PaymentLinks />
-      </div>
     </div>
   );
 }
