@@ -10,7 +10,16 @@
  * GET  ?action=getAllItems          → { ok, items }        (whole Claims tab)
  * GET  ?action=getBags              → { ok, bags }
  * GET  ?action=getBagItems&bagNumber=1 → { ok, items }
- * POST { action: 'updateBag' | 'addItem' | 'deleteItem', ... }
+ * POST { action: 'updateBag' | 'addItem', ... }
+ * POST { action: 'updateItem', sheetRow, expected, companyName, item, price, qty }
+ * POST { action: 'deleteClaim', sheetRow, expected }
+ *
+ * Claim identity: every claim read returns its real `sheetRow`. updateItem and
+ * deleteClaim only act when that row still holds EXACTLY the `expected`
+ * values (bagNumber, companyName, item, price, qty, dateClaimed) and no other
+ * row holds the same values, under a script lock. Otherwise they reject and
+ * change nothing. updateItem writes only Company/Item/Price/Qty, so the Total
+ * formula and Date Claimed are preserved. No columns are added.
  */
 
 const SHEET_NAMES = { BAGS: 'Bags', CLAIMS: 'Claims' };
@@ -77,6 +86,7 @@ function readClaims_(bagNumber) {
     if (text_(r[CLAIMS_COLS.ITEM - 1]) === '') continue;
     if (wanted !== null && num.toLowerCase() !== wanted) continue;
     out.push({
+      sheetRow: i + 2,
       bagNumber: num,
       companyName: text_(r[CLAIMS_COLS.COMPANY_NAME - 1]),
       item: text_(r[CLAIMS_COLS.ITEM - 1]),
@@ -149,24 +159,57 @@ function doPost(e) {
       ]);
       return json_({ ok: true });
     }
-    case 'deleteItem': {
-      const sh = sheet_(SHEET_NAMES.CLAIMS);
-      const last = sh.getLastRow();
-      if (last < 2) return json_({ ok: false, error: 'No claims' });
-      const rows = sh.getRange(2, 1, last - 1, 7).getDisplayValues();
-      for (var j = 0; j < rows.length; j++) {
-        var r = rows[j];
-        if (
-          text_(r[CLAIMS_COLS.BAG_NUM - 1]).toLowerCase() === String(body.bagNumber).trim().toLowerCase() &&
-          text_(r[CLAIMS_COLS.ITEM - 1]) === text_(body.item)
-        ) {
-          sh.deleteRow(j + 2);
-          return json_({ ok: true });
-        }
-      }
-      return json_({ ok: false, error: 'Item not found' });
-    }
+    case 'updateItem':
+    case 'deleteClaim':
+      return withLock_(function () { return editClaim_(body); });
     default:
       return json_({ ok: false, error: 'Unknown action: ' + String(body.action) });
   }
+}
+
+function withLock_(fn) {
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(10000)) return json_({ ok: false, error: 'Busy: another edit is in progress. Try again.' });
+  try { return fn(); } finally { lock.releaseLock(); }
+}
+
+function claimMatches_(r, exp) {
+  return (
+    text_(r[CLAIMS_COLS.BAG_NUM - 1]).toLowerCase() === text_(exp.bagNumber).toLowerCase() &&
+    text_(r[CLAIMS_COLS.COMPANY_NAME - 1]) === text_(exp.companyName) &&
+    text_(r[CLAIMS_COLS.ITEM - 1]) === text_(exp.item) &&
+    text_(r[CLAIMS_COLS.PRICE - 1]) === text_(exp.price) &&
+    text_(r[CLAIMS_COLS.QTY - 1]) === text_(exp.qty) &&
+    text_(r[CLAIMS_COLS.DATE_CLAIMED - 1]) === text_(exp.dateClaimed)
+  );
+}
+
+function editClaim_(body) {
+  const exp = body.expected || {};
+  const row = Number(body.sheetRow);
+  if (!Number.isInteger(row) || row < 2 || text_(exp.item) === '' || text_(exp.bagNumber) === '') {
+    return json_({ ok: false, error: 'Invalid claim reference' });
+  }
+  const sh = sheet_(SHEET_NAMES.CLAIMS);
+  const last = sh.getLastRow();
+  if (row > last) return json_({ ok: false, error: 'Claim changed since it was loaded. Refresh and try again.' });
+  const rows = sh.getRange(2, 1, last - 1, 7).getDisplayValues();
+  if (!claimMatches_(rows[row - 2], exp)) {
+    return json_({ ok: false, error: 'Claim changed since it was loaded. Refresh and try again.' });
+  }
+  var matches = 0;
+  for (var i = 0; i < rows.length; i++) if (claimMatches_(rows[i], exp)) matches++;
+  if (matches > 1) {
+    return json_({ ok: false, error: 'Ambiguous: identical duplicate claims exist. Edit this one in the spreadsheet.' });
+  }
+  if (body.action === 'deleteClaim') {
+    sh.deleteRow(row);
+    return json_({ ok: true });
+  }
+  if (text_(body.item) === '') return json_({ ok: false, error: 'Item description is required' });
+  // Columns 2-5 only: Total (formula) and Date Claimed are never touched.
+  sh.getRange(row, CLAIMS_COLS.COMPANY_NAME, 1, 4).setValues([[
+    text_(body.companyName), text_(body.item), text_(body.price), text_(body.qty) || '1',
+  ]]);
+  return json_({ ok: true });
 }
