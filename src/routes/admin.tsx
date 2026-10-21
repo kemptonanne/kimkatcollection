@@ -12,7 +12,6 @@ import {
   adminUpdateOrderStatus,
 } from "@/lib/admin.functions";
 import { ProductManager } from "@/components/admin/product-manager";
-import { BagManager } from "@/components/admin/bag-manager";
 import { money } from "@/lib/format";
 
 export const Route = createFileRoute("/admin")({
@@ -22,7 +21,7 @@ export const Route = createFileRoute("/admin")({
       { title: "Shop admin — KimKat Collection" },
       {
         name: "description",
-        content: "Password-protected management for KimKat Collection products, bags and orders.",
+        content: "Password-protected management for KimKat Collection products and orders.",
       },
       { name: "robots", content: "noindex" },
       { property: "og:title", content: "Shop admin — KimKat Collection" },
@@ -32,7 +31,7 @@ export const Route = createFileRoute("/admin")({
   component: AdminPage,
 });
 
-type Tab = "products" | "bags" | "orders";
+type Tab = "products" | "orders";
 
 function AdminPage() {
   const queryClient = useQueryClient();
@@ -119,7 +118,7 @@ function AdminPage() {
       </div>
 
       <div className="mt-4 flex gap-2 overflow-x-auto">
-        {(["products", "bags", "orders"] as Tab[]).map((value) => (
+        {(["products", "orders"] as Tab[]).map((value) => (
           <button
             key={value}
             type="button"
@@ -135,7 +134,6 @@ function AdminPage() {
 
       <div className="mt-6">
         {tab === "products" && <ProductManager />}
-        {tab === "bags" && <BagManager />}
         {tab === "orders" && <OrderManager />}
       </div>
     </div>
