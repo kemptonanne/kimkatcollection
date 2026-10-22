@@ -21,7 +21,7 @@ I used Lovable to scaffold the application and adapted it to the business's stor
 **Early adoption: September–October 2026**
 
 - **Adopted in September 2026** as the business's customer-facing tool for checking bags and balances before payment.
-- **Supports a customer base of 40+.**
+- **Supports a customer base of 50+.**
 - **200+ item claims recorded** across current and archived tracking records.
 - **Approximately half of customers in the latest sales period reviewed were repeat buyers**, based on customer-name matching against earlier claims.
 
