@@ -154,6 +154,28 @@
     pointer-events: none;
   }
 
+  :is(
+    a[href],
+    button,
+    summary,
+    select,
+    [role="button"],
+    input[type="button"],
+    input[type="submit"],
+    input[type="reset"],
+    input[type="checkbox"],
+    input[type="radio"]
+  ):not(:disabled):not([aria-disabled="true"]),
+  label:has(input:is([type="radio"], [type="checkbox"], [type="file"]):not(:disabled)),
+  input[type="file"]:not(:disabled)::file-selector-button {
+    cursor: pointer;
+  }
+
+  :is(button, select, input):disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+
   h1,
   h2,
   h3 {

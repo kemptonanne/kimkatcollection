@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Menu, ShoppingBag, X } from "lucide-react";
+import { Menu, ShoppingCart, X } from "lucide-react";
 import { useState } from "react";
 import { cartCount, useCart } from "@/lib/cart";
 import { SIGNUP_FORM_URL, TELEGRAM_URL } from "@/lib/format";
@@ -16,7 +16,7 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/70 bg-cream/95 backdrop-blur">
-      <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-3">
+      <div className="mx-auto flex w-full max-w-4xl items-center justify-between gap-3 px-4 py-3">
         <button
           type="button"
           aria-label={open ? "Close menu" : "Open menu"}
@@ -55,7 +55,7 @@ export function SiteHeader() {
           onClick={() => setOpen(false)}
           className="tap-target -mr-2 relative flex items-center justify-center rounded-2xl text-ink transition-colors hover:bg-blush"
         >
-          <ShoppingBag className="size-6" />
+          <ShoppingCart className="size-6" />
           {count > 0 && (
             <span className="absolute right-0 top-1 grid size-5 place-items-center rounded-full bg-brand text-[0.65rem] font-bold text-brand-foreground">
               {count}

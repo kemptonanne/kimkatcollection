@@ -137,13 +137,15 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="mx-auto flex min-h-screen max-w-3xl flex-col">
+      <div className="flex min-h-screen flex-col">
         <SiteHeader />
-        <main className="flex-1">
+        <main className="mx-auto w-full max-w-4xl flex-1">
           {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
           <Outlet />
         </main>
-        <SiteFooter />
+        <div className="mx-auto w-full max-w-4xl">
+          <SiteFooter />
+        </div>
       </div>
       <Toaster position="top-center" />
     </QueryClientProvider>
