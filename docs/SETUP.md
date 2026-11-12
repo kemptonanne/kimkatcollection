@@ -23,7 +23,17 @@ Checkout records an order awaiting manual payment confirmation. It does not coll
 
 ## Bag tracker
 
-Deploy `apps-script/BagTrackerAPI.gs` in an Apps Script project bound to the owner's spreadsheet. The spreadsheet needs `Bags` and `Claims` tabs using the column layout in that file. Set `SECRET_TOKEN` in Script Properties; configure the matching token and Web App `/exec` URL in the app's server environment. After script changes, publish a new Apps Script deployment version separately from the website.
+1. Enable the Google Sheets API in the Google Cloud project that owns the service account.
+2. Share the spreadsheet with the service account's email address as a Viewer.
+3. Set `GOOGLE_SHEETS_SPREADSHEET_ID` to the ID in the spreadsheet URL and `GOOGLE_SHEETS_CREDENTIALS` to the service account key JSON in the server environment.
+4. Keep the existing tab names and column order. Row 1 contains the headers.
+
+| Range         | Columns in order                                                                                      |
+| ------------- | ----------------------------------------------------------------------------------------------------- |
+| `Bags!A2:H`   | Bag number, TikTok handle, customer name, bag total, payments received, balance due, due date, status |
+| `Claims!A2:G` | Bag number, company name, item, price, quantity, total, date claimed                                  |
+
+The website reads formatted values and caches them for 30 seconds. The team edits bags and claims directly in Sheets.
 
 Bag-number lookup is public and is not proof of customer identity. It excludes names, handles, payments received, and row identifiers, but still displays claimed items and balances. Do not publish screenshots containing real customer bag information.
 

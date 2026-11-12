@@ -6,7 +6,7 @@
 
 A mobile storefront and operations tool for a jewelry and collectibles business selling through TikTok Live. Customers claim items into numbered "bags," which the owner manages in Google Sheets. The website lets customers check their bags and balances without waiting for a reply, while preserving the owner's existing workflow.
 
-I used Lovable to scaffold the application and adapted it to the business's storefront and operational requirements, including customer journeys, admin tools, and integrations with Supabase and Google Apps Script.
+I used Lovable to scaffold the application and adapted it to the business's storefront and operational requirements, including customer journeys, admin tools, and integrations with Supabase and Google Sheets.
 
 ## Features
 
@@ -33,11 +33,10 @@ Adoption timing is owner-reported; customer and claim figures come from an Octob
 flowchart TD
     UI["React storefront and admin"] --> SF["TanStack server functions"]
     SF --> DB["Supabase: products, orders, photos"]
-    SF --> API["Google Apps Script API"]
-    API --> GS["Google Sheets: bags and claims"]
+    SF --> GS["Google Sheets API: bags and claims"]
 ```
 
-**Stack:** React 19, TanStack Start, TypeScript, Vite, Tailwind CSS, Supabase, Google Apps Script, and Bun. The cart is stored in the customer's browser.
+**Stack:** React 19, TanStack Start, TypeScript, Vite, Tailwind CSS, Supabase, Google Sheets API, and Bun. The cart is stored in the customer's browser.
 
 ## Key decisions
 
@@ -63,7 +62,7 @@ bun run test
 bun run build
 ```
 
-The app requires a configured Supabase database and storage bucket, plus a separately deployed Apps Script API connected to the bag-tracking spreadsheet. Credentials stay in server-only environment variables.
+The app requires a configured Supabase database and storage bucket, plus read access to the bag-tracking spreadsheet through a Google service account. Credentials stay in server-only environment variables.
 
 See [setup instructions](docs/SETUP.md) for database, storage, spreadsheet, and deployment configuration.
 
