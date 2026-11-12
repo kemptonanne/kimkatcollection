@@ -18,8 +18,12 @@ export const adminStatus = createServerFn({ method: "GET" }).handler(async () =>
 export const adminLogin = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => z.object({ password: z.string().max(200) }).parse(input))
   .handler(async ({ data }) => {
-    const { passwordMatches, unlockAdmin } = await import("./admin-session.server");
-    if (!passwordMatches(data.password)) return { ok: false as const };
+    const { passwordMatches, reserveAdminLoginAttempt, unlockAdmin } =
+      await import("./admin-session.server");
+    if (!(await reserveAdminLoginAttempt())) {
+      return { ok: false as const, rateLimited: true as const };
+    }
+    if (!passwordMatches(data.password)) return { ok: false as const, rateLimited: false as const };
     await unlockAdmin();
     return { ok: true as const };
   });

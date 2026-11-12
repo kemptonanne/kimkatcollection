@@ -1,5 +1,8 @@
-import { useSession } from "@tanstack/react-start/server";
-import { createHash, timingSafeEqual } from "node:crypto";
+import { getRequestHeader, useSession } from "@tanstack/react-start/server";
+import { createHash, createHmac, timingSafeEqual } from "node:crypto";
+
+import { isIP } from "node:net";
+import { shopAdmin } from "./shop-db.server";
 
 type AdminSession = { unlocked?: boolean };
 
@@ -14,6 +17,20 @@ function sessionConfig() {
 
 function digest(value: string): Buffer {
   return createHash("sha256").update(value, "utf8").digest();
+}
+
+export async function reserveAdminLoginAttempt(): Promise<boolean> {
+  const forwardedIp = getRequestHeader("x-vercel-forwarded-for")?.trim();
+  const ip =
+    process.env["VERCEL"] === "1" && forwardedIp && isIP(forwardedIp) ? forwardedIp : "unknown";
+  const secret = process.env["SESSION_SECRET"];
+  if (!secret) throw new Error("SESSION_SECRET is not set");
+  const key = createHmac("sha256", secret).update(`admin-login:${ip}`).digest("hex");
+  const { data, error } = await shopAdmin().rpc("reserve_admin_login_attempt", {
+    p_client_key: key,
+  });
+  if (error) throw new Error("Sign-in is unavailable. Please try again.");
+  return data === true;
 }
 
 export function passwordMatches(input: string): boolean {

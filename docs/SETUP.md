@@ -19,6 +19,8 @@ The server expects these Supabase tables:
 
 IDs and timestamps need database defaults. Enable row-level security. The anonymous key should permit product reads only; order reads and all writes use the server-only service role. Audit existing policies in Supabase before release. Keep the `product-photos` storage bucket private; the server uploads photos and creates signed image URLs.
 
+Before deploying the checkout and admin login changes, apply `supabase/external/20261112224150_harden_checkout_and_admin_login.sql` to the external shop database. The SQL adds checkout retry keys and a server-only login attempt counter. On Vercel, the app allows five sign-in attempts per client IP in a 15-minute window. Local runs share one attempt counter.
+
 Checkout records an order awaiting manual payment confirmation. It does not collect card details, verify payments, reserve stock, or provide shipping/tax calculation. The owner must confirm availability and any fulfillment charges before requesting final payment.
 
 ## Bag tracker
@@ -43,4 +45,4 @@ Use the connected Git repository and the detected TanStack Start framework. The 
 
 The current business configuration is Production-only. A passing Preview build can still fail at runtime without its own configuration. Use separate test services for previews where possible; do not automatically copy production credentials to every PR. Never disable Vercel's vulnerable-package check to make a build pass.
 
-Use a strong admin password and a random session secret. Admin cookies are Secure and HttpOnly. Local browsers must support Secure cookies on localhost, or run local HTTPS for sign-in testing. The current shared-password admin has no per-user audit trail or application-level login rate limit.
+Use a strong admin password and a random session secret. Admin cookies are Secure and HttpOnly. Local browsers must support Secure cookies on localhost, or run local HTTPS for sign-in testing. The shared-password admin has no per-user audit trail.

@@ -66,7 +66,11 @@ function AdminPage() {
                 toast.error("Couldn't keep you signed in. Try opening the preview in a new tab.");
               }
             } else {
-              toast.error("Incorrect password");
+              toast.error(
+                result.rateLimited
+                  ? "Too many sign-in attempts. Try again in 15 minutes."
+                  : "Incorrect password",
+              );
             }
           } catch {
             toast.error("Sign-in is unavailable. Please try again.");
