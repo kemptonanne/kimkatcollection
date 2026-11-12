@@ -1,13 +1,15 @@
 /**
- * Server-only access to the live-sale bag tracker via a Google Apps Script
- * Web App API (fetch-based, no Lovable connector, no Supabase).
+ * Server-only access to the live-sale bag tracker.
+ *
+ * Public lookup reads Google Sheets using GOOGLE_SHEETS_SPREADSHEET_ID and
+ * GOOGLE_SHEETS_CREDENTIALS (service account JSON). The other helpers use the
+ * Apps Script web app.
  *
  * Env vars:
  *   BAG_API_URL   — the Apps Script /exec URL
  *   BAG_API_TOKEN — shared secret token required by every endpoint
  *
  * Endpoints used:
- *   GET  ?action=getBag&bagNumber=…&token=…      (fast path: bag + its claims in one call)
  *   GET  ?action=getAllItems&token=…             (fast path: whole Claims tab in one call)
  *   GET  ?action=getBags&token=…
  *   GET  ?action=getBagItems&bagNumber=…&token=…
@@ -19,9 +21,10 @@
  * Against an older deployment edits fail closed: nothing is written.
  * All POSTs use Content-Type: text/plain (Apps Script can't handle CORS preflight).
  *
- * The getBag / getAllItems actions only exist in the newer Apps Script version;
- * both calls fall back to the older multi-request path automatically.
+ * The getAllItems action falls back to per-bag reads on older deployments.
  */
+
+import { JWT } from "google-auth-library";
 
 export type BagRow = {
   rowNumber: number;
@@ -65,8 +68,7 @@ function asText(value: unknown): string {
 }
 
 // ---------- Short-lived read cache ----------
-// Apps Script responses take ~1-3s, so repeat reads within a few seconds are
-// served from memory. Any write clears the cache immediately.
+// Repeat reads within 30 seconds share the same promise. Any write clears the cache.
 
 const CACHE_TTL_MS = 30_000;
 const cache = new Map<string, { at: number; promise: Promise<unknown> }>();
@@ -199,41 +201,109 @@ export async function readBags(): Promise<BagRow[]> {
   });
 }
 
-/**
- * Single-call lookup of one bag plus its claims. Falls back to the two-call
- * path when the deployed Apps Script doesn't know the `getBag` action.
- */
+type SheetValueRange = { values?: unknown[][] };
+
+let sheetsClient: JWT | undefined;
+
+function getSheetsClient(): JWT {
+  if (sheetsClient) return sheetsClient;
+  const json = process.env["GOOGLE_SHEETS_CREDENTIALS"];
+  if (!json) throw new Error("Missing GOOGLE_SHEETS_CREDENTIALS.");
+
+  try {
+    const client = new JWT({ scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"] });
+    client.fromJSON(JSON.parse(json));
+    sheetsClient = client;
+    return client;
+  } catch {
+    throw new Error("Invalid GOOGLE_SHEETS_CREDENTIALS.");
+  }
+}
+
+async function readLookupSheets() {
+  const spreadsheetId = process.env["GOOGLE_SHEETS_SPREADSHEET_ID"];
+  if (!spreadsheetId) throw new Error("Missing GOOGLE_SHEETS_SPREADSHEET_ID.");
+
+  const client = getSheetsClient();
+  const url = new URL(
+    `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(spreadsheetId)}/values:batchGet`,
+  );
+  url.searchParams.append("ranges", "Bags!A2:H");
+  url.searchParams.append("ranges", "Claims!A2:G");
+  url.searchParams.set("valueRenderOption", "FORMATTED_VALUE");
+
+  let valueRanges: SheetValueRange[] | undefined;
+  try {
+    const { data } = await client.request<{ valueRanges?: SheetValueRange[] }>({
+      url: url.toString(),
+    });
+    valueRanges = data.valueRanges;
+  } catch {
+    // Auth and HTTP errors can contain request details, including authorization headers.
+    throw new Error("Google Sheets bag lookup request failed.");
+  }
+
+  const [bags, claims] = valueRanges ?? [];
+  if (!bags || !claims) throw new Error("Google Sheets bag lookup returned incomplete ranges.");
+  return { bags: bags.values ?? [], claims: claims.values ?? [] };
+}
+
 export async function readBagWithItems(
   bagNumber: string,
 ): Promise<{ bag: BagRow; items: BagItemRow[] } | null> {
   const needle = bagNumber.trim().toLowerCase();
-  return cachedRead(`bag:${needle}`, async () => {
-    try {
-      const data = await apiGet<{
-        bag?: Record<string, unknown> | null;
-        items?: Record<string, unknown>[];
-      }>({ action: "getBag", bagNumber });
-      if (data.bag) {
-        const bagNum = asText(data.bag["bagNumber"]) || bagNumber;
-        return {
-          // rowNumber is only a UI key on the public page; no extra request for it.
-          bag: toBagRow(data.bag, 2),
-          items: (data.items ?? [])
-            .map((item, i) => toItemRow(item, i + 2, bagNum))
-            .filter((item) => item.item !== ""),
-        };
-      }
-      if ("bag" in data) return null; // script answered: no such bag
-    } catch (error) {
-      if (!isUnknownAction(error)) throw error;
-    }
+  if (!needle) return null;
 
-    // Fallback: older deployment — list bags, then that bag's items.
-    const bags = await readBags();
-    const bag = bags.find((b) => b.bagNumber.toLowerCase() === needle);
-    if (!bag) return null;
-    return { bag, items: await itemsForBag(bag.bagNumber) };
-  });
+  const { bags, claims } = await cachedRead("lookup:sheets", readLookupSheets);
+  const bagIndex = bags.findIndex(([number]) => asText(number).toLowerCase() === needle);
+  const row = bags[bagIndex];
+  if (!row) return null;
+
+  const [
+    number,
+    tiktokHandle,
+    customerName,
+    bagTotal,
+    paymentsReceived,
+    balanceDue,
+    dueDate,
+    status,
+  ] = row;
+  const bag = toBagRow(
+    {
+      bagNumber: number,
+      tiktokHandle,
+      customerName,
+      bagTotal,
+      paymentsReceived,
+      balanceDue,
+      dueDate,
+      status,
+    },
+    bagIndex + 2,
+  );
+
+  const items: BagItemRow[] = [];
+  for (const [index, claim] of claims.entries()) {
+    const [number, companyName, item, price, qty, total, dateClaimed] = claim;
+    if (asText(number).toLowerCase() !== needle || !asText(item)) continue;
+    items.push(
+      toItemRow(
+        {
+          sheetRow: index + 2,
+          bagNumber: number,
+          companyName,
+          item,
+          price,
+          qty,
+          total,
+          dateClaimed,
+        },
+        items.length + 2,
+      ),
+    );
+  }
+  return { bag, items };
 }
 
 // ---------- Bag items (Claims tab) ----------
