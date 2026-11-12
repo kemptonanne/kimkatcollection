@@ -9,7 +9,7 @@
  *
  * `shopPublic()` is used for public storefront reads (products list/detail);
  * RLS applies as anon. `shopAdmin()` uses the service role key and bypasses
- * RLS — only call it after verifying the admin session.
+ * RLS. Use it only for operations explicitly authorized by their server handler.
  */
 
 import { createClient } from "@supabase/supabase-js";
@@ -38,9 +38,19 @@ type OrderRow = {
   buyer_name: string | null;
   buyer_contact: string | null;
   payment_method: string | null;
+  checkout_key: string | null;
+  checkout_request_hash: string | null;
   created_at: string;
 };
-type OrderInsert = Omit<OrderRow, "id" | "created_at"> & { id?: string; created_at?: string };
+type OrderInsert = Omit<
+  OrderRow,
+  "id" | "created_at" | "checkout_key" | "checkout_request_hash"
+> & {
+  id?: string;
+  created_at?: string;
+  checkout_key?: string;
+  checkout_request_hash?: string;
+};
 type OrderUpdate = Partial<OrderInsert>;
 
 type ShopDatabase = {
@@ -55,7 +65,9 @@ type ShopDatabase = {
       orders: { Row: OrderRow; Insert: OrderInsert; Update: OrderUpdate; Relationships: [] };
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      reserve_admin_login_attempt: { Args: { p_client_key: string }; Returns: boolean };
+    };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;
   };

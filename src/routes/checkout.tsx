@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { Cherry, Heart, ExternalLink } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { cartTotal, clearCart, useCart } from "@/lib/cart";
 import { money, PAYMENT_LINKS } from "@/lib/format";
@@ -26,6 +26,29 @@ export const Route = createFileRoute("/checkout")({
   component: Checkout,
 });
 
+const RETRY_STORAGE_KEY = "kkc:checkout-retry";
+
+type CheckoutRetry = { fingerprint: string; key: string };
+
+function readCheckoutRetry(): CheckoutRetry | null {
+  try {
+    const saved = JSON.parse(sessionStorage.getItem(RETRY_STORAGE_KEY) ?? "null");
+    if (typeof saved?.fingerprint === "string" && typeof saved?.key === "string") return saved;
+  } catch {
+    // Storage may be disabled. Keep retries available while the page is open.
+  }
+  return null;
+}
+
+function storeCheckoutRetry(retry: CheckoutRetry | null) {
+  try {
+    if (retry) sessionStorage.setItem(RETRY_STORAGE_KEY, JSON.stringify(retry));
+    else sessionStorage.removeItem(RETRY_STORAGE_KEY);
+  } catch {
+    // The current page still has the retry key in memory.
+  }
+}
+
 function Checkout() {
   const items = useCart();
   const total = cartTotal(items);
@@ -34,6 +57,8 @@ function Checkout() {
   const [contact, setContact] = useState("");
   const [method, setMethod] = useState<string>(PAYMENT_LINKS[0].name);
   const [placing, setPlacing] = useState(false);
+  const submitting = useRef(false);
+  const retry = useRef<CheckoutRetry | null>(null);
   const [orderId, setOrderId] = useState<string | null>(null);
 
   if (orderId) {
@@ -101,16 +126,36 @@ function Checkout() {
 
   async function onSubmit(event: React.FormEvent) {
     event.preventDefault();
+    if (submitting.current) return;
+    submitting.current = true;
     setPlacing(true);
     try {
+      const orderItems = items.map(({ id, title, price, quantity }) => ({
+        id,
+        title,
+        price,
+        quantity,
+      }));
+      const details = JSON.stringify([
+        orderItems.map(({ id, price, quantity }) => [id, price, quantity]),
+        name.trim(),
+        contact.trim(),
+        method,
+      ]);
+      const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(details));
+      const fingerprint = Array.from(new Uint8Array(digest), (byte) =>
+        byte.toString(16).padStart(2, "0"),
+      ).join("");
+      const previous = retry.current ?? readCheckoutRetry();
+      const checkoutKey =
+        previous?.fingerprint === fingerprint ? previous.key : crypto.randomUUID();
+      retry.current = { fingerprint, key: checkoutKey };
+      storeCheckoutRetry(retry.current);
+
       const result = await place({
         data: {
-          items: items.map((l) => ({
-            id: l.id,
-            title: l.title,
-            price: l.price,
-            quantity: l.quantity,
-          })),
+          checkoutKey,
+          items: orderItems,
           total,
           buyerName: name,
           buyerContact: contact,
@@ -118,12 +163,15 @@ function Checkout() {
         },
       });
       clearCart();
+      retry.current = null;
+      storeCheckoutRetry(null);
       setOrderId(result.id);
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : "We couldn't place that order. Please try again.",
       );
     } finally {
+      submitting.current = false;
       setPlacing(false);
     }
   }
